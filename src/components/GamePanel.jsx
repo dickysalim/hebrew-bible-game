@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useRef } from 'react'
 import versesFile from '../data/verses/genesis-1.json'
 import wordCompleteAudio from '../assets/audio/word_complete.mp3'
+import verseCompleteAudio from '../assets/audio/verse_complete.mp3'
 import typingSound1 from '../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../assets/audio/typing_sound3.mp3'
@@ -155,10 +156,12 @@ function reducer(state, action) {
 export default function GamePanel() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const wordCompleteRef  = useRef(null)
+  const verseCompleteRef = useRef(null)
   const typingSoundsRef  = useRef(null)
 
   useEffect(() => {
     wordCompleteRef.current = new Audio(wordCompleteAudio)
+    verseCompleteRef.current = new Audio(verseCompleteAudio)
     typingSoundsRef.current = [
       new Audio(typingSound1),
       new Audio(typingSound2),
@@ -211,6 +214,19 @@ export default function GamePanel() {
     : false
   const verseDone  = isVerseDone(typedCounts, currentVerse)
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
+
+  // Verse completion sound
+  const prevVerseDoneRef = useRef(false)
+  useEffect(() => {
+    // Check if verse just became completed
+    if (verseDone && !prevVerseDoneRef.current && verseCompleteRef.current) {
+      verseCompleteRef.current.currentTime = 0
+      verseCompleteRef.current.play().catch(() => {})
+    }
+    
+    // Update previous value
+    prevVerseDoneRef.current = verseDone
+  }, [verseDone])
 
   // Show target key hint after 3+ errors (only if a word is active and not done)
   const targetLetter = (activeWord && !wordDone && errorCount >= 3)

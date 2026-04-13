@@ -90,20 +90,6 @@ export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys, rec
         ))}
       </div>
       
-      {/* Right-side box for typed letter display */}
-      <div className="typed-letter-box">
-        {recentTypedLetter && (
-          <>
-            <div className="typed-letter-heb">{recentTypedLetter}</div>
-            <div className="typed-letter-name">
-              {getLetterName(recentTypedLetter)}
-            </div>
-            <div className="typed-letter-sbl">
-              {getLetterSBL(recentTypedLetter)}
-            </div>
-          </>
-        )}
-      </div>
     </div>
   )
 }
