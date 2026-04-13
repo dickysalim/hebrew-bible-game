@@ -215,18 +215,15 @@ export default function GamePanel() {
   const verseDone  = isVerseDone(typedCounts, currentVerse)
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
 
-  // Verse completion sound
-  const prevVerseDoneRef = useRef(false)
+  // Verse completion sound — track which verses have already played it
+  const celebratedVersesRef = useRef(new Set())
   useEffect(() => {
-    // Check if verse just became completed
-    if (verseDone && !prevVerseDoneRef.current && verseCompleteRef.current) {
+    if (verseDone && !celebratedVersesRef.current.has(currentVerse) && verseCompleteRef.current) {
       verseCompleteRef.current.currentTime = 0
       verseCompleteRef.current.play().catch(() => {})
+      celebratedVersesRef.current.add(currentVerse)
     }
-    
-    // Update previous value
-    prevVerseDoneRef.current = verseDone
-  }, [verseDone])
+  }, [verseDone, currentVerse])
 
   // Show target key hint after 3+ errors (only if a word is active and not done)
   const targetLetter = (activeWord && !wordDone && errorCount >= 3)
@@ -253,10 +250,12 @@ export default function GamePanel() {
 
       {verseDone && (
         <InsightCarousel
+          key={currentVerse}
           insights={verse.insights}
           idx={carouselIdx}
           onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
           onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
+          isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
         />
       )}
 
