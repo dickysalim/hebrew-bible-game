@@ -37,6 +37,7 @@ const initialState = {
   carouselIdxMap: {},
   completedWordSignal: 0, // increments → triggers word_complete audio
   typingSignal: 0,        // increments on correct keypress → triggers typing sound
+  recentTypedLetter: null, // tracks most recently typed Hebrew letter
 }
 
 function reducer(state, action) {
@@ -72,6 +73,7 @@ function reducer(state, action) {
           highestVerse: verseDone ? Math.max(highestVerse, currentVerse + 1) : highestVerse,
           completedWordSignal: wordDone ? state.completedWordSignal + 1 : state.completedWordSignal,
           typingSignal: state.typingSignal + 1,
+          recentTypedLetter: action.heb, // Store the typed letter
         }
       }
 
@@ -252,6 +254,7 @@ export default function GamePanel() {
         keys={KEYS}
         targetHeb={targetLetter}
         wrongHebKeys={wrongHebKeys}
+        recentTypedLetter={state.recentTypedLetter}
       />
 
       <div className="footer-note">

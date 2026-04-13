@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Heebo:wght@300;400;500;600;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,6 +23,7 @@
   --radius-pill: 99px;
   --font-body: 'Inter', sans-serif;
   --font-serif: 'Crimson Pro', serif;
+  --font-hebrew: 'Heebo', sans-serif;
   --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 8px rgba(0,0,0,0.04);
 }
 
@@ -194,10 +195,11 @@ html, body {
   min-width: 22px;
 }
 .word-char {
-  font-size: 30px;
-  font-family: 'Times New Roman', serif;
+  font-size: 34px;
+  font-family: var(--font-hebrew);
   line-height: 1.2;
   transition: color 0.2s, opacity 0.2s;
+  letter-spacing: -0.5px;
 }
 .word-char.ghost {
   color: var(--text-primary);
@@ -213,16 +215,17 @@ html, body {
 
 /* Per-letter SBL sound label */
 .word-sbl-ch {
-  font-size: 9px;
+  font-size: 11px;
   font-family: var(--font-serif);
-  font-style: italic;
+  font-style: normal;
+  font-weight: 500;
   color: transparent;
   line-height: 1;
-  min-height: 11px;
+  min-height: 13px;
   white-space: nowrap;
   transition: color 0.2s;
 }
-.word-sbl-ch.visible { color: var(--text-muted); }
+.word-sbl-ch.visible { color: var(--text-secondary); }
 
 /* Full word SBL — shown only when word is complete */
 .word-full-sbl {
@@ -236,13 +239,14 @@ html, body {
 
 /* Adjacent verse plain text */
 .verse-plain {
-  font-family: 'Times New Roman', serif;
-  font-size: 22px;
+  font-family: var(--font-hebrew);
+  font-size: 24px;
   direction: rtl;
   text-align: right;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
+  letter-spacing: -0.3px;
 }
 
 /* ─── INSIGHT CAROUSEL ───────────────────────────────── */
@@ -344,7 +348,9 @@ html, body {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 8px 10px;
+  padding: 8px 10px 8px 100px; /* Extra padding on left for the box */
+  position: relative;
+  min-height: 160px;
 }
 .kb-rows {
   display: flex;
@@ -397,19 +403,13 @@ html, body {
   text-transform: uppercase;
 }
 .kb-heb {
-  font-size: 18px;
-  font-family: 'Times New Roman', serif;
+  font-size: 22px;
+  font-family: var(--font-hebrew);
   color: var(--text-primary);
   line-height: 1;
-  margin-bottom: 1px;
+  margin-bottom: 0;
 }
-.kb-sound {
-  font-size: 8px;
-  color: var(--text-secondary);
-  font-family: var(--font-serif);
-  font-style: italic;
-  line-height: 1;
-}
+/* .kb-sound removed - no longer displaying SBL sound on keyboard */
 
 /* pulse animation for idle hint */
 @keyframes kb-pulse {
@@ -424,6 +424,52 @@ html, body {
   background: var(--purple-light) !important;
   border-color: var(--purple-mid) !important;
   z-index: 10;
+}
+
+/* ─── TYPED LETTER BOX ───────────────────────────────── */
+.typed-letter-box {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 100px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-left: 20px;
+}
+
+.typed-letter-heb {
+  font-family: var(--font-hebrew);
+  font-size: 32px;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.typed-letter-name {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+.typed-letter-sbl {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--purple);
+  line-height: 1;
+  text-align: center;
 }
 
 /* ─── FOOTER ─────────────────────────────────────────── */

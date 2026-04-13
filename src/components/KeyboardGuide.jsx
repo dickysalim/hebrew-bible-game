@@ -1,6 +1,39 @@
 import { useEffect, useRef } from 'react'
+import lettersFile from '../data/letters.json'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys }) {
+// Helper function to get letter name from Hebrew character (including final forms)
+function getLetterName(hebrewChar) {
+  // Handle final forms mapping
+  const finalFormMap = {
+    'ן': 'נ', // Nun sofit
+    'ם': 'מ', // Mem sofit
+    'ך': 'כ', // Kaf sofit
+    'ץ': 'צ', // Tsadi sofit
+    'ף': 'פ', // Pe sofit
+  }
+  
+  const baseChar = finalFormMap[hebrewChar] || hebrewChar
+  const letter = lettersFile.letters.find(l => l.letter === baseChar)
+  return letter ? letter.name : ''
+}
+
+// Helper function to get letter SBL from Hebrew character (including final forms)
+function getLetterSBL(hebrewChar) {
+  // Handle final forms mapping
+  const finalFormMap = {
+    'ן': 'נ', // Nun sofit
+    'ם': 'מ', // Mem sofit
+    'ך': 'כ', // Kaf sofit
+    'ץ': 'צ', // Tsadi sofit
+    'ף': 'פ', // Pe sofit
+  }
+  
+  const baseChar = finalFormMap[hebrewChar] || hebrewChar
+  const letter = lettersFile.letters.find(l => l.letter === baseChar)
+  return letter ? letter.sbl : ''
+}
+
+export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys, recentTypedLetter }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
 
@@ -49,12 +82,27 @@ export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys }) {
                 >
                   {isAnchor && <div className="kb-anchor">{latin}</div>}
                   <div className="kb-heb">{k.heb}</div>
-                  <div className="kb-sound">{k.sound}</div>
+                  {/* Sound display removed as requested */}
                 </div>
               )
             })}
           </div>
         ))}
+      </div>
+      
+      {/* Right-side box for typed letter display */}
+      <div className="typed-letter-box">
+        {recentTypedLetter && (
+          <>
+            <div className="typed-letter-heb">{recentTypedLetter}</div>
+            <div className="typed-letter-name">
+              {getLetterName(recentTypedLetter)}
+            </div>
+            <div className="typed-letter-sbl">
+              {getLetterSBL(recentTypedLetter)}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
