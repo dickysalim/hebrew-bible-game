@@ -1,0 +1,113 @@
+{
+  "book": "genesis",
+  "chapter": 1,
+  "verses": [
+    {
+      "verse": 1,
+      "esv": "In the beginning, God created the heavens and the earth.",
+      "insights": [
+        "barāʾ (ברא) is never used with a human subject anywhere in the Hebrew Bible. People build, form, and make — but only God barāʾ.",
+        "ʾelohim (אלהים) is plural in form — literally 'Gods' — yet the verb barāʾ is singular. The first sentence holds this tension without resolving it.",
+        "Genesis 1:1 has exactly 7 words and 28 letters — 7×4. The same number as the days of creation that follow."
+      ],
+      "words": [
+        { "id": "בראשית", "sbl": "bĕ·rē·ʾšîṯ",    "esvH": "In the beginning" },
+        { "id": "ברא",    "sbl": "bā·rāʾ",          "esvH": "created" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": "God" },
+        { "id": "את",     "sbl": "ʾēṯ",             "esvH": null },
+        { "id": "השמים",  "sbl": "haš·šā·ma·yim",   "esvH": "the heavens" },
+        { "id": "ואת",    "sbl": "wĕ·ʾēṯ",          "esvH": null },
+        { "id": "הארץ",   "sbl": "hā·ʾā·reṣ",       "esvH": "the earth" }
+      ]
+    },
+    {
+      "verse": 2,
+      "esv": "The earth was without form and void, and darkness was over the face of the deep. And the Spirit of God was hovering over the face of the waters.",
+      "insights": [
+        "tohu vavohu (תהו ובהו) — formless and void — rhymes in Hebrew. The sound itself feels empty and chaotic. No translation can carry that rhythm.",
+        "ruaḥ (רוח) — usually translated Spirit — also means wind and breath. All three meanings are alive simultaneously in this verse. Translation must choose one. Hebrew holds all three.",
+        "meraḥefet (מרחפת) — hovering — is feminine in form, agreeing with ruaḥ which is also feminine. The Spirit hovering over the waters is grammatically feminine throughout."
+      ],
+      "words": [
+        { "id": "והארץ",  "sbl": "wĕ·hā·ʾā·reṣ",   "esvH": "The earth" },
+        { "id": "היתה",   "sbl": "hā·yĕ·ṯāh",       "esvH": "was" },
+        { "id": "תהו",    "sbl": "ṯō·hū",           "esvH": "without form" },
+        { "id": "ובהו",   "sbl": "wā·ḇō·hū",        "esvH": "void" },
+        { "id": "וחשך",   "sbl": "wĕ·ḥō·šeḵ",       "esvH": "darkness" },
+        { "id": "על",     "sbl": "ʿal",             "esvH": "over" },
+        { "id": "פני",    "sbl": "pĕ·nê",           "esvH": "the face of" },
+        { "id": "תהום",   "sbl": "tĕ·hôm",          "esvH": "the deep" },
+        { "id": "ורוח",   "sbl": "wĕ·rû·aḥ",        "esvH": "the Spirit" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": "of God" },
+        { "id": "מרחפת",  "sbl": "mĕ·ra·ḥe·p̄eṯ",   "esvH": "hovering" },
+        { "id": "על",     "sbl": "ʿal",             "esvH": null },
+        { "id": "פני",    "sbl": "pĕ·nê",           "esvH": null },
+        { "id": "המים",   "sbl": "ham·mā·yim",       "esvH": "the waters" }
+      ]
+    },
+    {
+      "verse": 3,
+      "esv": "And God said, \"Let there be light,\" and there was light.",
+      "insights": [
+        "wayomer (ויאמר) — and he said — is the first time speech appears in the Bible. God's first act after creating is speaking. The Hebrew makes this sequence unmistakable.",
+        "yehi ʾor (יהי אור) — let there be light — is only three words in Hebrew. The shortest divine command in Scripture. The brevity itself feels intentional.",
+        "ʾor (אור) appears twice in this verse — once commanded, once fulfilled. The same word echoes back immediately, like a question answered by itself."
+      ],
+      "words": [
+        { "id": "ויאמר",  "sbl": "way·yō·mer",      "esvH": "said" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": "God" },
+        { "id": "יהי",    "sbl": "yĕ·hî",           "esvH": "Let there be" },
+        { "id": "אור",    "sbl": "ʾôr",             "esvH": "light" },
+        { "id": "ויהי",   "sbl": "way·hî",          "esvH": "there was" },
+        { "id": "אור",    "sbl": "ʾôr",             "esvH": null }
+      ]
+    },
+    {
+      "verse": 4,
+      "esv": "And God saw that the light was good. And God separated the light from the darkness.",
+      "insights": [
+        "ṭov (טוב) — good — appears here for the first time in the Bible. It will appear 7 times across Genesis 1. Again the number 7, woven into the fabric of the text.",
+        "wayavdel (ויבדל) — separated — comes from the root b-d-l (בדל). The same root appears in Leviticus for the separation of clean and unclean. Separation is a deeply loaded concept throughout Hebrew scripture.",
+        "wayyarʾ ʾelohim (וירא אלהים) — God saw — uses the same verb as ordinary human sight. No elevated divine vocabulary. Just — he saw."
+      ],
+      "words": [
+        { "id": "וירא",   "sbl": "way·yar·ʾ",       "esvH": "saw" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": "God" },
+        { "id": "את",     "sbl": "ʾeṯ",             "esvH": null },
+        { "id": "האור",   "sbl": "hā·ʾôr",          "esvH": "the light" },
+        { "id": "כי",     "sbl": "kî",              "esvH": "that" },
+        { "id": "טוב",    "sbl": "ṭôḇ",             "esvH": "good" },
+        { "id": "ויבדל",  "sbl": "way·yaḇ·dêl",     "esvH": "separated" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": null },
+        { "id": "בין",    "sbl": "bên",             "esvH": null },
+        { "id": "האור",   "sbl": "hā·ʾôr",          "esvH": null },
+        { "id": "ובין",   "sbl": "û·ḇên",           "esvH": null },
+        { "id": "החשך",   "sbl": "ha·ḥō·šeḵ",       "esvH": "the darkness" }
+      ]
+    },
+    {
+      "verse": 5,
+      "esv": "God called the light Day, and the darkness he called Night. And there was evening and there was morning, the first day.",
+      "insights": [
+        "wayiqraʾ (ויקרא) — he called — naming in Hebrew is an act of authority. When God names something he is establishing its nature. The same verb is used when Adam names the animals.",
+        "ʿerev (ערב) and boqer (בקר) — evening and morning — appear in this order throughout Genesis 1. The Hebrew day begins at sundown not sunrise. Every Jewish Sabbath still begins Friday evening because of this verse.",
+        "yom ʾeḥad (יום אחד) — day one — uses ʾeḥad meaning one, not riʾshon meaning first. All other days use ordinal numbers. Only day one is different. Scholars have debated why for centuries."
+      ],
+      "words": [
+        { "id": "ויקרא",  "sbl": "way·yiq·rāʾ",     "esvH": "called" },
+        { "id": "אלהים",  "sbl": "ʾĕ·lō·hîm",       "esvH": "God" },
+        { "id": "לאור",   "sbl": "lā·ʾôr",          "esvH": "the light" },
+        { "id": "יום",    "sbl": "yôm",             "esvH": "Day" },
+        { "id": "ולחשך",  "sbl": "wĕ·la·ḥō·šeḵ",   "esvH": "the darkness" },
+        { "id": "קרא",    "sbl": "qā·rāʾ",          "esvH": "he called" },
+        { "id": "לילה",   "sbl": "lā·yĕ·lāh",       "esvH": "Night" },
+        { "id": "ויהי",   "sbl": "way·hî",          "esvH": "there was" },
+        { "id": "ערב",    "sbl": "ʿe·reḇ",          "esvH": "evening" },
+        { "id": "ויהי",   "sbl": "way·hî",          "esvH": null },
+        { "id": "בקר",    "sbl": "bō·qer",          "esvH": "morning" },
+        { "id": "יום",    "sbl": "yôm",             "esvH": "day" },
+        { "id": "אחד",    "sbl": "ʾe·ḥāḏ",          "esvH": "first" }
+      ]
+    }
+  ]
+}

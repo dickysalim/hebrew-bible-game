@@ -36,6 +36,9 @@ road at different paces. Neither is wrong.
 - Opening lexicon shows collection animation and counter
 
 ## Critical Rules
+- Hebrew is ALWAYS consonants only — no nikud (vowel points) anywhere 
+  in the UI or data files. Nikud is visually distracting and defeats the 
+  purpose of learning to read the consonantal text.
 - Letter pictographs are memory hooks ONLY — never used to derive 
   word or scriptural meaning
 - Root scholarly meaning comes from BDB and Strong's only

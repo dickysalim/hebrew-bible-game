@@ -1,0 +1,344 @@
+{
+  "words": {
+    "בראשית": {
+      "gloss": "in the beginning",
+      "root": "ראש",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ב"], "gloss": "in" },
+        { "type": "root",   "letters": ["ר", "א", "ש"] },
+        { "type": "suffix", "letters": ["י", "ת"], "gloss": "abstract noun" }
+      ]
+    },
+    "ברא": {
+      "gloss": "he created",
+      "root": "ברא",
+      "pos": "verb",
+      "segments": [
+        { "type": "root", "letters": ["ב", "ר", "א"] }
+      ]
+    },
+    "אלהים": {
+      "gloss": "God",
+      "root": "אלה",
+      "pos": "noun",
+      "segments": [
+        { "type": "root",   "letters": ["א", "ל", "ה"] },
+        { "type": "suffix", "letters": ["י", "ם"], "gloss": "plural intensive" }
+      ]
+    },
+    "את": {
+      "gloss": "direct object marker",
+      "root": null,
+      "pos": "particle",
+      "segments": [
+        { "type": "root", "letters": ["א", "ת"] }
+      ]
+    },
+    "השמים": {
+      "gloss": "the heavens",
+      "root": "שמי",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ה"], "gloss": "the" },
+        { "type": "root",   "letters": ["ש", "מ", "י"] },
+        { "type": "suffix", "letters": ["ם"], "gloss": "dual" }
+      ]
+    },
+    "ואת": {
+      "gloss": "and (obj. marker)",
+      "root": null,
+      "pos": "particle",
+      "segments": [
+        { "type": "prefix", "letters": ["ו"], "gloss": "and" },
+        { "type": "root",   "letters": ["א", "ת"] }
+      ]
+    },
+    "הארץ": {
+      "gloss": "the earth",
+      "root": "ארץ",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ה"], "gloss": "the" },
+        { "type": "root",   "letters": ["א", "ר", "ץ"] }
+      ]
+    },
+    "והארץ": {
+      "gloss": "and the earth",
+      "root": "ארץ",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "ה"], "gloss": "and the" },
+        { "type": "root",   "letters": ["א", "ר", "ץ"] }
+      ]
+    },
+    "היתה": {
+      "gloss": "she was, it was",
+      "root": "היה",
+      "pos": "verb",
+      "segments": [
+        { "type": "root",   "letters": ["ה", "י", "ת"] },
+        { "type": "suffix", "letters": ["ה"], "gloss": "3rd person feminine" }
+      ]
+    },
+    "תהו": {
+      "gloss": "formlessness, chaos",
+      "root": null,
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["ת", "ה", "ו"] }
+      ]
+    },
+    "ובהו": {
+      "gloss": "and void, emptiness",
+      "root": null,
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ו"], "gloss": "and" },
+        { "type": "root",   "letters": ["ב", "ה", "ו"] }
+      ]
+    },
+    "וחשך": {
+      "gloss": "and darkness",
+      "root": "חשך",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ו"], "gloss": "and" },
+        { "type": "root",   "letters": ["ח", "ש", "ך"] }
+      ]
+    },
+    "על": {
+      "gloss": "over, upon, above",
+      "root": null,
+      "pos": "preposition",
+      "segments": [
+        { "type": "root", "letters": ["ע", "ל"] }
+      ]
+    },
+    "פני": {
+      "gloss": "face of",
+      "root": "פנה",
+      "pos": "noun",
+      "segments": [
+        { "type": "root",   "letters": ["פ", "נ"] },
+        { "type": "suffix", "letters": ["י"], "gloss": "construct" }
+      ]
+    },
+    "תהום": {
+      "gloss": "the deep, the abyss",
+      "root": "הום",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ת"], "gloss": "noun-forming" },
+        { "type": "root",   "letters": ["ה", "ו", "ם"] }
+      ]
+    },
+    "ורוח": {
+      "gloss": "and spirit / wind / breath",
+      "root": "רוח",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ו"], "gloss": "and" },
+        { "type": "root",   "letters": ["ר", "ו", "ח"] }
+      ]
+    },
+    "מרחפת": {
+      "gloss": "hovering",
+      "root": "רחף",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["מ"], "gloss": "active participle" },
+        { "type": "root",   "letters": ["ר", "ח", "פ"] },
+        { "type": "suffix", "letters": ["ת"], "gloss": "feminine" }
+      ]
+    },
+    "המים": {
+      "gloss": "the waters",
+      "root": null,
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ה"], "gloss": "the" },
+        { "type": "root",   "letters": ["מ", "י", "ם"] }
+      ]
+    },
+    "ויאמר": {
+      "gloss": "and he said",
+      "root": "אמר",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "י"], "gloss": "and he" },
+        { "type": "root",   "letters": ["א", "מ", "ר"] }
+      ]
+    },
+    "יהי": {
+      "gloss": "let there be",
+      "root": "היה",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["י"], "gloss": "let" },
+        { "type": "root",   "letters": ["ה", "י"] }
+      ]
+    },
+    "אור": {
+      "gloss": "light",
+      "root": "אור",
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["א", "ו", "ר"] }
+      ]
+    },
+    "ויהי": {
+      "gloss": "and there was",
+      "root": "היה",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "י"], "gloss": "and it" },
+        { "type": "root",   "letters": ["ה", "י"] }
+      ]
+    },
+    "וירא": {
+      "gloss": "and he saw",
+      "root": "ראה",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "י"], "gloss": "and he" },
+        { "type": "root",   "letters": ["ר", "א"] }
+      ]
+    },
+    "האור": {
+      "gloss": "the light",
+      "root": "אור",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ה"], "gloss": "the" },
+        { "type": "root",   "letters": ["א", "ו", "ר"] }
+      ]
+    },
+    "כי": {
+      "gloss": "that, because, for",
+      "root": null,
+      "pos": "conjunction",
+      "segments": [
+        { "type": "root", "letters": ["כ", "י"] }
+      ]
+    },
+    "טוב": {
+      "gloss": "good",
+      "root": "טוב",
+      "pos": "adjective",
+      "segments": [
+        { "type": "root", "letters": ["ט", "ו", "ב"] }
+      ]
+    },
+    "ויבדל": {
+      "gloss": "and he separated",
+      "root": "בדל",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "י"], "gloss": "and he" },
+        { "type": "root",   "letters": ["ב", "ד", "ל"] }
+      ]
+    },
+    "בין": {
+      "gloss": "between",
+      "root": "בין",
+      "pos": "preposition",
+      "segments": [
+        { "type": "root", "letters": ["ב", "י", "נ"] }
+      ]
+    },
+    "ובין": {
+      "gloss": "and between",
+      "root": "בין",
+      "pos": "preposition",
+      "segments": [
+        { "type": "prefix", "letters": ["ו"], "gloss": "and" },
+        { "type": "root",   "letters": ["ב", "י", "נ"] }
+      ]
+    },
+    "החשך": {
+      "gloss": "the darkness",
+      "root": "חשך",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ה"], "gloss": "the" },
+        { "type": "root",   "letters": ["ח", "ש", "ך"] }
+      ]
+    },
+    "ויקרא": {
+      "gloss": "and he called",
+      "root": "קרא",
+      "pos": "verb",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "י"], "gloss": "and he" },
+        { "type": "root",   "letters": ["ק", "ר", "א"] }
+      ]
+    },
+    "לאור": {
+      "gloss": "the light",
+      "root": "אור",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ל"], "gloss": "to / the" },
+        { "type": "root",   "letters": ["א", "ו", "ר"] }
+      ]
+    },
+    "יום": {
+      "gloss": "day",
+      "root": null,
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["י", "ו", "מ"] }
+      ]
+    },
+    "ולחשך": {
+      "gloss": "and the darkness",
+      "root": "חשך",
+      "pos": "noun",
+      "segments": [
+        { "type": "prefix", "letters": ["ו", "ל"], "gloss": "and the" },
+        { "type": "root",   "letters": ["ח", "ש", "ך"] }
+      ]
+    },
+    "קרא": {
+      "gloss": "he called",
+      "root": "קרא",
+      "pos": "verb",
+      "segments": [
+        { "type": "root", "letters": ["ק", "ר", "א"] }
+      ]
+    },
+    "לילה": {
+      "gloss": "night",
+      "root": null,
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["ל", "י", "ל", "ה"] }
+      ]
+    },
+    "ערב": {
+      "gloss": "evening",
+      "root": "ערב",
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["ע", "ר", "ב"] }
+      ]
+    },
+    "בקר": {
+      "gloss": "morning",
+      "root": "בקר",
+      "pos": "noun",
+      "segments": [
+        { "type": "root", "letters": ["ב", "ק", "ר"] }
+      ]
+    },
+    "אחד": {
+      "gloss": "one",
+      "root": "אחד",
+      "pos": "numeral",
+      "segments": [
+        { "type": "root", "letters": ["א", "ח", "ד"] }
+      ]
+    }
+  }
+}
