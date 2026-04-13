@@ -43,6 +43,28 @@
   }
 }
 
+@keyframes slideLeft {
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #141210;
@@ -231,26 +253,31 @@ html, body {
 
 /* Per-letter SBL sound label */
 .word-sbl-ch {
-  font-size: 11px;
+  font-size: 12px; /* Increased from 11px */
   font-family: var(--font-serif);
   font-style: normal;
   font-weight: 500;
   color: transparent;
   line-height: 1;
-  min-height: 13px;
+  min-height: 14px; /* Adjusted for larger font */
   white-space: nowrap;
   transition: color 0.2s;
 }
-.word-sbl-ch.visible { color: var(--text-secondary); }
+.word-sbl-ch.visible {
+  color: var(--text-primary); /* Brighter color instead of text-secondary */
+  opacity: 0.9; /* Slightly transparent for subtlety */
+}
 
 /* Full word SBL — shown only when word is complete */
 .word-full-sbl {
   font-family: var(--font-serif);
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 3px;
-  letter-spacing: 0.2px;
+  font-size: 14px; /* Increased from 11px */
+  color: var(--text-primary); /* Brighter color */
+  margin-top: 4px; /* Slightly more spacing */
+  letter-spacing: 0.3px;
   white-space: nowrap;
+  font-weight: 600; /* Bolder for emphasis */
+  opacity: 0.95;
 }
 
 /* Adjacent verse plain text */
@@ -303,6 +330,13 @@ html, body {
   font-size: 13.5px;
   color: var(--text-secondary);
   line-height: 1.5;
+  transition: opacity 0.3s ease;
+}
+.ic-text.slide-left {
+  animation: slideLeft 0.4s ease-out;
+}
+.ic-text.slide-right {
+  animation: slideRight 0.4s ease-out;
 }
 .ic-nav {
   background: none;

@@ -5,7 +5,7 @@ import verseCompleteAudio from '../assets/audio/verse_complete.mp3'
 import typingSound1 from '../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../assets/audio/typing_sound3.mp3'
-import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB, getLetterTypes } from '../utils/hebrewData'
+import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../utils/hebrewData'
 import VerseScroll from './VerseScroll'
 import InsightCarousel from './InsightCarousel'
 import ESVStrip from './ESVStrip'
@@ -270,7 +270,6 @@ export default function GamePanel() {
         keys={KEYS}
         targetHeb={targetLetter}
         wrongHebKeys={wrongHebKeys}
-        recentTypedLetter={state.recentTypedLetter}
       />
 
       <div className="footer-note">
