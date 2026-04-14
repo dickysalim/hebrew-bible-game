@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useLayoutEffect } from 'react'
 import { getLetterTypes, LETTER_SBL } from '../utils/hebrewData'
 
 const TRACK_H = 300
@@ -9,8 +9,9 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const innerRef = useRef(null)
   const prevVerse = useRef(currentVerse)
 
-  // Animated on verse change
-  useEffect(() => {
+  // Animated on verse change — useLayoutEffect fires before paint so heights
+  // and transform are always in sync (no one-frame misalignment)
+  useLayoutEffect(() => {
     if (!innerRef.current) return
     const animate = prevVerse.current !== currentVerse
     prevVerse.current = currentVerse
@@ -21,8 +22,8 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     innerRef.current.style.transform = `translateY(${ty}px)`
   }, [currentVerse])
 
-  // No-animation initial position
-  useEffect(() => {
+  // No-animation initial position — also useLayoutEffect to prevent flash
+  useLayoutEffect(() => {
     if (!innerRef.current) return
     const ty = (TRACK_H / 2) - (ACTIVE_H / 2) - currentVerse * ADJ_H
     innerRef.current.style.transition = 'none'

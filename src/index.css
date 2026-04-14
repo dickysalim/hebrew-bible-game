@@ -205,6 +205,7 @@ html, body {
 .scroll-inner {
   position: absolute;
   top: 0; left: 0; right: 0;
+  will-change: transform;
 }
 
 .verse-slot {
@@ -212,9 +213,11 @@ html, body {
   text-align: right;
   display: flex;
   align-items: center;
+  /* height intentionally NOT transitioned — height changes trigger layout
+     reflow on every frame which can stall the GPU compositor and glitch
+     the whole browser. opacity + transform are GPU-composited and smooth. */
   transition: opacity 0.9s cubic-bezier(0.22,0.61,0.36,1),
-              transform 0.9s cubic-bezier(0.22,0.61,0.36,1),
-              height 0.9s cubic-bezier(0.22,0.61,0.36,1);
+              transform 0.9s cubic-bezier(0.22,0.61,0.36,1);
 }
 .verse-slot.active {
   opacity: 1;

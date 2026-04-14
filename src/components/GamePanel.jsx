@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from 'react'
+import { useReducer, useEffect, useRef, useCallback } from 'react'
 import versesFile from '../data/verses/genesis-1.json'
 import wordsData from '../data/words.json'
 import wordCompleteAudio from '../assets/audio/word_complete.mp3'
@@ -263,6 +263,16 @@ export default function GamePanel() {
   // ESV highlight: the phrase for the currently selected word (even mid-typing)
   const highlightPhrase = activeWord?.esvH ?? null
 
+  // Stable callbacks so InsightCarousel's setInterval doesn't reset on every render
+  const handleCarouselPrev = useCallback(
+    () => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 }),
+    [currentVerse]
+  )
+  const handleCarouselNext = useCallback(
+    () => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 }),
+    [currentVerse]
+  )
+
   return (
     <div className="game-panel">
 
@@ -300,8 +310,8 @@ export default function GamePanel() {
                 key={currentVerse}
                 insights={verse.insights}
                 idx={carouselIdx}
-                onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
-                onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
+                onPrev={handleCarouselPrev}
+                onNext={handleCarouselNext}
                 isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
               />
             )}
