@@ -225,10 +225,8 @@ export default function GamePanel() {
     }
   }, [verseDone, currentVerse])
 
-  // Show target key hint after 3+ errors (only if a word is active and not done)
-  const targetLetter = (activeWord && !wordDone && errorCount >= 3)
-    ? wordId[typedCount]
-    : null
+  // Always track target letter for idle pulse hint (5s timer in KeyboardGuide)
+  const targetLetter = (activeWord && !wordDone) ? wordId[typedCount] : null
 
   // ESV highlight: the phrase for the currently selected word (even mid-typing)
   const highlightPhrase = activeWord?.esvH ?? null
@@ -268,6 +266,7 @@ export default function GamePanel() {
         rows={KEYBOARD_ROWS}
         keys={KEYS}
         targetHeb={targetLetter}
+        showActiveKey={activeWord && !wordDone && errorCount >= 3}
         wrongHebKeys={wrongHebKeys}
       />
 

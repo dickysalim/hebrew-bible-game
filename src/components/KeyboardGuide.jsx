@@ -1,22 +1,34 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
+  const timerRef = useRef(null)
 
-  // Pulse the target key after idling 5 s
+  // Pulse the target key every 5 s of idle, repeating until targetHeb changes
   useEffect(() => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+
     if (!targetHeb) return
-    const timer = setTimeout(() => {
-      Object.entries(keyRefs.current).forEach(([heb, el]) => {
-        if (heb === targetHeb && el) {
+
+    const schedulePulse = () => {
+      timerRef.current = setTimeout(() => {
+        const el = keyRefs.current[targetHeb]
+        if (el) {
           el.classList.add('kb-pulse')
-          const remove = () => el.classList.remove('kb-pulse')
-          el.addEventListener('animationend', remove, { once: true })
+          el.addEventListener('animationend', () => {
+            el.classList.remove('kb-pulse')
+            schedulePulse()
+          }, { once: true })
+        } else {
+          schedulePulse()
         }
-      })
-    }, 5000) // Changed from 10000 to 5000 (5 seconds)
-    return () => clearTimeout(timer)
+      }, 5000)
+    }
+
+    schedulePulse()
+
+    return () => clearTimeout(timerRef.current)
   }, [targetHeb])
 
   return (
@@ -39,7 +51,7 @@ export default function KeyboardGuide({ rows, keys, targetHeb, wrongHebKeys }) {
               const isTarget  = k.heb === targetHeb
               const isWrong   = wrongHebKeys.includes(k.heb)
               const isAnchor  = latin === 'f' || latin === 'j'
-              const cls = isTarget ? 'active-key' : isWrong ? 'wrong-key' : ''
+              const cls = (isTarget && showActiveKey) ? 'active-key' : isWrong ? 'wrong-key' : ''
 
               return (
                 <div
