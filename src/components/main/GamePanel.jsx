@@ -350,6 +350,7 @@ export default function GamePanel() {
       currentVerse: state.currentVerse,
       activeWordIdx: state.activeWordIdx,
       carouselIdxMap: state.carouselIdxMap,
+      celebratedVerses: state.celebratedVerses,
     }
 
     saveProgress(progressToSave)
@@ -361,6 +362,7 @@ export default function GamePanel() {
     state.currentVerse,
     state.activeWordIdx,
     state.carouselIdxMap,
+    state.celebratedVerses,
     saveProgress
   ])
 

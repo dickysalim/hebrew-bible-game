@@ -12,6 +12,7 @@ const defaultProgress = {
   currentVerse: 0,
   activeWordIdx: 0,
   carouselIdxMap: {},
+  celebratedVerses: [],
   // We don't save temporary UI state like errorCount, wrongHebKeys, etc.
 };
 
@@ -66,6 +67,7 @@ export function useProgressPersistence() {
         currentVerse: data.currentVerse || 0,
         activeWordIdx: data.activeWordIdx ?? 0,
         carouselIdxMap: data.carouselIdxMap || {},
+        celebratedVerses: data.celebratedVerses || [],
       };
       
       localStorage.setItem(STORAGE_KEY, JSON.stringify(progressToSave));
@@ -97,6 +99,7 @@ export function useProgressPersistence() {
       currentVerse: progress.currentVerse,
       activeWordIdx: progress.activeWordIdx,
       carouselIdxMap: progress.carouselIdxMap,
+      celebratedVerses: progress.celebratedVerses,
     };
   }, [progress]);
 
@@ -142,6 +145,7 @@ export function loadProgressFromStorage() {
           currentVerse: parsed.currentVerse || 0,
           activeWordIdx: parsed.activeWordIdx ?? 0,
           carouselIdxMap: parsed.carouselIdxMap || {},
+          celebratedVerses: parsed.celebratedVerses || [],
         };
       }
     }

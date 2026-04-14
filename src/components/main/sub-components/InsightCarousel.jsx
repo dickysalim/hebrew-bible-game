@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 
 export default function InsightCarousel({ insights, idx, onPrev, onNext, isNewCompletion }) {
-  const [shouldCelebrate, setShouldCelebrate] = useState(false)
+  // Initialize directly from prop — if not new, never animate; no extra render cycle
+  const [shouldCelebrate, setShouldCelebrate] = useState(isNewCompletion)
   const [slideDirection, setSlideDirection] = useState(null)
   const intervalRef = useRef(null)
 
-  // Celebrate only on first mount when verse is newly completed
+  // Remove the celebrate class after the animation finishes (only when new)
   useEffect(() => {
     if (!isNewCompletion) return
-    setShouldCelebrate(true)
     const timer = setTimeout(() => setShouldCelebrate(false), 800)
     return () => clearTimeout(timer)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
