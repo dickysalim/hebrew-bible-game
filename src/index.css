@@ -636,6 +636,42 @@ html, body {
   border-radius: 1px 1px 0 0;
 }
 
+/* Notification badge for Lexicon tab */
+.tab-badge {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  background-color: var(--coral);
+  color: white;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  line-height: 1;
+  padding: 0 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid var(--bg-card);
+  z-index: 1;
+  pointer-events: none;
+  animation: badgePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .tab-content {
   flex: 1;
   min-height: 0;

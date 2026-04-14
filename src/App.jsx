@@ -3,9 +3,19 @@ import GamePanel from './components/main/GamePanel'
 import LexiconPanel from './components/lexicon/LexiconPanel'
 import ProgressPanel from './components/progress/ProgressPanel'
 import TabBar from './components/TabBar'
+import { useRootDiscovery } from './contexts/RootDiscoveryContext'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('main')
+  const { markRootsAsViewed, newRoots } = useRootDiscovery()
+
+  // Handle tab change — clear badge when Lexicon is opened
+  const handleTabChange = (tabId) => {
+    if (tabId === 'lexicon') {
+      markRootsAsViewed()
+    }
+    setActiveTab(tabId)
+  }
 
   // Handle keyboard shortcuts for tab switching
   useEffect(() => {
@@ -14,13 +24,13 @@ export default function App() {
       if (e.ctrlKey || e.metaKey) {
         if (e.key === '1') {
           e.preventDefault()
-          setActiveTab('main')
+          handleTabChange('main')
         } else if (e.key === '2') {
           e.preventDefault()
-          setActiveTab('lexicon')
+          handleTabChange('lexicon')
         } else if (e.key === '3') {
           e.preventDefault()
-          setActiveTab('progress')
+          handleTabChange('progress')
         }
       }
       // Arrow keys are handled by GamePanel for verse navigation
@@ -46,7 +56,11 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <TabBar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        newRootsCount={newRoots.length}
+      />
       <div className="tab-content">
         {renderActiveTab()}
       </div>

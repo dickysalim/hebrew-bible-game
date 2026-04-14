@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TabBar = ({ activeTab, onTabChange }) => {
+const TabBar = ({ activeTab, onTabChange, newRootsCount = 0 }) => {
   const tabs = [
     { id: 'main', label: 'Main' },
     { id: 'lexicon', label: 'Lexicon' },
@@ -17,8 +17,18 @@ const TabBar = ({ activeTab, onTabChange }) => {
             onClick={() => onTabChange(tab.id)}
             aria-selected={activeTab === tab.id}
             role="tab"
+            aria-label={
+              tab.id === 'lexicon' && newRootsCount > 0
+                ? `Lexicon, ${newRootsCount} new root${newRootsCount > 1 ? 's' : ''} discovered`
+                : tab.label
+            }
           >
             <span className="tab-label">{tab.label}</span>
+            {tab.id === 'lexicon' && newRootsCount > 0 && (
+              <div className="tab-badge" key={newRootsCount}>
+                {newRootsCount > 9 ? '9+' : newRootsCount}
+              </div>
+            )}
             {activeTab === tab.id && <div className="tab-indicator" />}
           </button>
         ))}

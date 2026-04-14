@@ -1,6 +1,7 @@
 import { useReducer, useEffect, useRef, useCallback } from 'react'
 import versesFile from '../../data/verses/genesis-1.json'
 import wordsData from '../../data/words.json'
+import rootsData from '../../data/roots.json'
 import wordCompleteAudio from '../../assets/audio/word_complete.mp3'
 import newWordAudio from '../../assets/audio/new_word.mp3'
 import verseCompleteAudio from '../../assets/audio/verse_complete.mp3'
@@ -11,6 +12,7 @@ import rootFoundAudio from '../../assets/audio/root_found.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
 import { checkRootCompletion } from '../../utils/rootDetection'
+import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -235,6 +237,9 @@ export default function GamePanel() {
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
+  // Root discovery context — used to update the Lexicon tab badge
+  const { addDiscoveredRoot } = useRootDiscovery()
+
   const [state, dispatch] = useReducer(reducer, null, () => {
     const saved = loadProgressFromStorage()
     return { ...initialState, ...saved }
@@ -283,6 +288,18 @@ export default function GamePanel() {
       rootFoundRef.current.play().catch(() => {})
     }
   }, [state.rootDiscoverySignal])
+
+  // Sync newly discovered roots to RootDiscoveryContext for the Lexicon tab badge
+  // We watch activeRootFlags — each new flag entry means a root was just discovered
+  useEffect(() => {
+    if (state.activeRootFlags.length === 0) return
+    const latestFlag = state.activeRootFlags[state.activeRootFlags.length - 1]
+    const rootId = latestFlag.rootId
+    const rootData = rootsData.roots[rootId]
+    if (rootData) {
+      addDiscoveredRoot({ id: rootId, ...rootData })
+    }
+  }, [state.rootDiscoverySignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save progress to localStorage when relevant state changes
   useEffect(() => {
