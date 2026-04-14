@@ -1,6 +1,8 @@
 import { useReducer, useEffect, useRef } from 'react'
 import versesFile from '../data/verses/genesis-1.json'
+import wordsData from '../data/words.json'
 import wordCompleteAudio from '../assets/audio/word_complete.mp3'
+import newWordAudio from '../assets/audio/new_word.mp3'
 import verseCompleteAudio from '../assets/audio/verse_complete.mp3'
 import typingSound1 from '../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../assets/audio/typing_sound2.mp3'
@@ -10,6 +12,7 @@ import VerseScroll from './VerseScroll'
 import InsightCarousel from './InsightCarousel'
 import ESVStrip from './ESVStrip'
 import KeyboardGuide from './KeyboardGuide'
+import WordDefinition from './WordDefinition'
 
 const verses = versesFile.verses
 
@@ -32,11 +35,13 @@ const initialState = {
   currentVerse: 0,
   activeWordIdx: 0,       // null = nothing selected
   typedCounts: {},
+  wordEncounters: {},     // tracks how many times each word has been completed
   highestVerse: 0,
   errorCount: 0,
   wrongHebKeys: [],
   carouselIdxMap: {},
   completedWordSignal: 0, // increments → triggers word_complete audio
+  lastCompletedWordId: null, // tracks the last completed word for sound logic
   typingSignal: 0,        // increments on correct keypress → triggers typing sound
   recentTypedLetter: null, // tracks most recently typed Hebrew letter
 }
@@ -65,14 +70,23 @@ function reducer(state, action) {
         const verseDone = wordDone && verses[currentVerse].words.every((_, i) =>
           i === wi ? true : isDone(newCounts, currentVerse, i)
         )
+        // Update wordEncounters if word is completed
+        let newWordEncounters = state.wordEncounters
+        if (wordDone) {
+          const currentCount = state.wordEncounters[wordId] || 0
+          newWordEncounters = { ...state.wordEncounters, [wordId]: currentCount + 1 }
+        }
+        
         return {
           ...state,
           activeWordIdx: wi,
           typedCounts: newCounts,
+          wordEncounters: newWordEncounters,
           errorCount: 0,
           wrongHebKeys: [],
           highestVerse: verseDone ? Math.max(highestVerse, currentVerse + 1) : highestVerse,
           completedWordSignal: wordDone ? state.completedWordSignal + 1 : state.completedWordSignal,
+          lastCompletedWordId: wordDone ? wordId : state.lastCompletedWordId,
           typingSignal: state.typingSignal + 1,
           recentTypedLetter: action.heb, // Store the typed letter
         }
@@ -156,11 +170,13 @@ function reducer(state, action) {
 export default function GamePanel() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const wordCompleteRef  = useRef(null)
+  const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
   const typingSoundsRef  = useRef(null)
 
   useEffect(() => {
     wordCompleteRef.current = new Audio(wordCompleteAudio)
+    newWordRef.current = new Audio(newWordAudio)
     verseCompleteRef.current = new Audio(verseCompleteAudio)
     typingSoundsRef.current = [
       new Audio(typingSound1),
@@ -169,13 +185,23 @@ export default function GamePanel() {
     ]
   }, [])
 
-  // Word complete chime
+  // Word complete chime - play new_word.mp3 for first encounter, word_complete.mp3 otherwise
   useEffect(() => {
-    if (state.completedWordSignal > 0 && wordCompleteRef.current) {
-      wordCompleteRef.current.currentTime = 0
-      wordCompleteRef.current.play().catch(() => {})
+    if (state.completedWordSignal > 0 && state.lastCompletedWordId) {
+      const wordId = state.lastCompletedWordId
+      const encounterCount = state.wordEncounters[wordId] || 0
+      
+      // If this is the first completion (encounterCount will be 1 since it was just incremented)
+      // Actually, wordEncounters was just updated, so for first time it will be 1
+      if (encounterCount === 1 && newWordRef.current) {
+        newWordRef.current.currentTime = 0
+        newWordRef.current.play().catch(() => {})
+      } else if (wordCompleteRef.current) {
+        wordCompleteRef.current.currentTime = 0
+        wordCompleteRef.current.play().catch(() => {})
+      }
     }
-  }, [state.completedWordSignal])
+  }, [state.completedWordSignal, state.lastCompletedWordId, state.wordEncounters])
 
   // Random typing sound on correct keypress
   useEffect(() => {
@@ -204,7 +230,7 @@ export default function GamePanel() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  const { currentVerse, activeWordIdx, typedCounts, errorCount, wrongHebKeys, carouselIdxMap } = state
+  const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap } = state
   const verse      = verses[currentVerse]
   const activeWord = activeWordIdx !== null ? verse.words[activeWordIdx] : null
   const wordId     = activeWord?.id ?? ''
@@ -214,6 +240,11 @@ export default function GamePanel() {
     : false
   const verseDone  = isVerseDone(typedCounts, currentVerse)
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
+  
+  // Get word definition data from words.json
+  const wordData = wordId ? wordsData.words[wordId] : null
+  const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
+  const sbl = activeWord?.sbl || ''
 
   // Verse completion sound — track which verses have already played it
   const celebratedVersesRef = useRef(new Set())
@@ -239,29 +270,46 @@ export default function GamePanel() {
         <span className="progress-pill">verse {currentVerse + 1} of {verses.length}</span>
       </div>
 
-      <VerseScroll
-        verses={verses}
-        currentVerse={currentVerse}
-        activeWordIdx={activeWordIdx}
-        typedCounts={typedCounts}
-      />
+      <div className="main-content-grid">
+        {/* Left column: Word Definition */}
+        <div className="word-definition-column">
+          <WordDefinition
+            word={wordData}
+            wordId={wordId}
+            sbl={sbl}
+            encounterCount={encounterCount}
+            isWordCompleted={wordDone}
+          />
+        </div>
 
-      {verseDone && (
-        <InsightCarousel
-          key={currentVerse}
-          insights={verse.insights}
-          idx={carouselIdx}
-          onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
-          onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
-          isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
-        />
-      )}
+        {/* Right column: Game content */}
+        <div className="game-content-column">
+          <VerseScroll
+            verses={verses}
+            currentVerse={currentVerse}
+            activeWordIdx={activeWordIdx}
+            typedCounts={typedCounts}
+          />
 
-      <ESVStrip
-        esv={verse.esv}
-        highlightPhrase={highlightPhrase}
-      />
+          {verseDone && (
+            <InsightCarousel
+              key={currentVerse}
+              insights={verse.insights}
+              idx={carouselIdx}
+              onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
+              onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
+              isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
+            />
+          )}
 
+          <ESVStrip
+            esv={verse.esv}
+            highlightPhrase={highlightPhrase}
+          />
+        </div>
+      </div>
+
+      {/* Keyboard Guide spans full width below the grid */}
       <KeyboardGuide
         rows={KEYBOARD_ROWS}
         keys={KEYS}

@@ -117,6 +117,28 @@ html, body {
   overflow: hidden;
 }
 
+/* Main content grid for two-column layout */
+.main-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+  flex: 1;
+  min-height: 0; /* Important for child overflow */
+}
+
+.word-definition-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.game-content-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
 /* ─── VERSE HEADER ───────────────────────────────────── */
 .verse-header {
   display: flex;

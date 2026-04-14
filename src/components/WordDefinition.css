@@ -1,0 +1,240 @@
+/* WordDefinition Component Styles */
+
+.word-definition {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for WordDefinition */
+.word-definition::-webkit-scrollbar {
+  width: 6px;
+}
+
+.word-definition::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+  border-radius: 3px;
+}
+
+.word-definition::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 3px;
+}
+
+.word-definition::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Empty state */
+.word-definition.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-message p {
+  font-size: 14px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  max-width: 200px;
+  line-height: 1.5;
+}
+
+/* New badge */
+.new-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--purple-light);
+  color: var(--purple);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Hebrew word display */
+.hebrew-word-display {
+  font-family: var(--font-hebrew);
+  font-size: 42px;
+  text-align: center;
+  margin-bottom: 12px;
+  direction: rtl;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.hebrew-segment {
+  display: inline-block;
+}
+
+.prefix-color {
+  color: var(--blue);
+}
+
+.root-color {
+  color: var(--coral);
+}
+
+.suffix-color {
+  color: var(--teal);
+}
+
+/* SBL transliteration */
+.sbl-transliteration {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* English gloss */
+.english-gloss {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  text-align: center;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Grammatical position and encounter counter */
+.grammatical-position,
+.encounter-counter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.position-label,
+.counter-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.position-value,
+.counter-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* Segment rows */
+.segment-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.segment-row:last-child {
+  border-bottom: none;
+}
+
+.segment-hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 22px;
+  text-align: center;
+}
+
+.segment-sbl {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.segment-gloss {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* Explanation section */
+.explanation-section {
+  margin-top: 8px;
+}
+
+.explanation-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.explanation-content {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.explanation-paragraph {
+  margin-bottom: 16px;
+}
+
+.explanation-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.explanation-paragraph strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .hebrew-word-display {
+    font-size: 36px;
+  }
+  
+  .sbl-transliteration {
+    font-size: 16px;
+  }
+  
+  .english-gloss {
+    font-size: 18px;
+  }
+  
+  .segment-row {
+    grid-template-columns: 1fr 1fr 1.5fr;
+    gap: 8px;
+  }
+}
