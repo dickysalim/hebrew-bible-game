@@ -65,6 +65,55 @@
   }
 }
 
+/* Super Mario 1Up style root flag animation — rises from on top of the word */
+/* translateX(-50%) is baked into every keyframe to keep horizontal centering
+   while the animation drives translateY (a single transform property can't be split) */
+@keyframes rootFlagSlideUp {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  15% {
+    transform: translateX(-50%) translateY(-8px) scale(1.1);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(-50%) translateY(-16px) scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(-50%) translateY(-24px) scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-36px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* Root flag styles — positioned directly over the root letters */
+.root-flag {
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  pointer-events: none;
+  animation: rootFlagSlideUp 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.root-flag-content {
+  background-color: var(--coral);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 7px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #141210;
@@ -254,6 +303,7 @@ html, body {
   transition: background 0.2s, border-color 0.2s;
   vertical-align: top;
   margin: 2px 1px;
+  position: relative;
 }
 .word-block.active-word {
   background: var(--purple-light);

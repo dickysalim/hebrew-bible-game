@@ -7,8 +7,10 @@ import verseCompleteAudio from '../../assets/audio/verse_complete.mp3'
 import typingSound1 from '../../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../../assets/audio/typing_sound3.mp3'
+import rootFoundAudio from '../../assets/audio/root_found.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
+import { checkRootCompletion } from '../../utils/rootDetection'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -45,6 +47,10 @@ const initialState = {
   lastCompletedWordId: null, // tracks the last completed word for sound logic
   typingSignal: 0,        // increments on correct keypress → triggers typing sound
   recentTypedLetter: null, // tracks most recently typed Hebrew letter
+  // Root detection state
+  discoveredRoots: {},           // { [rootId]: true } - tracks all discovered roots
+  activeRootFlags: [],           // Array of active flag objects for display
+  rootDiscoverySignal: 0,        // increments when root is discovered → triggers audio
 }
 
 function reducer(state, action) {
@@ -78,11 +84,37 @@ function reducer(state, action) {
           newWordEncounters = { ...state.wordEncounters, [wordId]: currentCount + 1 }
         }
         
+        // Check for root completion
+        let newDiscoveredRoots = state.discoveredRoots
+        let newActiveRootFlags = [...state.activeRootFlags]
+        let newRootDiscoverySignal = state.rootDiscoverySignal
+        
+        const rootDiscovery = checkRootCompletion(wordId, newTyped, state.discoveredRoots)
+        if (rootDiscovery) {
+          // Mark root as discovered
+          newDiscoveredRoots = { ...state.discoveredRoots, [rootDiscovery.rootId]: true }
+          
+          // Add flag for display
+          const flagData = {
+            rootId: rootDiscovery.rootId,
+            verseIndex: currentVerse,
+            wordIndex: wi,
+            rootStartIdx: rootDiscovery.rootPosition.start,
+            rootEndIdx: rootDiscovery.rootPosition.end,
+            timestamp: Date.now(),
+          }
+          newActiveRootFlags = [...state.activeRootFlags, flagData]
+          newRootDiscoverySignal = state.rootDiscoverySignal + 1
+        }
+        
         return {
           ...state,
           activeWordIdx: wi,
           typedCounts: newCounts,
           wordEncounters: newWordEncounters,
+          discoveredRoots: newDiscoveredRoots,
+          activeRootFlags: newActiveRootFlags,
+          rootDiscoverySignal: newRootDiscoverySignal,
           errorCount: 0,
           wrongHebKeys: [],
           highestVerse: verseDone ? Math.max(highestVerse, currentVerse + 1) : highestVerse,
@@ -162,6 +194,17 @@ function reducer(state, action) {
       }
     }
 
+    case 'FLAG_COMPLETED': {
+      // Remove a completed flag from activeRootFlags
+      const newActiveRootFlags = state.activeRootFlags.filter(
+        (flag, index) => index !== action.flagIndex
+      )
+      return {
+        ...state,
+        activeRootFlags: newActiveRootFlags,
+      }
+    }
+
     case 'RESET_PROGRESS': {
       // Reset to initial state but keep audio refs and other non-persistent state
       return {
@@ -200,11 +243,13 @@ export default function GamePanel() {
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
   const typingSoundsRef  = useRef(null)
+  const rootFoundRef     = useRef(null)
 
   useEffect(() => {
     wordCompleteRef.current = new Audio(wordCompleteAudio)
     newWordRef.current = new Audio(newWordAudio)
     verseCompleteRef.current = new Audio(verseCompleteAudio)
+    rootFoundRef.current = new Audio(rootFoundAudio)
     typingSoundsRef.current = [
       new Audio(typingSound1),
       new Audio(typingSound2),
@@ -230,6 +275,14 @@ export default function GamePanel() {
       }
     }
   }, [state.completedWordSignal, state.lastCompletedWordId, state.wordEncounters])
+
+  // Root found audio
+  useEffect(() => {
+    if (state.rootDiscoverySignal > 0 && rootFoundRef.current) {
+      rootFoundRef.current.currentTime = 0
+      rootFoundRef.current.play().catch(() => {})
+    }
+  }, [state.rootDiscoverySignal])
 
   // Save progress to localStorage when relevant state changes
   useEffect(() => {
@@ -365,6 +418,8 @@ export default function GamePanel() {
               currentVerse={currentVerse}
               activeWordIdx={activeWordIdx}
               typedCounts={typedCounts}
+              activeRootFlags={state.activeRootFlags}
+              dispatch={dispatch}
             />
           </div>
 
