@@ -1049,14 +1049,7 @@ html, body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* ── Hidden (pre-pop) state for new cards ── */
-.root-card--hidden {
-  opacity: 0;
-  transform: scale(0.75) translateY(16px);
-  pointer-events: none;
-}
-
-/* ── Pop animation ── */
+/* ── Pop entrance animation ── */
 @keyframes cardPop {
   0%   { opacity: 0; transform: scale(0.72) translateY(18px); }
   55%  { opacity: 1; transform: scale(1.06) translateY(-4px); }
@@ -1064,14 +1057,18 @@ html, body {
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.root-card--popped {
-  animation: cardPop 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* New card: pop-in animation with CSS-variable delay.
+   `both` fill = `backwards` keeps opacity:0 during the delay,
+   `forwards` keeps the card visible after the animation ends. */
+.root-card--pop-in {
+  animation: cardPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--pop-delay, 0ms);
 }
 
-/* ── New / highlighted card ── */
+/* ── New card — persistent coral stroke while card is still "new" this session ── */
 .root-card--new {
   border-color: var(--coral);
-  box-shadow: 0 0 0 3px rgba(255, 95, 64, 0.12), var(--shadow-card);
+  box-shadow: 0 0 0 3px rgba(255, 95, 64, 0.18), var(--shadow-card);
 }
 
 /* ── NEW badge ── */

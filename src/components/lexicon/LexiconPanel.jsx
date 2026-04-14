@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import rootsData from '../../data/roots.json'
 import RootCard from './sub-components/RootCard'
@@ -9,42 +9,25 @@ const TOTAL_ROOTS = Object.keys(rootsData.roots).length
 export default function LexiconPanel() {
   const { discoveredRoots, newRoots, markRootsAsViewed } = useRootDiscovery()
 
-  // Capture new roots ONCE at mount — frozen snapshot so animations
-  // are not disrupted when markRootsAsViewed() clears the live newRoots array.
-  const newRootsSnapshot = useRef(newRoots)
-  const newRootIds = useRef(new Set(newRoots.map(r => r.id)))
+  // Snapshot which roots are "new" at mount time, before the badge is cleared.
+  // Using lazy useState (not a ref) so the value is React-tracked and stable.
+  const [sessionNewRoots] = useState(() => [...newRoots])
 
-  // Whether the highlight is still active (cleared when user leaves + returns)
-  const [highlighted, setHighlighted] = useState(newRootIds.current.size > 0)
-
-  // Mark roots as viewed in context (clears the badge) after animations start
+  // Clear the badge immediately on mount.
+  // No cleanup needed: "new" status is entirely driven by the local snapshot above,
+  // so remounting automatically resets it (next visit uses whatever newRoots contains then).
   useEffect(() => {
-    const t = setTimeout(() => markRootsAsViewed(), 800)
-    return () => clearTimeout(t)
+    markRootsAsViewed()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // When the component unmounts (user leaves Lexicon), turn off highlight
-  useEffect(() => {
-    return () => {
-      setHighlighted(false)
-    }
-  }, [])
 
   // Sort: new cards first (top-left), then the rest in discovery order
   const sortedRoots = [...discoveredRoots].sort((a, b) => {
-    const aNew = newRootIds.current.has(a.id)
-    const bNew = newRootIds.current.has(b.id)
+    const aNew = sessionNewRoots.some(r => r.id === a.id)
+    const bNew = sessionNewRoots.some(r => r.id === b.id)
     if (aNew && !bNew) return -1
     if (!aNew && bNew) return 1
     return 0
   })
-
-  // Build pop-delay map from the FROZEN snapshot (not live newRoots)
-  // so delays don't change when markRootsAsViewed() clears the context array.
-  const popDelayFor = (rootId) => {
-    const idx = newRootsSnapshot.current.findIndex(r => r.id === rootId)
-    return idx >= 0 ? idx * 120 : 0
-  }
 
   const hasCards = discoveredRoots.length > 0
 
@@ -74,14 +57,14 @@ export default function LexiconPanel() {
       {hasCards && (
         <div className="lexicon-grid">
           {sortedRoots.map((root) => {
-            const isNew = newRootIds.current.has(root.id)
+            const newIdx = sessionNewRoots.findIndex(r => r.id === root.id)
+            const isNew = newIdx >= 0
             return (
               <RootCard
                 key={root.id}
                 root={root}
                 isNew={isNew}
-                popDelay={isNew ? popDelayFor(root.id) : 0}
-                highlighted={highlighted && isNew}
+                popDelay={isNew ? newIdx * 200 : 0}
               />
             )
           })}

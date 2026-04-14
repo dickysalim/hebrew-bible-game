@@ -19,6 +19,26 @@ import ESVStrip from './sub-components/ESVStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefinition from './sub-components/WordDefinition'
 
+const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
+
+// Load previously discovered root IDs from the lexicon localStorage key
+// so the reducer knows not to re-discover them on page refresh.
+function loadDiscoveredRootIdsFromStorage() {
+  try {
+    const saved = localStorage.getItem(LEXICON_STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed.discoveredRoots)) {
+        // Build the { [rootId]: true } map the reducer expects
+        return Object.fromEntries(parsed.discoveredRoots.map(r => [r.id, true]))
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+  return {}
+}
+
 const verses = versesFile.verses
 
 // ─── Reducer helpers ──────────────────────────────────────────────────────────
@@ -53,6 +73,8 @@ const initialState = {
   discoveredRoots: {},           // { [rootId]: true } - tracks all discovered roots
   activeRootFlags: [],           // Array of active flag objects for display
   rootDiscoverySignal: 0,        // increments when root is discovered → triggers audio
+  // Verse celebration tracking — persists in reducer so tab switches don't replay
+  celebratedVerses: [],          // array of verse indices that have already played the sound
 }
 
 function reducer(state, action) {
@@ -207,6 +229,15 @@ function reducer(state, action) {
       }
     }
 
+    case 'MARK_VERSE_CELEBRATED': {
+      // Record that this verse's completion sound + animation has already fired
+      if (state.celebratedVerses.includes(action.vi)) return state
+      return {
+        ...state,
+        celebratedVerses: [...state.celebratedVerses, action.vi],
+      }
+    }
+
     case 'RESET_PROGRESS': {
       // Reset to initial state but keep audio refs and other non-persistent state
       return {
@@ -224,6 +255,7 @@ function reducer(state, action) {
         lastCompletedWordId: null,
         typingSignal: 0,
         recentTypedLetter: null,
+        celebratedVerses: [],
       }
     }
 
@@ -237,12 +269,16 @@ export default function GamePanel() {
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
-  // Root discovery context — used to update the Lexicon tab badge
-  const { addDiscoveredRoot } = useRootDiscovery()
+  // Root discovery context — used to update the Lexicon tab badge and persist roots
+  const { addDiscoveredRoot, resetDiscoveredRoots } = useRootDiscovery()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
     const saved = loadProgressFromStorage()
-    return { ...initialState, ...saved }
+    // Pre-populate discoveredRoots from the lexicon store so roots already
+    // found in a previous session are not re-discovered (and don't re-trigger
+    // the "new" animation / badge).
+    const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
+    return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
   })
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
@@ -266,7 +302,8 @@ export default function GamePanel() {
   useEffect(() => {
     if (state.completedWordSignal > 0 && state.lastCompletedWordId) {
       // If this word also completed the verse, let the verse-complete effect handle audio
-      if (verseDone) return
+      const currentVerseDone = isVerseDone(state.typedCounts, state.currentVerse)
+      if (currentVerseDone) return
 
       const wordId = state.lastCompletedWordId
       const encounterCount = state.wordEncounters[wordId] || 0
@@ -345,6 +382,7 @@ export default function GamePanel() {
         e.preventDefault()
         if (window.confirm('Reset all progress? This will clear all saved typing progress.')) {
           resetProgress()
+          resetDiscoveredRoots()
           dispatch({ type: 'RESET_PROGRESS' })
           console.log('Progress reset for debugging')
         }
@@ -365,7 +403,7 @@ export default function GamePanel() {
     return () => window.removeEventListener('keydown', handler)
   }, [resetProgress])
 
-  const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap } = state
+  const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap, celebratedVerses } = state
   const verse      = verses[currentVerse]
   const activeWord = activeWordIdx !== null ? verse.words[activeWordIdx] : null
   const wordId     = activeWord?.id ?? ''
@@ -375,21 +413,24 @@ export default function GamePanel() {
     : false
   const verseDone  = isVerseDone(typedCounts, currentVerse)
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
-  
+
+  // Whether this verse's completion has already been celebrated (sound + animation)
+  // Stored in reducer state so it survives tab switches without replaying.
+  const alreadyCelebrated = celebratedVerses.includes(currentVerse)
+
   // Get word definition data from words.json
   const wordData = wordId ? wordsData.words[wordId] : null
   const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
   const sbl = activeWord?.sbl || ''
 
-  // Verse completion sound — track which verses have already played it
-  const celebratedVersesRef = useRef(new Set())
+  // Verse completion sound — only fires once per verse per session
   useEffect(() => {
-    if (verseDone && !celebratedVersesRef.current.has(currentVerse) && verseCompleteRef.current) {
+    if (verseDone && !alreadyCelebrated && verseCompleteRef.current) {
       verseCompleteRef.current.currentTime = 0
       verseCompleteRef.current.play().catch(() => {})
-      celebratedVersesRef.current.add(currentVerse)
+      dispatch({ type: 'MARK_VERSE_CELEBRATED', vi: currentVerse })
     }
-  }, [verseDone, currentVerse])
+  }, [verseDone, currentVerse]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Always track target letter for idle pulse hint (5s timer in KeyboardGuide)
   const targetLetter = (activeWord && !wordDone) ? wordId[typedCount] : null
@@ -448,7 +489,7 @@ export default function GamePanel() {
                 idx={carouselIdx}
                 onPrev={handleCarouselPrev}
                 onNext={handleCarouselNext}
-                isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
+                isNewCompletion={!alreadyCelebrated}
               />
             )}
 

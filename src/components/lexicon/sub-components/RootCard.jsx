@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 
 // Pre-import all 4 pop sounds as modules (Vite handles asset URLs)
 import pop1 from '../../../assets/audio/pop-1.mp3'
@@ -19,40 +19,37 @@ function playRandomPop() {
  * RootCard — a single collectible card for a Hebrew root.
  *
  * Props:
- *   root          { id, sbl, gloss, strongs }
- *   isNew         boolean — card was just discovered this session
- *   popDelay      number  — ms delay before the pop animation fires (0 = immediate)
- *   highlighted   boolean — whether to show the "new" highlight border/badge
+ *   root      { id, sbl, gloss, strongs }
+ *   isNew     boolean — true while the card is considered new this session;
+ *             drives the pop entrance animation, coral border, and NEW badge
+ *   popDelay  number  — ms delay before the pop animation fires (0 = immediate)
+ *
+ * Animation strategy: CSS animation-delay + `both` fill mode.
+ * `backwards` fill keeps opacity:0 during the delay (no need for a hidden class).
+ * `forwards` fill keeps the card visible after the animation ends.
+ * JS timeout is only used to sync the pop sound with the visual pop.
  */
-export default function RootCard({ root, isNew, popDelay = 0, highlighted }) {
-  const [popped, setPopped] = useState(!isNew) // already-collected cards start visible
-  // Freeze the delay at mount time so prop changes never cancel the pending timer
-  const popDelayRef = useRef(popDelay)
-
+export default function RootCard({ root, isNew, popDelay = 0 }) {
+  // Fire pop sound in sync with the visual entrance
   useEffect(() => {
     if (!isNew) return
-
-    const timer = setTimeout(() => {
-      setPopped(true)
-      playRandomPop()
-    }, popDelayRef.current)
-
-    // Only cancel if the component unmounts before the timer fires
+    const timer = setTimeout(playRandomPop, popDelay)
     return () => clearTimeout(timer)
-  }, [isNew]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
       className={[
         'root-card',
-        isNew && highlighted ? 'root-card--new' : '',
-        isNew ? (popped ? 'root-card--popped' : 'root-card--hidden') : '',
+        isNew ? 'root-card--new' : '',
+        isNew ? 'root-card--pop-in' : '',
       ]
         .filter(Boolean)
         .join(' ')}
+      style={isNew ? { '--pop-delay': `${popDelay}ms` } : undefined}
     >
-      {/* NEW badge */}
-      {isNew && highlighted && (
+      {/* NEW badge — shown while card is new this session */}
+      {isNew && (
         <div className="root-card__badge">NEW</div>
       )}
 

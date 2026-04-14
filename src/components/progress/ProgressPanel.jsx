@@ -1,11 +1,13 @@
 import React from 'react';
 import { useProgressPersistence } from '../../utils/useProgressPersistence';
+import { useRootDiscovery } from '../../contexts/RootDiscoveryContext';
 import versesFile from '../../data/verses/genesis-1.json';
 
 const verses = versesFile.verses;
 
 const ProgressPanel = () => {
   const { progress, resetProgress } = useProgressPersistence();
+  const { resetDiscoveredRoots } = useRootDiscovery();
   
   // Calculate statistics
   const calculateStats = () => {
@@ -70,9 +72,10 @@ const ProgressPanel = () => {
   const stats = calculateStats();
   
   const handleReset = () => {
-    if (window.confirm('Are you sure you want to reset all progress? This will clear all saved typing data.')) {
+    if (window.confirm('Are you sure you want to reset all progress? This will clear all typing data and your collected roots in the Lexicon.')) {
       resetProgress();
-      window.location.reload(); // Reload to reflect reset
+      resetDiscoveredRoots();
+      window.location.reload();
     }
   };
   

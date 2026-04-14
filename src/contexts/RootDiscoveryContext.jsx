@@ -1,17 +1,50 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
+
+const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
+
+// Load persisted discovered roots from localStorage
+function loadDiscoveredRootsFromStorage() {
+  try {
+    const saved = localStorage.getItem(LEXICON_STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed.discoveredRoots)) {
+        return parsed.discoveredRoots
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load lexicon from localStorage:', e)
+  }
+  return []
+}
 
 // Root discovery state that needs to be shared across components
 const RootDiscoveryContext = createContext()
 
 export function RootDiscoveryProvider({ children }) {
-  // State for discovered roots (all roots discovered in current session)
-  const [discoveredRoots, setDiscoveredRoots] = useState([])
+  // State for discovered roots — initialized from localStorage for persistence across refresh
+  const [discoveredRoots, setDiscoveredRoots] = useState(() => loadDiscoveredRootsFromStorage())
   
   // State for new roots (roots discovered but not yet viewed in Lexicon)
+  // These are NOT persisted — "new" status resets on page refresh
   const [newRoots, setNewRoots] = useState([])
   
   // State for discovered words by root
   const [discoveredWordsByRoot, setDiscoveredWordsByRoot] = useState({})
+
+  // Set of root IDs that are "new" for the current Lexicon visit.
+  // Cleared when user leaves the Lexicon panel so highlights disappear on return.
+  // Using a ref (not state) so it never triggers re-renders.
+  const sessionNewRootIdsRef = useRef(new Set())
+
+  // Persist discoveredRoots to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(LEXICON_STORAGE_KEY, JSON.stringify({ discoveredRoots }))
+    } catch (e) {
+      console.error('Failed to save lexicon to localStorage:', e)
+    }
+  }, [discoveredRoots])
 
   // Add a newly discovered root
   const addDiscoveredRoot = useCallback((rootData) => {
@@ -30,6 +63,9 @@ export function RootDiscoveryProvider({ children }) {
       }
       return [...prev, rootData]
     })
+
+    // Track in the session set so the highlight is shown when Lexicon opens
+    sessionNewRootIdsRef.current.add(rootData.id)
   }, [])
 
   // Add discovered words for a root
@@ -40,9 +76,28 @@ export function RootDiscoveryProvider({ children }) {
     }))
   }, [])
 
-  // Mark roots as viewed (when Lexicon panel is opened)
+  // Mark roots as viewed (when Lexicon panel is opened) — clears the badge count only.
+  // Highlights (sessionNewRootIdsRef) are cleared separately when user leaves the panel.
   const markRootsAsViewed = useCallback(() => {
     setNewRoots([])
+  }, [])
+
+  // Clear highlights — called when user leaves the Lexicon panel (on unmount).
+  // After this, previously-new cards will render as old cards on the next visit.
+  const clearRootHighlights = useCallback(() => {
+    sessionNewRootIdsRef.current.clear()
+  }, [])
+
+  // Reset all discovered root state — called when the user resets game progress.
+  const resetDiscoveredRoots = useCallback(() => {
+    setDiscoveredRoots([])
+    setNewRoots([])
+    sessionNewRootIdsRef.current.clear()
+    try {
+      localStorage.removeItem(LEXICON_STORAGE_KEY)
+    } catch (e) {
+      // ignore
+    }
   }, [])
 
   // Get count of new roots
@@ -64,9 +119,13 @@ export function RootDiscoveryProvider({ children }) {
     discoveredRoots,
     newRoots,
     discoveredWordsByRoot,
+    // Ref to the Set of root IDs that are "new" for the current Lexicon visit
+    sessionNewRootIdsRef,
     addDiscoveredRoot,
     addDiscoveredWordsForRoot,
     markRootsAsViewed,
+    clearRootHighlights,
+    resetDiscoveredRoots,
     getNewRootsCount,
     getAllDiscoveredRoots,
     getDiscoveredWordsForRoot
