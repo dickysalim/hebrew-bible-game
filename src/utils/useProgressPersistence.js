@@ -10,6 +10,7 @@ const defaultProgress = {
   wordEncounters: {},
   highestVerse: 0,
   currentVerse: 0,
+  activeWordIdx: 0,
   carouselIdxMap: {},
   // We don't save temporary UI state like errorCount, wrongHebKeys, etc.
 };
@@ -63,6 +64,7 @@ export function useProgressPersistence() {
         wordEncounters: data.wordEncounters || {},
         highestVerse: data.highestVerse || 0,
         currentVerse: data.currentVerse || 0,
+        activeWordIdx: data.activeWordIdx ?? 0,
         carouselIdxMap: data.carouselIdxMap || {},
       };
       
@@ -93,6 +95,7 @@ export function useProgressPersistence() {
       wordEncounters: progress.wordEncounters,
       highestVerse: progress.highestVerse,
       currentVerse: progress.currentVerse,
+      activeWordIdx: progress.activeWordIdx,
       carouselIdxMap: progress.carouselIdxMap,
     };
   }, [progress]);
@@ -137,6 +140,7 @@ export function loadProgressFromStorage() {
           wordEncounters: parsed.wordEncounters || {},
           highestVerse: parsed.highestVerse || 0,
           currentVerse: parsed.currentVerse || 0,
+          activeWordIdx: parsed.activeWordIdx ?? 0,
           carouselIdxMap: parsed.carouselIdxMap || {},
         };
       }
@@ -149,6 +153,7 @@ export function loadProgressFromStorage() {
     wordEncounters: {},
     highestVerse: 0,
     currentVerse: 0,
+    activeWordIdx: 0,
     carouselIdxMap: {},
   };
 }

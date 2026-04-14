@@ -8,7 +8,7 @@ import typingSound1 from '../../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../../assets/audio/typing_sound3.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
-import { useProgressPersistence } from '../../utils/useProgressPersistence'
+import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -189,26 +189,13 @@ function reducer(state, action) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function GamePanel() {
-  // Use progress persistence hook to load/save progress
-  const { isLoaded, progress: savedProgress, saveProgress, resetProgress } = useProgressPersistence()
-  
-  // Create initial state from saved progress or defaults
-  const getInitialState = () => {
-    if (!isLoaded) {
-      return initialState
-    }
-    
-    return {
-      ...initialState,
-      typedCounts: savedProgress.typedCounts || {},
-      wordEncounters: savedProgress.wordEncounters || {},
-      highestVerse: savedProgress.highestVerse || 0,
-      currentVerse: savedProgress.currentVerse || 0,
-      carouselIdxMap: savedProgress.carouselIdxMap || {},
-    }
-  }
-  
-  const [state, dispatch] = useReducer(reducer, getInitialState())
+  // Use progress persistence hook to save/reset progress
+  const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
+
+  const [state, dispatch] = useReducer(reducer, null, () => {
+    const saved = loadProgressFromStorage()
+    return { ...initialState, ...saved }
+  })
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
@@ -254,9 +241,10 @@ export default function GamePanel() {
       wordEncounters: state.wordEncounters,
       highestVerse: state.highestVerse,
       currentVerse: state.currentVerse,
+      activeWordIdx: state.activeWordIdx,
       carouselIdxMap: state.carouselIdxMap,
     }
-    
+
     saveProgress(progressToSave)
   }, [
     isLoaded,
@@ -264,6 +252,7 @@ export default function GamePanel() {
     state.wordEncounters,
     state.highestVerse,
     state.currentVerse,
+    state.activeWordIdx,
     state.carouselIdxMap,
     saveProgress
   ])
