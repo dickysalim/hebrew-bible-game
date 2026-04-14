@@ -961,3 +961,182 @@ html, body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LEXICON PANEL
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Panel shell ── */
+.lexicon-panel {
+  height: 100%;
+  background: var(--bg);
+  padding: 28px 24px 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ── */
+.lexicon-header {
+  text-align: center;
+}
+
+.lexicon-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.lexicon-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+}
+
+/* ── Empty state ── */
+.lexicon-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+}
+
+.lexicon-empty__icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.lexicon-empty__text {
+  font-size: 15px;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+/* ── Card grid ── */
+.lexicon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  align-content: start;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ROOT CARD
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Base card ── */
+.root-card {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px 14px;
+  box-shadow: var(--shadow-card);
+  border: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.root-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Hidden (pre-pop) state for new cards ── */
+.root-card--hidden {
+  opacity: 0;
+  transform: scale(0.75) translateY(16px);
+  pointer-events: none;
+}
+
+/* ── Pop animation ── */
+@keyframes cardPop {
+  0%   { opacity: 0; transform: scale(0.72) translateY(18px); }
+  55%  { opacity: 1; transform: scale(1.06) translateY(-4px); }
+  75%  { transform: scale(0.97) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.root-card--popped {
+  animation: cardPop 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── New / highlighted card ── */
+.root-card--new {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px rgba(255, 95, 64, 0.12), var(--shadow-card);
+}
+
+/* ── NEW badge ── */
+.root-card__badge {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: var(--coral);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  border-radius: var(--radius-lg) 0 var(--radius) 0;
+  line-height: 1;
+}
+
+/* ── Hebrew root ── */
+.root-card__hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.1;
+  text-align: right;
+  margin-top: 6px;
+}
+
+/* ── SBL transliteration ── */
+.root-card__sbl {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--purple);
+  line-height: 1.3;
+}
+
+/* ── Gloss ── */
+.root-card__gloss {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* ── Strong's number ── */
+.root-card__strongs {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .lexicon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .root-card__hebrew {
+    font-size: 26px;
+  }
+}

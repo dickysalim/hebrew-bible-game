@@ -7,13 +7,10 @@ import { useRootDiscovery } from './contexts/RootDiscoveryContext'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('main')
-  const { markRootsAsViewed, newRoots } = useRootDiscovery()
+  const { newRoots } = useRootDiscovery()
 
-  // Handle tab change — clear badge when Lexicon is opened
+  // Handle tab change — badge is cleared by LexiconPanel on mount
   const handleTabChange = (tabId) => {
-    if (tabId === 'lexicon') {
-      markRootsAsViewed()
-    }
     setActiveTab(tabId)
   }
 
