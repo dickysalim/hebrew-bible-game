@@ -7,28 +7,40 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
 
   // Pulse the target key every 5 s of idle, repeating until targetHeb changes
   useEffect(() => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-
+    clearTimeout(timerRef.current)
     if (!targetHeb) return
+
+    let cancelled = false
+    let cleanupAnimation = null
 
     const schedulePulse = () => {
       timerRef.current = setTimeout(() => {
+        if (cancelled) return
         const el = keyRefs.current[targetHeb]
-        if (el) {
-          el.classList.add('kb-pulse')
-          el.addEventListener('animationend', () => {
-            el.classList.remove('kb-pulse')
-            schedulePulse()
-          }, { once: true })
-        } else {
-          schedulePulse()
+        if (!el) { schedulePulse(); return }
+
+        el.classList.add('kb-pulse')
+
+        const onEnd = () => {
+          el.classList.remove('kb-pulse')
+          cleanupAnimation = null
+          if (!cancelled) schedulePulse()
+        }
+        el.addEventListener('animationend', onEnd, { once: true })
+        cleanupAnimation = () => {
+          el.removeEventListener('animationend', onEnd)
+          el.classList.remove('kb-pulse')
         }
       }, 5000)
     }
 
     schedulePulse()
 
-    return () => clearTimeout(timerRef.current)
+    return () => {
+      cancelled = true
+      clearTimeout(timerRef.current)
+      cleanupAnimation?.()
+    }
   }, [targetHeb])
 
   return (

@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react'
 import { getLetterTypes, LETTER_SBL } from '../utils/hebrewData'
 
-const TRACK_H = 260
-const ACTIVE_H = 200
-const ADJ_H    = 12
+const TRACK_H = 300
+const ACTIVE_H = 220
+const ADJ_H    = 24
 
 export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts }) {
   const innerRef = useRef(null)

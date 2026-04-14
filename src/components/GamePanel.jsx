@@ -185,14 +185,15 @@ export default function GamePanel() {
     ]
   }, [])
 
-  // Word complete chime - play new_word.mp3 for first encounter, word_complete.mp3 otherwise
+  // Word complete chime — verse_complete.mp3 takes priority if verse is also done
   useEffect(() => {
     if (state.completedWordSignal > 0 && state.lastCompletedWordId) {
+      // If this word also completed the verse, let the verse-complete effect handle audio
+      if (verseDone) return
+
       const wordId = state.lastCompletedWordId
       const encounterCount = state.wordEncounters[wordId] || 0
-      
-      // If this is the first completion (encounterCount will be 1 since it was just incremented)
-      // Actually, wordEncounters was just updated, so for first time it will be 1
+
       if (encounterCount === 1 && newWordRef.current) {
         newWordRef.current.currentTime = 0
         newWordRef.current.play().catch(() => {})
@@ -284,12 +285,14 @@ export default function GamePanel() {
 
         {/* Right column: Game content */}
         <div className="game-content-column">
-          <VerseScroll
-            verses={verses}
-            currentVerse={currentVerse}
-            activeWordIdx={activeWordIdx}
-            typedCounts={typedCounts}
-          />
+          <div className="verse-scroll-area">
+            <VerseScroll
+              verses={verses}
+              currentVerse={currentVerse}
+              activeWordIdx={activeWordIdx}
+              typedCounts={typedCounts}
+            />
+          </div>
 
           <div className="bottom-strip">
             {verseDone && (

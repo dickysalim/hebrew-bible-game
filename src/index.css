@@ -169,12 +169,21 @@ html, body {
   font-weight: 600;
 }
 
+/* ─── VERSE SCROLL AREA (centers scroll-track vertically) ── */
+.verse-scroll-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+}
+
 /* ─── SCROLL TRACK ───────────────────────────────────── */
 .scroll-track {
   position: relative;
-  height: 260px;
+  height: 300px;
   overflow: hidden;
   flex-shrink: 0;
+  width: 100%;
 }
 .scroll-track::before,
 .scroll-track::after {
@@ -210,19 +219,19 @@ html, body {
 .verse-slot.active {
   opacity: 1;
   transform: scale(1);
-  height: 200px;
+  height: 220px;
 }
 .verse-slot.adjacent {
   opacity: 0.22;
   transform: scale(0.78);
   transform-origin: right center;
-  height: 12px;
+  height: 24px;
   overflow: visible;
   pointer-events: none;
 }
 .verse-slot.hidden {
   opacity: 0;
-  height: 12px;
+  height: 24px;
   pointer-events: none;
 }
 
