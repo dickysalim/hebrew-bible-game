@@ -23,24 +23,8 @@ export default function App() {
           setActiveTab('progress')
         }
       }
-      
-      // Arrow key navigation for tab cycling (when not in GamePanel typing mode)
-      // Only activate when not typing Hebrew letters (no modifier keys)
-      if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-          e.preventDefault()
-          const tabs = ['main', 'lexicon', 'progress']
-          const currentIndex = tabs.indexOf(activeTab)
-          const nextIndex = (currentIndex + 1) % tabs.length
-          setActiveTab(tabs[nextIndex])
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-          e.preventDefault()
-          const tabs = ['main', 'lexicon', 'progress']
-          const currentIndex = tabs.indexOf(activeTab)
-          const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length
-          setActiveTab(tabs[prevIndex])
-        }
-      }
+      // Arrow keys are handled by GamePanel for verse navigation
+      // TabBar navigation is mouse-only as per requirements
     }
 
     window.addEventListener('keydown', handleKeyDown)

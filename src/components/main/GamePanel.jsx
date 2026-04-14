@@ -8,6 +8,7 @@ import typingSound1 from '../../assets/audio/typing_sound1.mp3'
 import typingSound2 from '../../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../../assets/audio/typing_sound3.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
+import { useProgressPersistence } from '../../utils/useProgressPersistence'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -161,6 +162,26 @@ function reducer(state, action) {
       }
     }
 
+    case 'RESET_PROGRESS': {
+      // Reset to initial state but keep audio refs and other non-persistent state
+      return {
+        ...initialState,
+        // Keep the current verse as 0, but reset all progress
+        currentVerse: 0,
+        activeWordIdx: 0,
+        typedCounts: {},
+        wordEncounters: {},
+        highestVerse: 0,
+        errorCount: 0,
+        wrongHebKeys: [],
+        carouselIdxMap: {},
+        completedWordSignal: 0,
+        lastCompletedWordId: null,
+        typingSignal: 0,
+        recentTypedLetter: null,
+      }
+    }
+
     default: return state
   }
 }
@@ -168,7 +189,26 @@ function reducer(state, action) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function GamePanel() {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  // Use progress persistence hook to load/save progress
+  const { isLoaded, progress: savedProgress, saveProgress, resetProgress } = useProgressPersistence()
+  
+  // Create initial state from saved progress or defaults
+  const getInitialState = () => {
+    if (!isLoaded) {
+      return initialState
+    }
+    
+    return {
+      ...initialState,
+      typedCounts: savedProgress.typedCounts || {},
+      wordEncounters: savedProgress.wordEncounters || {},
+      highestVerse: savedProgress.highestVerse || 0,
+      currentVerse: savedProgress.currentVerse || 0,
+      carouselIdxMap: savedProgress.carouselIdxMap || {},
+    }
+  }
+  
+  const [state, dispatch] = useReducer(reducer, getInitialState())
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
@@ -204,6 +244,30 @@ export default function GamePanel() {
     }
   }, [state.completedWordSignal, state.lastCompletedWordId, state.wordEncounters])
 
+  // Save progress to localStorage when relevant state changes
+  useEffect(() => {
+    if (!isLoaded) return // Don't save before loading is complete
+    
+    // Only save the persistent parts of state
+    const progressToSave = {
+      typedCounts: state.typedCounts,
+      wordEncounters: state.wordEncounters,
+      highestVerse: state.highestVerse,
+      currentVerse: state.currentVerse,
+      carouselIdxMap: state.carouselIdxMap,
+    }
+    
+    saveProgress(progressToSave)
+  }, [
+    isLoaded,
+    state.typedCounts,
+    state.wordEncounters,
+    state.highestVerse,
+    state.currentVerse,
+    state.carouselIdxMap,
+    saveProgress
+  ])
+
   // Random typing sound on correct keypress
   useEffect(() => {
     if (state.typingSignal > 0 && typingSoundsRef.current) {
@@ -217,6 +281,17 @@ export default function GamePanel() {
   // Keyboard handler
   useEffect(() => {
     const handler = e => {
+      // Debug reset: Ctrl+Shift+R
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+        e.preventDefault()
+        if (window.confirm('Reset all progress? This will clear all saved typing progress.')) {
+          resetProgress()
+          dispatch({ type: 'RESET_PROGRESS' })
+          console.log('Progress reset for debugging')
+        }
+        return
+      }
+      
       if (e.key === ' ')               { e.preventDefault(); dispatch({ type: 'SPACE' }) }
       else if (e.key === 'ArrowLeft')  { e.preventDefault(); dispatch({ type: 'MOVE_WORD', dir: 1 }) }
       else if (e.key === 'ArrowRight') { e.preventDefault(); dispatch({ type: 'MOVE_WORD', dir: -1 }) }
@@ -229,7 +304,7 @@ export default function GamePanel() {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [resetProgress])
 
   const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap } = state
   const verse      = verses[currentVerse]
