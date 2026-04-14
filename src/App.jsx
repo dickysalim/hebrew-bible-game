@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import GamePanel from './components/GamePanel'
-import LexiconPanel from './components/LexiconPanel'
-import ProgressPanel from './components/ProgressPanel'
+import GamePanel from './components/main/GamePanel'
+import LexiconPanel from './components/lexicon/LexiconPanel'
+import ProgressPanel from './components/progress/ProgressPanel'
 import TabBar from './components/TabBar'
 
 export default function App() {

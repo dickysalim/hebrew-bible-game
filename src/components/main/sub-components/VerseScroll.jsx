@@ -1,5 +1,5 @@
 import { useRef, useEffect, useLayoutEffect } from 'react'
-import { getLetterTypes, LETTER_SBL } from '../utils/hebrewData'
+import { getLetterTypes, LETTER_SBL } from '../../../utils/hebrewData'
 
 const TRACK_H = 300
 const ACTIVE_H = 220
