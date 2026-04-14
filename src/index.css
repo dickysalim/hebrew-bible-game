@@ -109,10 +109,10 @@ html, body {
 
 /* ─── GAME PANEL ─────────────────────────────────────── */
 .game-panel {
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 28px 80px 20px;
+  padding: 20px 80px 20px;
   gap: 10px;
   overflow: hidden;
 }
@@ -531,3 +531,106 @@ html, body {
   text-align: center;
   flex-shrink: 0;
 }
+
+/* ─── TAB SYSTEM ─────────────────────────────────────── */
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tab-bar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 80px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.tab-list {
+  display: flex;
+  gap: 2px;
+}
+
+.tab-button {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 16px 24px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.tab-button:hover {
+  color: var(--text-primary);
+}
+
+.tab-button.active {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--purple);
+  border-radius: 1px 1px 0 0;
+}
+
+.tab-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Placeholder panels for Lexicon and Progress */
+.placeholder-panel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 40px;
+}
+
+.placeholder-content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.placeholder-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.placeholder-description {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.placeholder-note {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-style: italic;
+}
+
