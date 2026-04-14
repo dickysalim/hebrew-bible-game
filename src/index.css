@@ -139,6 +139,14 @@ html, body {
   min-height: 0;
 }
 
+.bottom-strip {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 /* ─── VERSE HEADER ───────────────────────────────────── */
 .verse-header {
   display: flex;
@@ -352,6 +360,8 @@ html, body {
   font-size: 13.5px;
   color: var(--text-secondary);
   line-height: 1.5;
+  height: 42px; /* fixed 2-line height: 13.5 × 1.5 × 2 */
+  overflow: hidden;
   transition: opacity 0.3s ease;
 }
 .ic-text.slide-left {
@@ -394,7 +404,6 @@ html, body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 6px 14px;
-  min-height: 48px;
 }
 .esv-label {
   font-size: 9px;
@@ -409,6 +418,8 @@ html, body {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.5;
+  height: 42px; /* fixed 2-line height: 14 × 1.5 × 2 */
+  overflow: hidden;
 }
 .esv-highlight {
   color: var(--text-primary);

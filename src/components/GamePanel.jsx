@@ -291,21 +291,23 @@ export default function GamePanel() {
             typedCounts={typedCounts}
           />
 
-          {verseDone && (
-            <InsightCarousel
-              key={currentVerse}
-              insights={verse.insights}
-              idx={carouselIdx}
-              onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
-              onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
-              isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
-            />
-          )}
+          <div className="bottom-strip">
+            {verseDone && (
+              <InsightCarousel
+                key={currentVerse}
+                insights={verse.insights}
+                idx={carouselIdx}
+                onPrev={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 })}
+                onNext={() => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 })}
+                isNewCompletion={!celebratedVersesRef.current.has(currentVerse)}
+              />
+            )}
 
-          <ESVStrip
-            esv={verse.esv}
-            highlightPhrase={highlightPhrase}
-          />
+            <ESVStrip
+              esv={verse.esv}
+              highlightPhrase={highlightPhrase}
+            />
+          </div>
         </div>
       </div>
 

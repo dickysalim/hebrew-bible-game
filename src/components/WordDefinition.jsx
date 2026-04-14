@@ -22,7 +22,7 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
   
   // Format encounter counter
   const getEncounterText = (count) => {
-    if (count === 1) return 'First time'
+    if (count === 1) return '1st time'
     if (count === 2) return '2nd time'
     if (count === 3) return '3rd time'
     return `${count}th time`
@@ -94,7 +94,7 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
   }
 
   return (
-    <div className="word-definition">
+    <div className={`word-definition${encounterCount === 1 ? ' is-new' : ''}`}>
       {/* New badge for first encounter */}
       {encounterCount === 1 && (
         <div className="new-badge">New</div>
