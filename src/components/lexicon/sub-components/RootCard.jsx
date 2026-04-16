@@ -29,7 +29,7 @@ function playRandomPop() {
  * `forwards` fill keeps the card visible after the animation ends.
  * JS timeout is only used to sync the pop sound with the visual pop.
  */
-export default function RootCard({ root, isNew, popDelay = 0 }) {
+export default function RootCard({ root, isNew, popDelay = 0, onSelect }) {
   // Fire pop sound in sync with the visual entrance
   useEffect(() => {
     if (!isNew) return
@@ -41,12 +41,18 @@ export default function RootCard({ root, isNew, popDelay = 0 }) {
     <div
       className={[
         'root-card',
+        'root-card--clickable',
         isNew ? 'root-card--new' : '',
         isNew ? 'root-card--pop-in' : '',
       ]
         .filter(Boolean)
         .join(' ')}
       style={isNew ? { '--pop-delay': `${popDelay}ms` } : undefined}
+      onClick={() => onSelect && onSelect(root)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect && onSelect(root) }}
+      aria-label={`Open details for ${root.id}`}
     >
       {/* NEW badge — shown while card is new this session */}
       {isNew && (

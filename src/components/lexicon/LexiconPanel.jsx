@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import rootsData from '../../data/roots.json'
 import RootCard from './sub-components/RootCard'
+import RootDetail from './sub-components/RootDetail'
 
 // Total roots available in the data file
 const TOTAL_ROOTS = Object.keys(rootsData.roots).length
@@ -10,17 +11,17 @@ export default function LexiconPanel() {
   const { discoveredRoots, newRoots, markRootsAsViewed } = useRootDiscovery()
 
   // Snapshot which roots are "new" at mount time, before the badge is cleared.
-  // Using lazy useState (not a ref) so the value is React-tracked and stable.
   const [sessionNewRoots] = useState(() => [...newRoots])
 
+  // Track the currently selected (detail-view) root — null = show grid
+  const [selectedRoot, setSelectedRoot] = useState(null)
+
   // Clear the badge immediately on mount.
-  // No cleanup needed: "new" status is entirely driven by the local snapshot above,
-  // so remounting automatically resets it (next visit uses whatever newRoots contains then).
   useEffect(() => {
     markRootsAsViewed()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Sort: new cards first (top-left), then the rest in discovery order
+  // Sort: new cards first, then the rest in discovery order
   const sortedRoots = [...discoveredRoots].sort((a, b) => {
     const aNew = sessionNewRoots.some(r => r.id === a.id)
     const bNew = sessionNewRoots.some(r => r.id === b.id)
@@ -31,6 +32,14 @@ export default function LexiconPanel() {
 
   const hasCards = discoveredRoots.length > 0
 
+  // ── Detail view ─────────────────────────────────────────────────
+  if (selectedRoot) {
+    // Merge full data from roots.json (root object from context only has id/sbl/gloss/strongs)
+    const fullRoot = { ...selectedRoot, ...rootsData.roots[selectedRoot.id] }
+    return <RootDetail root={fullRoot} onBack={() => setSelectedRoot(null)} />
+  }
+
+  // ── Grid view ───────────────────────────────────────────────────
   return (
     <div className="lexicon-panel">
       {/* ── Header ── */}
@@ -65,6 +74,7 @@ export default function LexiconPanel() {
                 root={root}
                 isNew={isNew}
                 popDelay={isNew ? newIdx * 200 : 0}
+                onSelect={setSelectedRoot}
               />
             )
           })}
