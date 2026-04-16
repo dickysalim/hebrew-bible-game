@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useRef, useEffect } f
 
 const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
 
-// Load persisted discovered roots from localStorage
+// Load persisted lexicon state (roots + words) from localStorage
 function loadDiscoveredRootsFromStorage() {
   try {
     const saved = localStorage.getItem(LEXICON_STORAGE_KEY)
@@ -18,6 +18,21 @@ function loadDiscoveredRootsFromStorage() {
   return []
 }
 
+function loadDiscoveredWordsByRootFromStorage() {
+  try {
+    const saved = localStorage.getItem(LEXICON_STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (parsed.discoveredWordsByRoot && typeof parsed.discoveredWordsByRoot === 'object') {
+        return parsed.discoveredWordsByRoot
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+  return {}
+}
+
 // Root discovery state that needs to be shared across components
 const RootDiscoveryContext = createContext()
 
@@ -30,21 +45,21 @@ export function RootDiscoveryProvider({ children }) {
   const [newRoots, setNewRoots] = useState([])
   
   // State for discovered words by root
-  const [discoveredWordsByRoot, setDiscoveredWordsByRoot] = useState({})
+  const [discoveredWordsByRoot, setDiscoveredWordsByRoot] = useState(() => loadDiscoveredWordsByRootFromStorage())
 
   // Set of root IDs that are "new" for the current Lexicon visit.
   // Cleared when user leaves the Lexicon panel so highlights disappear on return.
   // Using a ref (not state) so it never triggers re-renders.
   const sessionNewRootIdsRef = useRef(new Set())
 
-  // Persist discoveredRoots to localStorage whenever it changes
+  // Persist lexicon state (roots + words) to localStorage whenever it changes
   useEffect(() => {
     try {
-      localStorage.setItem(LEXICON_STORAGE_KEY, JSON.stringify({ discoveredRoots }))
+      localStorage.setItem(LEXICON_STORAGE_KEY, JSON.stringify({ discoveredRoots, discoveredWordsByRoot }))
     } catch (e) {
       console.error('Failed to save lexicon to localStorage:', e)
     }
-  }, [discoveredRoots])
+  }, [discoveredRoots, discoveredWordsByRoot])
 
   // Add a newly discovered root
   const addDiscoveredRoot = useCallback((rootData) => {
@@ -92,6 +107,7 @@ export function RootDiscoveryProvider({ children }) {
   const resetDiscoveredRoots = useCallback(() => {
     setDiscoveredRoots([])
     setNewRoots([])
+    setDiscoveredWordsByRoot({})
     sessionNewRootIdsRef.current.clear()
     try {
       localStorage.removeItem(LEXICON_STORAGE_KEY)

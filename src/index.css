@@ -1380,11 +1380,12 @@ html, body {
   direction: rtl;
 }
 
-/* SBL column */
+/* SBL column — readable, gloss-style, italic */
 .root-detail__words-table__sbl {
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
+  font-size: 13px;
   font-style: italic;
-  color: var(--purple) !important;
+  color: var(--text-secondary) !important;
 }
 
 /* Pos column */

@@ -270,7 +270,7 @@ export default function GamePanel() {
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
   // Root discovery context — used to update the Lexicon tab badge and persist roots
-  const { addDiscoveredRoot, resetDiscoveredRoots } = useRootDiscovery()
+  const { addDiscoveredRoot, addDiscoveredWordsForRoot, resetDiscoveredRoots } = useRootDiscovery()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
     const saved = loadProgressFromStorage()
@@ -337,6 +337,18 @@ export default function GamePanel() {
       addDiscoveredRoot({ id: rootId, ...rootData })
     }
   }, [state.rootDiscoverySignal]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Track words discovered per root — fires when a new word is completed for the first time
+  useEffect(() => {
+    const wordId = state.lastCompletedWordId
+    if (!wordId) return
+    const encounterCount = state.wordEncounters[wordId] || 0
+    // Only track the first encounter
+    if (encounterCount !== 1) return
+    const wordData = wordsData.words[wordId]
+    if (!wordData?.root) return
+    addDiscoveredWordsForRoot(wordData.root, [{ word: wordId }])
+  }, [state.completedWordSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save progress to localStorage when relevant state changes
   useEffect(() => {

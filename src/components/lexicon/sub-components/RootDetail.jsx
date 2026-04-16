@@ -1,3 +1,4 @@
+import { useRootDiscovery } from '../../../contexts/RootDiscoveryContext'
 import wordsData from '../../../data/words.json'
 
 /**
@@ -6,19 +7,19 @@ import wordsData from '../../../data/words.json'
  * Layout (flat, no separate boxed panels):
  *  ← Lexicon           [back button]
  *  ─────────────────────────────────
- *  [ROOT HEBREW]  right-aligned
- *  [sbl]          right-aligned, directly under the Hebrew
+ *  [ROOT HEBREW]       right-aligned
+ *  [sbl]               right-aligned, directly under Hebrew
  *  [gloss]
  *  [H####]
- *  ───────────────────────────────── (divider)
- *  BDB DEFINITION
+ *  ────────────────────── divider ──
+ *  BDB DEFINITION      section label
  *  <bdb text>
  *
  *  EXPLANATION
  *  <para> <para>
  *
- *  WORDS CONNECTED TO THIS ROOT
- *  | Hebrew | SBL | Pos | Gloss |
+ *  WORDS YOU'VE DISCOVERED
+ *  | Hebrew | SBL Word | Pos | Gloss |
  *
  * Props:
  *   root    { id, sbl, gloss, strongs, bdb, explanation }
@@ -27,12 +28,20 @@ import wordsData from '../../../data/words.json'
 export default function RootDetail({ root, onBack }) {
   if (!root) return null
 
-  // All word entries in words.json whose root field matches this root's id
-  const connectedWords = Object.entries(wordsData.words)
-    .filter(([, data]) => data.root === root.id)
+  const { discoveredWordsByRoot } = useRootDiscovery()
+
+  // Words from words.json that belong to this root AND the user has discovered
+  const discoveredWordKeys = new Set(
+    (discoveredWordsByRoot[root.id] || []).map(w => w.word ?? w)
+  )
+
+  const wordRows = Object.entries(wordsData.words)
+    .filter(([wordKey, data]) =>
+      data.root === root.id && discoveredWordKeys.has(wordKey)
+    )
     .map(([wordKey, data]) => ({
       hebrew: wordKey,
-      sbl: data.root_sbl ?? data.sbl ?? '—',
+      sbl: data.word_sbl ?? '—',
       pos: data.pos ?? '—',
       gloss: data.gloss ?? '—',
     }))
@@ -48,7 +57,7 @@ export default function RootDetail({ root, onBack }) {
       {/* ── Scrollable body ── */}
       <div className="root-detail__body">
 
-        {/* ── Root identity (right-aligned, Hebrew on top of SBL) ── */}
+        {/* ── Root identity (right-aligned: Hebrew directly over SBL) ── */}
         <div className="root-detail__identity">
           <div className="root-detail__hebrew" dir="rtl" lang="he">{root.id}</div>
           <div className="root-detail__sbl">{root.sbl}</div>
@@ -80,26 +89,28 @@ export default function RootDetail({ root, onBack }) {
           </>
         )}
 
-        {/* ── Connected words table ── */}
+        {/* ── Discovered words ── */}
         <p className="root-detail__section-label" style={{ marginTop: '28px' }}>
-          Words Connected to This Root
+          Words You&apos;ve Discovered
         </p>
 
-        {connectedWords.length === 0 ? (
-          <p className="root-detail__empty-words">No words on record for this root.</p>
+        {wordRows.length === 0 ? (
+          <p className="root-detail__empty-words">
+            No words discovered yet for this root. Keep playing!
+          </p>
         ) : (
           <div className="root-detail__words-table-wrap">
             <table className="root-detail__words-table">
               <thead>
                 <tr>
                   <th>Hebrew</th>
-                  <th>SBL</th>
+                  <th>SBL Word</th>
                   <th>Pos</th>
                   <th>Gloss</th>
                 </tr>
               </thead>
               <tbody>
-                {connectedWords.map((row, i) => (
+                {wordRows.map((row, i) => (
                   <tr key={i}>
                     <td className="root-detail__words-table__hebrew" dir="rtl" lang="he">
                       {row.hebrew}
