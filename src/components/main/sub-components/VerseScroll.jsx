@@ -1,62 +1,24 @@
-import { useRef, useLayoutEffect } from 'react'
 import { getLetterTypes, LETTER_SBL } from '../../../utils/hebrewData'
 import RootFlag from './RootFlag'
-
-const TRACK_H = 300
-const ACTIVE_H = 220
-const ADJ_H    = 24
+import { useRef } from 'react'
 
 export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch }) {
-  const innerRef = useRef(null)
-  const prevVerse = useRef(currentVerse)
+  const verse = verses[currentVerse]
 
-  // Animated on verse change — useLayoutEffect fires before paint so heights
-  // and transform are always in sync (no one-frame misalignment)
-  useLayoutEffect(() => {
-    if (!innerRef.current) return
-    const animate = prevVerse.current !== currentVerse
-    prevVerse.current = currentVerse
-    const ty = (TRACK_H / 2) - (ACTIVE_H / 2) - currentVerse * ADJ_H
-    innerRef.current.style.transition = animate
-      ? 'transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)'
-      : 'none'
-    innerRef.current.style.transform = `translateY(${ty}px)`
-  }, [currentVerse])
-
-  // No-animation initial position — also useLayoutEffect to prevent flash
-  useLayoutEffect(() => {
-    if (!innerRef.current) return
-    const ty = (TRACK_H / 2) - (ACTIVE_H / 2) - currentVerse * ADJ_H
-    innerRef.current.style.transition = 'none'
-    innerRef.current.style.transform = `translateY(${ty}px)`
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Filter flags for current verse
+  // Filter flags for current verse only
   const currentVerseFlags = activeRootFlags?.filter(flag => flag.verseIndex === currentVerse) || []
 
   return (
     <div className="scroll-track">
-      <div className="scroll-inner" ref={innerRef}>
-        {verses.map((verse, vi) => {
-          const dist = Math.abs(vi - currentVerse)
-          const slotClass = dist === 0 ? 'active' : dist === 1 ? 'adjacent' : 'hidden'
-          return (
-            <div key={vi} className={`verse-slot ${slotClass}`}>
-              {dist === 0 && (
-                <ActiveVerseWords
-                  verse={verse}
-                  vi={vi}
-                  activeWordIdx={activeWordIdx}
-                  typedCounts={typedCounts}
-                  currentVerseFlags={currentVerseFlags}
-                  dispatch={dispatch}
-                />
-              )}
-              {dist === 1 && <PlainVerseWords verse={verse} />}
-            </div>
-          )
-        })}
+      <div className="verse-slot active">
+        <ActiveVerseWords
+          verse={verse}
+          vi={currentVerse}
+          activeWordIdx={activeWordIdx}
+          typedCounts={typedCounts}
+          currentVerseFlags={currentVerseFlags}
+          dispatch={dispatch}
+        />
       </div>
     </div>
   )
@@ -155,10 +117,3 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
   )
 }
 
-function PlainVerseWords({ verse }) {
-  return (
-    <div className="verse-inner-wrap">
-      <div className="verse-plain">{verse.words.map(w => w.id).join(' ')}</div>
-    </div>
-  )
-}
