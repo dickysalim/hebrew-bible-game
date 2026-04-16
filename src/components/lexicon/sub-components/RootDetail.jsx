@@ -1,12 +1,41 @@
+import wordsData from '../../../data/words.json'
+
 /**
- * RootDetail — full-screen view shown when the user taps a RootCard.
+ * RootDetail — full-screen detail view for a Hebrew root.
+ *
+ * Layout (flat, no separate boxed panels):
+ *  ← Lexicon           [back button]
+ *  ─────────────────────────────────
+ *  [ROOT HEBREW]  right-aligned
+ *  [sbl]          right-aligned, directly under the Hebrew
+ *  [gloss]
+ *  [H####]
+ *  ───────────────────────────────── (divider)
+ *  BDB DEFINITION
+ *  <bdb text>
+ *
+ *  EXPLANATION
+ *  <para> <para>
+ *
+ *  WORDS CONNECTED TO THIS ROOT
+ *  | Hebrew | SBL | Pos | Gloss |
  *
  * Props:
  *   root    { id, sbl, gloss, strongs, bdb, explanation }
- *   onBack  () => void — called when the user presses the back button
+ *   onBack  () => void
  */
 export default function RootDetail({ root, onBack }) {
   if (!root) return null
+
+  // All word entries in words.json whose root field matches this root's id
+  const connectedWords = Object.entries(wordsData.words)
+    .filter(([, data]) => data.root === root.id)
+    .map(([wordKey, data]) => ({
+      hebrew: wordKey,
+      sbl: data.root_sbl ?? data.sbl ?? '—',
+      pos: data.pos ?? '—',
+      gloss: data.gloss ?? '—',
+    }))
 
   return (
     <div className="root-detail">
@@ -18,11 +47,10 @@ export default function RootDetail({ root, onBack }) {
 
       {/* ── Scrollable body ── */}
       <div className="root-detail__body">
-        {/* ── Card header ── */}
-        <div className="root-detail__header">
-          <div className="root-detail__hebrew" dir="rtl" lang="he">
-            {root.id}
-          </div>
+
+        {/* ── Root identity (right-aligned, Hebrew on top of SBL) ── */}
+        <div className="root-detail__identity">
+          <div className="root-detail__hebrew" dir="rtl" lang="he">{root.id}</div>
           <div className="root-detail__sbl">{root.sbl}</div>
           <div className="root-detail__gloss">{root.gloss}</div>
           {root.strongs && (
@@ -30,25 +58,62 @@ export default function RootDetail({ root, onBack }) {
           )}
         </div>
 
-        {/* ── BDB definition ── */}
+        <div className="root-detail__divider" />
+
+        {/* ── BDB Definition ── */}
         {root.bdb && (
-          <section className="root-detail__section">
-            <h2 className="root-detail__section-label">BDB Definition</h2>
-            <p className="root-detail__bdb">{root.bdb}</p>
-          </section>
+          <>
+            <p className="root-detail__section-label">BDB Definition</p>
+            <p className="root-detail__prose">{root.bdb}</p>
+          </>
         )}
 
-        {/* ── Full explanation ── */}
+        {/* ── Explanation ── */}
         {root.explanation && (
-          <section className="root-detail__section root-detail__section--explanation">
-            <h2 className="root-detail__section-label">Explanation</h2>
-            <div className="root-detail__explanation">
+          <>
+            <p className="root-detail__section-label" style={{ marginTop: '20px' }}>Explanation</p>
+            <div className="root-detail__prose-block">
               {root.explanation.split('\n\n').map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
-          </section>
+          </>
         )}
+
+        {/* ── Connected words table ── */}
+        <p className="root-detail__section-label" style={{ marginTop: '28px' }}>
+          Words Connected to This Root
+        </p>
+
+        {connectedWords.length === 0 ? (
+          <p className="root-detail__empty-words">No words on record for this root.</p>
+        ) : (
+          <div className="root-detail__words-table-wrap">
+            <table className="root-detail__words-table">
+              <thead>
+                <tr>
+                  <th>Hebrew</th>
+                  <th>SBL</th>
+                  <th>Pos</th>
+                  <th>Gloss</th>
+                </tr>
+              </thead>
+              <tbody>
+                {connectedWords.map((row, i) => (
+                  <tr key={i}>
+                    <td className="root-detail__words-table__hebrew" dir="rtl" lang="he">
+                      {row.hebrew}
+                    </td>
+                    <td className="root-detail__words-table__sbl">{row.sbl}</td>
+                    <td className="root-detail__words-table__pos">{row.pos}</td>
+                    <td>{row.gloss}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
       </div>
     </div>
   )
