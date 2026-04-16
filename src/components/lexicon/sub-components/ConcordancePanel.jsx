@@ -2,37 +2,21 @@ import { useMemo } from 'react'
 import genesis1 from '../../../data/verses/genesis-1.json'
 import genesis2 from '../../../data/verses/genesis-2.json'
 import wordsData from '../../../data/words.json'
+import rootsData from '../../../data/roots.json'
 import { loadProgressFromStorage } from '../../../utils/useProgressPersistence'
 
-/**
- * All verse sources in canonical order.
- * Each entry tracks which chapter offset to use for progress lookup.
- * NOTE: Genesis 1 uses verse indices 0–30 in typedCounts.
- *       Genesis 2 is loaded separately and tracked independently.
- *       Both share the same typedCounts key format: `${verseIdx}-${wordIdx}`
- *       but the verseIdx resets per file in the current game implementation.
- *       For now, only Genesis 1 has progress tracking wired up.
- */
 const VERSE_SOURCES = [
   { book: 'Genesis', chapter: 1, verses: genesis1.verses, progressKey: 'genesis-1' },
   { book: 'Genesis', chapter: 2, verses: genesis2.verses, progressKey: 'genesis-2' },
 ]
 
-/**
- * Checks if a verse is completed given typedCounts.
- * celebratedVerses stores completed verse indices for the active chapter (genesis-1).
- */
 function isVerseCompleted(verseIdx, progressKey, celebratedVerses) {
   if (progressKey === 'genesis-1') {
     return Array.isArray(celebratedVerses) && celebratedVerses.includes(verseIdx)
   }
-  return false // Genesis 2 not yet playable
+  return false
 }
 
-/**
- * Splits text into highlighted/plain segments around a target phrase.
- * Returns [{text, highlight}, ...]
- */
 function buildESVSegments(fullText, phrases) {
   if (!fullText) return []
   let segments = [{ text: fullText, highlight: false }]
@@ -53,15 +37,15 @@ function buildESVSegments(fullText, phrases) {
   return segments
 }
 
-// ─── Main Component ─────────────────────────────────────────────────────────
+// ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ConcordancePanel({ wordKey, onBack }) {
   const wordData = wordsData.words[wordKey]
+  const rootId   = wordData?.root ?? null
+  const rootData = rootId ? rootsData.roots[rootId] : null
 
-  // Load progress from localStorage (synchronous read)
   const { celebratedVerses = [] } = useMemo(() => loadProgressFromStorage(), [])
 
-  // Find all verse occurrences of this word across all sources
   const concordance = useMemo(() => {
     const results = []
     for (const { book, chapter, verses, progressKey } of VERSE_SOURCES) {
@@ -72,13 +56,10 @@ export default function ConcordancePanel({ wordKey, onBack }) {
           return acc
         }, [])
         if (matchIndices.length === 0) continue
-
         results.push({
-          book,
-          chapter,
+          book, chapter,
           verseNum: verse.verse,
-          verse,
-          matchIndices,
+          verse, matchIndices,
           completed: isVerseCompleted(vi, progressKey, celebratedVerses),
         })
       }
@@ -87,8 +68,8 @@ export default function ConcordancePanel({ wordKey, onBack }) {
   }, [wordKey, celebratedVerses])
 
   const totalOccurrences = concordance.length
-  const completedCount = concordance.filter(c => c.completed).length
-  const isFullyCovered = completedCount === totalOccurrences && totalOccurrences > 0
+  const completedCount   = concordance.filter(c => c.completed).length
+  const isFullyCovered   = completedCount === totalOccurrences && totalOccurrences > 0
 
   return (
     <div className="concordance-panel">
@@ -108,9 +89,20 @@ export default function ConcordancePanel({ wordKey, onBack }) {
             <span className="concordance__word-pos">{wordData?.pos ?? '—'}</span>
           </div>
           <div className="concordance__word-gloss">{wordData?.gloss ?? '—'}</div>
+
+          {/* ── Root chip — subtle, below gloss ── */}
+          {rootData && (
+            <div className="concordance__root-chip">
+              <span className="concordance__root-label">root</span>
+              <span className="concordance__root-hebrew" dir="rtl" lang="he">{rootId}</span>
+              <span className="concordance__root-sbl">{rootData.sbl}</span>
+              <span className="concordance__root-dot">·</span>
+              <span className="concordance__root-gloss">{rootData.gloss}</span>
+            </div>
+          )}
         </div>
 
-        {/* ── Explanation ── */}
+        {/* ── Explanation — fully visible ── */}
         {wordData?.explanation && (
           <div className="concordance__explanation">
             {wordData.explanation.split('\n\n').map((para, i) => (
@@ -141,7 +133,7 @@ export default function ConcordancePanel({ wordKey, onBack }) {
           )}
         </div>
 
-        {/* ── Verse entries (completed only) ── */}
+        {/* ── Verse entries ── */}
         <div className="concordance__verse-list">
           {concordance
             .filter(c => c.completed)
@@ -166,23 +158,19 @@ export default function ConcordancePanel({ wordKey, onBack }) {
   )
 }
 
-// ─── Verse Entry ─────────────────────────────────────────────────────────────
+// ─── Verse Entry — compact, flowing design ───────────────────────────────────
 
 function VerseEntry({ entry, wordKey }) {
   const { book, chapter, verseNum, verse, matchIndices } = entry
-  const matchedEsvPhrases = matchIndices
-    .map(wi => verse.words[wi]?.esvH)
-    .filter(Boolean)
+  const matchedEsvPhrases = matchIndices.map(wi => verse.words[wi]?.esvH).filter(Boolean)
   const esvSegments = buildESVSegments(verse.esv, matchedEsvPhrases)
 
   return (
     <div className="concordance__verse-entry">
-      {/* Reference */}
-      <div className="concordance__verse-ref">
-        {book} {chapter}:{verseNum}
-      </div>
+      {/* Reference badge inline */}
+      <span className="concordance__verse-ref">{book} {chapter}:{verseNum}</span>
 
-      {/* Hebrew line */}
+      {/* Hebrew + SBL on one flowing line each */}
       <div className="concordance__line concordance__line--hebrew" dir="rtl" lang="he">
         {verse.words.map((w, wi) => {
           const isMatch = matchIndices.includes(wi)
@@ -197,7 +185,6 @@ function VerseEntry({ entry, wordKey }) {
         })}
       </div>
 
-      {/* SBL line */}
       <div className="concordance__line concordance__line--sbl">
         {verse.words.map((w, wi) => {
           const isMatch = matchIndices.includes(wi)
@@ -212,7 +199,6 @@ function VerseEntry({ entry, wordKey }) {
         })}
       </div>
 
-      {/* ESV line */}
       <div className="concordance__line concordance__line--esv">
         {esvSegments.map((seg, i) =>
           seg.highlight

@@ -1563,7 +1563,7 @@ html, body {
   text-align: right;
 }
 
-/* ── Explanation (collapsed, modest) ── */
+/* ── Explanation — fully visible, no clipping ── */
 .concordance__explanation {
   font-family: var(--font-serif);
   font-size: 14px;
@@ -1575,14 +1575,55 @@ html, body {
   border-left: 2px solid var(--border);
   padding-left: 16px;
   margin-bottom: 4px;
-  max-height: 120px;
-  overflow: hidden;
-  /* Fade hint to show it's clipped */
-  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 }
 
 .concordance__explanation p { margin: 0; }
+
+/* ── Root chip — subtle info line below gloss ── */
+.concordance__root-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  width: fit-content;
+}
+
+.concordance__root-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.concordance__root-hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.concordance__root-sbl {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.concordance__root-dot {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.concordance__root-gloss {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
 
 /* ── Divider ── */
 .concordance__divider {
@@ -1618,92 +1659,88 @@ html, body {
   flex-shrink: 0;
 }
 
-/* ── Verse list ── */
+/* ── Verse list — compact, flowing ── */
 .concordance__verse-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0;
 }
 
-/* ── Single verse entry ── */
+/* Single verse entry — no card border, just a subtle divider between entries */
 .concordance__verse-entry {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.concordance__verse-entry:last-child {
+  border-bottom: none;
 }
 
 .concordance__verse-ref {
+  display: inline-block;
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--purple);
-  padding: 12px 20px 8px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-surface);
+  margin-bottom: 6px;
 }
 
 /* ── Hebrew line ── */
 .concordance__line {
-  padding: 10px 20px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .concordance__line--hebrew {
   font-family: var(--font-hebrew);
-  font-size: 22px;
+  font-size: 14px;
   color: var(--text-primary);
   direction: rtl;
-  padding-top: 16px;
-  border-bottom: 1px solid var(--border);
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 3px;
   justify-content: flex-end;
+  margin-bottom: 1px;
 }
 
 /* ── SBL line ── */
 .concordance__line--sbl {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 11px;
   font-style: italic;
   color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 3px;
+  margin-bottom: 4px;
 }
 
 /* ── ESV line ── */
 .concordance__line--esv {
-  font-family: var(--font-body);
-  font-size: 14px;
+  font-family: var(--font-serif);
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.7;
-  padding-bottom: 14px;
+  line-height: 1.6;
 }
 
 /* ── Word tokens (Hebrew + SBL) ── */
 .concordance__word-token {
   display: inline-block;
   border-radius: 3px;
-  padding: 1px 2px;
-  transition: background 0.1s;
+  padding: 0 1px;
 }
 
-/* Highlighted match token — amber/gold for Hebrew */
+/* Highlighted match token — amber/gold */
 .concordance__word-token--match {
   background: rgba(245, 158, 11, 0.18);
   color: #b45309;
   font-weight: 700;
-  border-radius: 4px;
-  padding: 1px 4px;
+  border-radius: 3px;
+  padding: 0 3px;
 }
 
-/* SBL match gets slightly different colour (still amber but muted) */
+/* SBL match gets slightly different colour */
 .concordance__word-token--match-sbl {
   background: rgba(245, 158, 11, 0.12);
   color: #92400e;
@@ -1716,7 +1753,7 @@ html, body {
   color: #92400e;
   font-weight: 600;
   border-radius: 3px;
-  padding: 1px 3px;
+  padding: 0 2px;
   text-decoration: none;
 }
 
@@ -1724,20 +1761,19 @@ html, body {
 .concordance__verse-entry--locked {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: var(--bg-surface);
-  border-style: dashed;
-  padding: 14px 20px;
+  gap: 8px;
+  background: transparent;
+  padding: 8px 0;
 }
 
 .concordance__lock-icon {
-  font-size: 16px;
-  opacity: 0.5;
+  font-size: 13px;
+  opacity: 0.4;
 }
 
 .concordance__lock-ref {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   font-style: italic;
 }
@@ -1756,12 +1792,4 @@ html, body {
     font-size: 36px;
   }
 
-  .concordance__line--hebrew {
-    font-size: 18px;
-  }
-
-  .concordance__line--sbl,
-  .concordance__line--esv {
-    font-size: 12px;
-  }
 }
