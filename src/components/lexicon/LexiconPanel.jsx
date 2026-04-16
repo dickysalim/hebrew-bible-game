@@ -3,6 +3,7 @@ import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import rootsData from '../../data/roots.json'
 import RootCard from './sub-components/RootCard'
 import RootDetail from './sub-components/RootDetail'
+import ConcordancePanel from './sub-components/ConcordancePanel'
 
 // Total roots available in the data file
 const TOTAL_ROOTS = Object.keys(rootsData.roots).length
@@ -13,8 +14,10 @@ export default function LexiconPanel() {
   // Snapshot which roots are "new" at mount time, before the badge is cleared.
   const [sessionNewRoots] = useState(() => [...newRoots])
 
-  // Track the currently selected (detail-view) root — null = show grid
+  // Navigation state: 'grid' | 'detail' | 'concordance'
+  const [view, setView] = useState('grid')
   const [selectedRoot, setSelectedRoot] = useState(null)
+  const [selectedWordKey, setSelectedWordKey] = useState(null)
 
   // Clear the badge immediately on mount.
   useEffect(() => {
@@ -32,14 +35,29 @@ export default function LexiconPanel() {
 
   const hasCards = discoveredRoots.length > 0
 
-  // ── Detail view ─────────────────────────────────────────────────
-  if (selectedRoot) {
-    // Merge full data from roots.json (root object from context only has id/sbl/gloss/strongs)
-    const fullRoot = { ...selectedRoot, ...rootsData.roots[selectedRoot.id] }
-    return <RootDetail root={fullRoot} onBack={() => setSelectedRoot(null)} />
+  // ── Concordance view ─────────────────────────────────────────────
+  if (view === 'concordance' && selectedWordKey) {
+    return (
+      <ConcordancePanel
+        wordKey={selectedWordKey}
+        onBack={() => setView('detail')}
+      />
+    )
   }
 
-  // ── Grid view ───────────────────────────────────────────────────
+  // ── Detail view ──────────────────────────────────────────────────
+  if (view === 'detail' && selectedRoot) {
+    const fullRoot = { ...selectedRoot, ...rootsData.roots[selectedRoot.id] }
+    return (
+      <RootDetail
+        root={fullRoot}
+        onBack={() => { setSelectedRoot(null); setView('grid') }}
+        onCheckConcordance={(wordKey) => { setSelectedWordKey(wordKey); setView('concordance') }}
+      />
+    )
+  }
+
+  // ── Grid view ────────────────────────────────────────────────────
   return (
     <div className="lexicon-panel">
       {/* ── Header ── */}
@@ -74,7 +92,7 @@ export default function LexiconPanel() {
                 root={root}
                 isNew={isNew}
                 popDelay={isNew ? newIdx * 200 : 0}
-                onSelect={setSelectedRoot}
+                onSelect={(r) => { setSelectedRoot(r); setView('detail') }}
               />
             )
           })}

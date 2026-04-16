@@ -25,7 +25,7 @@ import wordsData from '../../../data/words.json'
  *   root    { id, sbl, gloss, strongs, bdb, explanation }
  *   onBack  () => void
  */
-export default function RootDetail({ root, onBack }) {
+export default function RootDetail({ root, onBack, onCheckConcordance }) {
   if (!root) return null
 
   const { discoveredWordsByRoot } = useRootDiscovery()
@@ -107,6 +107,7 @@ export default function RootDetail({ root, onBack }) {
                   <th>SBL Word</th>
                   <th>Pos</th>
                   <th>Gloss</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -118,6 +119,15 @@ export default function RootDetail({ root, onBack }) {
                     <td className="root-detail__words-table__sbl">{row.sbl}</td>
                     <td className="root-detail__words-table__pos">{row.pos}</td>
                     <td>{row.gloss}</td>
+                    <td>
+                      <button
+                        className="concordance-btn"
+                        onClick={() => onCheckConcordance?.(row.hebrew)}
+                        aria-label={`Check concordance for ${row.hebrew}`}
+                      >
+                        Concordance
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

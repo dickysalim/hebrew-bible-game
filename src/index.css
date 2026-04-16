@@ -1412,4 +1412,342 @@ html, body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   CONCORDANCE BUTTON (in word table rows)
+   ═══════════════════════════════════════════════════════════════ */
 
+.concordance-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--purple);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.concordance-btn::before {
+  content: '≡';
+  font-size: 13px;
+}
+
+.concordance-btn:hover {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONCORDANCE PANEL
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes concordanceSlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.concordance-panel {
+  height: 100%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: concordanceSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Back button ── */
+.concordance__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 18px 32px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--purple);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, gap 0.15s ease;
+}
+
+.concordance__back:hover { color: var(--purple-mid); gap: 10px; }
+
+.concordance__back-arrow {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.concordance__back:hover .concordance__back-arrow { transform: translateX(-3px); }
+
+/* ── Scrollable body ── */
+.concordance__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 32px 56px;
+}
+
+/* ── Word header ── */
+.concordance__word-header {
+  margin-bottom: 16px;
+}
+
+.concordance__word-hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  direction: rtl;
+  text-align: right;
+}
+
+.concordance__word-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.concordance__word-sbl {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.concordance__word-dot {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.concordance__word-pos {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.concordance__word-gloss {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* ── Explanation (collapsed, modest) ── */
+.concordance__explanation {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-left: 2px solid var(--border);
+  padding-left: 16px;
+  margin-bottom: 4px;
+  max-height: 120px;
+  overflow: hidden;
+  /* Fade hint to show it's clipped */
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.concordance__explanation p { margin: 0; }
+
+/* ── Divider ── */
+.concordance__divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* ── Progress status ── */
+.concordance__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+}
+
+.concordance__status--complete {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.concordance__status-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ── Verse list ── */
+.concordance__verse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Single verse entry ── */
+.concordance__verse-entry {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.concordance__verse-ref {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--purple);
+  padding: 12px 20px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+/* ── Hebrew line ── */
+.concordance__line {
+  padding: 10px 20px;
+  line-height: 1.8;
+}
+
+.concordance__line--hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 22px;
+  color: var(--text-primary);
+  direction: rtl;
+  padding-top: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* ── SBL line ── */
+.concordance__line--sbl {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── ESV line ── */
+.concordance__line--esv {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding-bottom: 14px;
+}
+
+/* ── Word tokens (Hebrew + SBL) ── */
+.concordance__word-token {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 1px 2px;
+  transition: background 0.1s;
+}
+
+/* Highlighted match token — amber/gold for Hebrew */
+.concordance__word-token--match {
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+
+/* SBL match gets slightly different colour (still amber but muted) */
+.concordance__word-token--match-sbl {
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+  font-weight: 600;
+}
+
+/* ESV inline highlight */
+.concordance__esv-highlight {
+  background: rgba(245, 158, 11, 0.2);
+  color: #92400e;
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 1px 3px;
+  text-decoration: none;
+}
+
+/* ── Locked entry ── */
+.concordance__verse-entry--locked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-surface);
+  border-style: dashed;
+  padding: 14px 20px;
+}
+
+.concordance__lock-icon {
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+.concordance__lock-ref {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .concordance__back {
+    padding: 14px 16px 10px;
+  }
+
+  .concordance__body {
+    padding: 0 16px 48px;
+  }
+
+  .concordance__word-hebrew {
+    font-size: 36px;
+  }
+
+  .concordance__line--hebrew {
+    font-size: 18px;
+  }
+
+  .concordance__line--sbl,
+  .concordance__line--esv {
+    font-size: 12px;
+  }
+}
