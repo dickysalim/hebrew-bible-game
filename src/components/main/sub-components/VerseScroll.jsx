@@ -1,68 +1,136 @@
 import { getLetterTypes, LETTER_SBL } from '../../../utils/hebrewData'
 import RootFlag from './RootFlag'
-import { useRef } from 'react'
+import { useRef, useState, useEffect, useLayoutEffect } from 'react'
+
+/**
+ * VerseScroll
+ *
+ * Two independent behaviours:
+ *
+ * 1. VERSE TRANSITION — quick slide-out / slide-in animation when currentVerse
+ *    changes. A "displayedVerse" state lags behind so the old content exits
+ *    before the new content enters.
+ *
+ * 2. WORD-ROW CENTERING — the row that contains the active word is always
+ *    centred vertically inside the scroll viewport. We measure the active
+ *    word-block's offsetTop relative to the scroll-track, then apply a
+ *    translateY on verse-inner-wrap so that word line sits at 50% height.
+ */
+
+const EXIT_MS  = 140   // exit animation duration
+const ENTER_MS = 220   // enter animation duration
 
 export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch }) {
-  const verse = verses[currentVerse]
+  // --- verse transition state ---
+  const [displayedVerse, setDisplayedVerse] = useState(currentVerse)
+  const [animState, setAnimState]           = useState('')
+  const prevVerseRef = useRef(currentVerse)
+  const timerRef     = useRef(null)
 
-  // Filter flags for current verse only
-  const currentVerseFlags = activeRootFlags?.filter(flag => flag.verseIndex === currentVerse) || []
+  // --- centering refs ---
+  const trackRef = useRef(null)   // .scroll-track — the clipping viewport
+  const wrapRef  = useRef(null)   // .verse-inner-wrap — the element we translate
+  const wordRefs = useRef([])     // individual word-block refs
+
+  // ── Verse transition ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (currentVerse === prevVerseRef.current) return
+
+    const dir = currentVerse > prevVerseRef.current ? 'up' : 'down'
+    prevVerseRef.current = currentVerse
+
+    clearTimeout(timerRef.current)
+    setAnimState(`exit-${dir}`)
+
+    timerRef.current = setTimeout(() => {
+      setDisplayedVerse(currentVerse)
+      setAnimState(`enter-${dir}`)
+
+      timerRef.current = setTimeout(() => {
+        setAnimState('')
+      }, ENTER_MS)
+    }, EXIT_MS)
+
+    return () => clearTimeout(timerRef.current)
+  }, [currentVerse])
+
+  // ── Word-row centering ────────────────────────────────────────────────────
+  // useLayoutEffect so the transform is applied before paint (no visible jump)
+  useLayoutEffect(() => {
+    if (!trackRef.current || !wrapRef.current) return
+
+    const trackH = trackRef.current.offsetHeight
+    if (trackH === 0) return
+
+    // If nothing selected, center the top of the wrap
+    if (activeWordIdx === null) {
+      wrapRef.current.style.transform = `translateY(0px)`
+      return
+    }
+
+    const wordEl = wordRefs.current[activeWordIdx]
+    if (!wordEl) return
+
+    // offsetTop is measured from the nearest positioned ancestor.
+    // .scroll-track has position:relative, so offsetTop is relative to it.
+    const wordTop    = wordEl.offsetTop
+    const wordHeight = wordEl.offsetHeight
+
+    // Desired: centre of word row == centre of track
+    const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2))
+
+    wrapRef.current.style.transform = `translateY(${ty}px)`
+  }, [activeWordIdx, displayedVerse, typedCounts])
+
+  const verse = verses[displayedVerse]
+  const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
 
   return (
-    <div className="scroll-track">
-      <div className="verse-slot active">
+    <div className="scroll-track" ref={trackRef}>
+      <div className={`active-verse-container ${animState}`}>
         <ActiveVerseWords
           verse={verse}
-          vi={currentVerse}
+          vi={displayedVerse}
           activeWordIdx={activeWordIdx}
           typedCounts={typedCounts}
           currentVerseFlags={currentVerseFlags}
           dispatch={dispatch}
+          wrapRef={wrapRef}
+          wordRefs={wordRefs}
         />
       </div>
     </div>
   )
 }
 
-function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch }) {
-  // Create refs for letter columns to calculate positions
-  const wordRefs = useRef([])
-  
-  // Function to handle flag completion
+function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs }) {
   const handleFlagComplete = (flagIndex) => {
-    if (dispatch) {
-      dispatch({ type: 'FLAG_COMPLETED', flagIndex })
-    }
+    if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
   }
 
   return (
-    <div className="verse-inner-wrap">
+    <div className="verse-inner-wrap" ref={wrapRef}>
       {verse.words.map((word, wi) => {
-        const letters = word.id.split('')
-        const typed   = typedCounts[`${vi}-${wi}`] ?? 0
-        const done    = typed >= letters.length
+        const letters  = word.id.split('')
+        const typed    = typedCounts[`${vi}-${wi}`] ?? 0
+        const done     = typed >= letters.length
         const isActive = wi === activeWordIdx
-        const types   = getLetterTypes(word.id)
+        const types    = getLetterTypes(word.id)
 
-        // Find flags for this specific word
-        const wordFlags = currentVerseFlags.filter(flag => flag.wordIndex === wi)
+        const wordFlags = currentVerseFlags.filter(f => f.wordIndex === wi)
 
         return (
           <div
             key={wi}
             className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''}`}
-            ref={el => wordRefs.current[wi] = el}
+            ref={el => { wordRefs.current[wi] = el }}
           >
-            {/* Per-letter columns: Hebrew glyph stacked above its SBL sound */}
+            {/* Per-letter columns */}
             <div className="word-letter-cols">
               {letters.map((ch, i) => {
                 const isTyped = i < typed
-                const type = types[i] || 'root'
-                const charCls = done
-                  ? 'done'
-                  : isTyped
-                    ? `typed type-${type}`
-                    : 'ghost'
+                const type    = types[i] || 'root'
+                const charCls = done ? 'done' : isTyped ? `typed type-${type}` : 'ghost'
 
                 return (
                   <div key={i} className="word-letter-col">
@@ -75,31 +143,16 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
               })}
             </div>
 
-            {/* Full word SBL — appears only when word is done */}
-            {done && (
-              <div className="word-full-sbl">{word.sbl}</div>
-            )}
+            {/* Full word SBL — only when word is done */}
+            {done && <div className="word-full-sbl">{word.sbl}</div>}
 
-            {/* Render root flags for this word — positioned over the root letters */}
+            {/* Root flags */}
             {wordFlags.map((flag, flagIndex) => {
-              // Calculate the center of the root letter range within the word-block.
-              // word-letter-col has min-width: 22px + 1px gap; word-block has 6px padding each side.
-              // RTL: letters are laid out right-to-left, so rootStart=0 is the rightmost letter.
-              // We offset from the right edge using padding + letter widths.
-              const LETTER_W = 23 // 22px min-width + 1px gap
-              const PADDING  = 6  // word-block padding-left/right
-              const totalLetters = letters.length
-              const rootStart = flag.rootStartIdx
-              const rootEnd   = flag.rootEndIdx
-              // Center of root segment, measured from the right (RTL)
-              const rootCenterFromRight = PADDING + (rootStart + (rootEnd - rootStart) / 2) * LETTER_W
-              // Convert to left offset: total word width minus right-offset
-              const wordWidth = PADDING * 2 + totalLetters * LETTER_W
-              const leftOffset = wordWidth - rootCenterFromRight
-
-              const style = {
-                left: `${leftOffset}px`,
-              }
+              const LETTER_W = 23
+              const PADDING  = 6
+              const rootCenterFromRight = PADDING + (flag.rootStartIdx + (flag.rootEndIdx - flag.rootStartIdx) / 2) * LETTER_W
+              const wordWidth = PADDING * 2 + letters.length * LETTER_W
+              const style = { left: `${wordWidth - rootCenterFromRight}px` }
 
               return (
                 <RootFlag
@@ -116,4 +169,3 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
     </div>
   )
 }
-

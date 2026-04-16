@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef, useCallback } from 'react'
+import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
 import versesFile from '../../data/verses/genesis-1.json'
 import wordsData from '../../data/words.json'
 import rootsData from '../../data/roots.json'
@@ -274,12 +274,10 @@ export default function GamePanel() {
 
   const [state, dispatch] = useReducer(reducer, null, () => {
     const saved = loadProgressFromStorage()
-    // Pre-populate discoveredRoots from the lexicon store so roots already
-    // found in a previous session are not re-discovered (and don't re-trigger
-    // the "new" animation / badge).
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
     return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
   })
+  const [isTyping, setIsTyping] = useState(false)
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
@@ -410,12 +408,19 @@ export default function GamePanel() {
       else if (e.key === 'ArrowDown')  { e.preventDefault(); dispatch({ type: 'MOVE_VERSE', dir: 1 }) }
       else {
         const heb = LATIN_TO_HEB[e.key.toLowerCase()]
-        if (heb) dispatch({ type: 'TYPE', heb })
+        if (heb) { setIsTyping(true); dispatch({ type: 'TYPE', heb }) }
       }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [resetProgress])
+
+  // Reset cursor visibility on mouse move
+  useEffect(() => {
+    const handleMouseMove = () => setIsTyping(false)
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap, celebratedVerses } = state
   const verse      = verses[currentVerse]
@@ -463,7 +468,7 @@ export default function GamePanel() {
   )
 
   return (
-    <div className="game-panel">
+    <div className={`game-panel${isTyping ? ' cursor-none' : ''}`}>
 
       <div className="verse-header">
         <span className="verse-ref">Genesis 1:{verse.verse}</span>
