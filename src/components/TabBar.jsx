@@ -3,6 +3,7 @@ import React from 'react';
 const TabBar = ({ activeTab, onTabChange, newRootsCount = 0 }) => {
   const tabs = [
     { id: 'main', label: 'Main' },
+    { id: 'full_chapter', label: 'Full Chapter' },
     { id: 'lexicon', label: 'Lexicon' },
     { id: 'progress', label: 'Progress' },
   ];
