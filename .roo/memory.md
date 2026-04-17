@@ -217,3 +217,65 @@ This is a Hebrew Bible learning game focused on Genesis 1. Users type Hebrew wor
 2. **Audio Loading**: Preload sounds to reduce latency
 3. **State Complexity**: Consider refactoring GamePanel reducer if it grows further
 4. **Type Safety**: Add TypeScript definitions for data structures
+
+## Search Feature Implementation (April 2026)
+
+### Overview
+Added robust search functionality to the Lexicon Tab with real-time filtering across multiple fields:
+- Hebrew roots and words
+- SBL transliteration
+- English gloss
+- BDB definitions
+- Strong's numbers
+- ESV words associated with roots
+
+### Key Components
+1. **Search Utility Module** (`src/utils/searchUtils.js`)
+   - `createSearchIndex()`: Creates pre-normalized search index from discovered roots
+   - `searchRoots()`: Fuzzy matching with weighted scoring across all fields
+   - `normalizeText()`: Text normalization with diacritic removal
+   - `debounce()`: Performance optimization for real-time search
+
+2. **SearchBar Component** (`src/components/lexicon/sub-components/SearchBar.jsx`)
+   - Real-time search input with 300ms debouncing
+   - Clear button and search icon
+   - Responsive design with focus states
+
+3. **LexiconPanel Integration** (`src/components/lexicon/LexiconPanel.jsx`)
+   - Search state management with `useMemo` for performance
+   - Search results messaging and empty states
+   - Integration with existing grid/detail/concordance views
+
+4. **RootCard Enhancements** (`src/components/lexicon/sub-components/RootCard.jsx`)
+   - Search score and query props for highlighting
+   - Visual search relevance indicator (purple bar)
+   - CSS styling for search-matched cards
+
+### Performance Optimizations
+- Pre-normalized search fields in index
+- Debounced search input (300ms)
+- Minimum query length check (2 chars)
+- Cache for search results (50-entry LRU)
+- Fast path for exact Hebrew root matches
+- Early exit for short queries (except Strong's/Hebrew)
+
+### Search Algorithm
+Weighted scoring system:
+- Exact Hebrew root match: 100 points
+- Exact SBL match: 80 points
+- Gloss contains query: 60 points
+- Exact Strong's match: 50 points
+- Partial matches in various fields: 15-45 points
+
+### CSS Styling
+- Search bar with focus states and clear button
+- Search empty state with helpful hints
+- Search-matched cards with purple border and glow
+- Search relevance indicator bar (top of card)
+
+### User Experience
+- Real-time search as you type
+- Only searches discovered roots (not all roots)
+- Shows results in existing grid view
+- Visual feedback for search matches
+- Helpful empty state messages

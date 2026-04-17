@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import rootsData from '../../data/roots.json'
+import wordsData from '../../data/words.json'
 import RootCard from './sub-components/RootCard'
 import RootDetail from './sub-components/RootDetail'
 import ConcordancePanel from './sub-components/ConcordancePanel'
+import SearchBar from './sub-components/SearchBar'
+import { createSearchIndex, searchRoots } from '../../utils/searchUtils'
 
 // Total roots available in the data file
 const TOTAL_ROOTS = Object.keys(rootsData.roots).length
@@ -18,22 +21,46 @@ export default function LexiconPanel() {
   const [view, setView] = useState('grid')
   const [selectedRoot, setSelectedRoot] = useState(null)
   const [selectedWordKey, setSelectedWordKey] = useState(null)
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Clear the badge immediately on mount.
   useEffect(() => {
     markRootsAsViewed()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Sort: new cards first, then the rest in discovery order
-  const sortedRoots = [...discoveredRoots].sort((a, b) => {
-    const aNew = sessionNewRoots.some(r => r.id === a.id)
-    const bNew = sessionNewRoots.some(r => r.id === b.id)
-    if (aNew && !bNew) return -1
-    if (!aNew && bNew) return 1
-    return 0
-  })
+  // Create search index from discovered roots
+  const searchIndex = useMemo(() => {
+    return createSearchIndex(discoveredRoots, rootsData, wordsData)
+  }, [discoveredRoots])
+
+  // Search roots based on query
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return searchIndex.map(item => ({ ...item, score: 0 }))
+    }
+    return searchRoots(searchQuery, searchIndex)
+  }, [searchQuery, searchIndex])
+
+  // Sort: new cards first, then the rest in discovery order, filtered by search
+  const sortedRoots = useMemo(() => {
+    const filteredRoots = searchQuery.trim()
+      ? searchResults.map(result => ({ id: result.id }))
+      : discoveredRoots
+    
+    return [...filteredRoots].sort((a, b) => {
+      const aNew = sessionNewRoots.some(r => r.id === a.id)
+      const bNew = sessionNewRoots.some(r => r.id === b.id)
+      if (aNew && !bNew) return -1
+      if (!aNew && bNew) return 1
+      return 0
+    })
+  }, [discoveredRoots, sessionNewRoots, searchQuery, searchResults])
 
   const hasCards = discoveredRoots.length > 0
+  const hasSearchResults = searchQuery.trim() && searchResults.length > 0
+  const hasNoSearchResults = searchQuery.trim() && searchResults.length === 0
 
   // ── Concordance view ─────────────────────────────────────────────
   if (view === 'concordance' && selectedWordKey) {
@@ -63,10 +90,31 @@ export default function LexiconPanel() {
       {/* ── Header ── */}
       <div className="lexicon-header">
         <h1 className="lexicon-title">Lexicon</h1>
+        
+        {/* Search Bar */}
+        {hasCards && (
+          <div className="lexicon-search-container">
+            <SearchBar
+              onSearch={setSearchQuery}
+              placeholder="Search roots, words, or meanings..."
+            />
+          </div>
+        )}
+        
         <p className="lexicon-subtitle">
-          {hasCards
-            ? `${discoveredRoots.length} of ${TOTAL_ROOTS} roots collected`
-            : 'Discover Hebrew roots as you type'}
+          {hasSearchResults ? (
+            <span>
+              Found <strong>{searchResults.length}</strong> root{searchResults.length !== 1 ? 's' : ''} matching "<strong>{searchQuery}</strong>"
+            </span>
+          ) : hasNoSearchResults ? (
+            <span>
+              No roots found matching "<strong>{searchQuery}</strong>"
+            </span>
+          ) : hasCards ? (
+            `${discoveredRoots.length} of ${TOTAL_ROOTS} roots collected`
+          ) : (
+            'Discover Hebrew roots as you type'
+          )}
         </p>
       </div>
 
@@ -80,12 +128,30 @@ export default function LexiconPanel() {
         </div>
       )}
 
+      {/* ── Search no results state ── */}
+      {hasNoSearchResults && (
+        <div className="lexicon-search-empty">
+          <div className="lexicon-search-empty__icon">🔍</div>
+          <p className="lexicon-search-empty__text">
+            No roots found matching "<strong>{searchQuery}</strong>"
+          </p>
+          <p className="lexicon-search-empty__hint">
+            Try searching in Hebrew, English, or SBL transliteration
+          </p>
+        </div>
+      )}
+
       {/* ── Card grid ── */}
-      {hasCards && (
+      {hasCards && !hasNoSearchResults && (
         <div className="lexicon-grid">
           {sortedRoots.map((root) => {
             const newIdx = sessionNewRoots.findIndex(r => r.id === root.id)
             const isNew = newIdx >= 0
+            
+            // Get search result data for highlighting
+            const searchResult = searchResults.find(r => r.id === root.id)
+            const searchScore = searchResult?.score || 0
+            
             return (
               <RootCard
                 key={root.id}
@@ -93,6 +159,8 @@ export default function LexiconPanel() {
                 isNew={isNew}
                 popDelay={isNew ? newIdx * 200 : 0}
                 onSelect={(r) => { setSelectedRoot(r); setView('detail') }}
+                searchScore={searchScore}
+                searchQuery={searchQuery}
               />
             )
           })}

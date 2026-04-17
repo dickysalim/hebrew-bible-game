@@ -19,23 +19,36 @@ function playRandomPop() {
  * RootCard — a single collectible card for a Hebrew root.
  *
  * Props:
- *   root      { id, sbl, gloss, strongs }
- *   isNew     boolean — true while the card is considered new this session;
- *             drives the pop entrance animation, coral border, and NEW badge
- *   popDelay  number  — ms delay before the pop animation fires (0 = immediate)
+ *   root        { id, sbl, gloss, strongs }
+ *   isNew       boolean — true while the card is considered new this session;
+ *               drives the pop entrance animation, coral border, and NEW badge
+ *   popDelay    number  — ms delay before the pop animation fires (0 = immediate)
+ *   searchScore number  — optional search relevance score (0-1)
+ *   searchQuery string  — optional search query for highlighting matches
  *
  * Animation strategy: CSS animation-delay + `both` fill mode.
  * `backwards` fill keeps opacity:0 during the delay (no need for a hidden class).
  * `forwards` fill keeps the card visible after the animation ends.
  * JS timeout is only used to sync the pop sound with the visual pop.
  */
-export default function RootCard({ root, isNew, popDelay = 0, onSelect }) {
+export default function RootCard({
+  root,
+  isNew,
+  popDelay = 0,
+  searchScore,
+  searchQuery,
+  onSelect
+}) {
   // Fire pop sound in sync with the visual entrance
   useEffect(() => {
     if (!isNew) return
     const timer = setTimeout(playRandomPop, popDelay)
     return () => clearTimeout(timer)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Determine if this card should show search highlighting
+  const hasSearchHighlight = searchScore !== undefined && searchScore > 0;
+  const searchRelevanceClass = hasSearchHighlight ? 'root-card--search-match' : '';
 
   return (
     <div
@@ -44,6 +57,7 @@ export default function RootCard({ root, isNew, popDelay = 0, onSelect }) {
         'root-card--clickable',
         isNew ? 'root-card--new' : '',
         isNew ? 'root-card--pop-in' : '',
+        searchRelevanceClass,
       ]
         .filter(Boolean)
         .join(' ')}
@@ -53,10 +67,21 @@ export default function RootCard({ root, isNew, popDelay = 0, onSelect }) {
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect && onSelect(root) }}
       aria-label={`Open details for ${root.id}`}
+      data-search-score={hasSearchHighlight ? searchScore.toFixed(2) : undefined}
     >
       {/* NEW badge — shown while card is new this session */}
       {isNew && (
         <div className="root-card__badge">NEW</div>
+      )}
+
+      {/* Search relevance indicator */}
+      {hasSearchHighlight && (
+        <div className="root-card__search-indicator" title={`Search relevance: ${Math.round(searchScore * 100)}%`}>
+          <div
+            className="root-card__search-indicator-bar"
+            style={{ width: `${Math.min(searchScore * 100, 100)}%` }}
+          />
+        </div>
       )}
 
       {/* Hebrew root — large, RTL */}
