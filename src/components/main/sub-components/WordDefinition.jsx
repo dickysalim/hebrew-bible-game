@@ -65,7 +65,7 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
     })
   }
 
-  // Render segment row (prefix, root, or suffix)
+  // Render segment row (prefix, root, or suffix) - compact version for right column
   const renderSegmentRow = (segment, type) => {
     if (!segment) return null
     
@@ -83,7 +83,7 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
     if (type === 'suffix') colorClass = 'suffix-color'
     
     return (
-      <div className="segment-row">
+      <div className="segment-row-compact">
         <div className="segment-hebrew">
           <span className={`hebrew-letters ${colorClass}`}>{letters}</span>
         </div>
@@ -100,42 +100,39 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
         <div className="new-badge">New</div>
       )}
       
-      {/* 1. Hebrew word with color coding */}
-      <div className="hebrew-word-display">
-        {renderHebrewWord()}
+      {/* Two-column header: Left = Hebrew word details, Right = Segment breakdown */}
+      <div className="word-definition-header">
+        {/* Left column: Hebrew word, SBL, English gloss */}
+        <div className="word-headline-column">
+          <div className="hebrew-word-display">
+            {renderHebrewWord()}
+          </div>
+          <div className="sbl-transliteration">{sbl}</div>
+          <div className="english-gloss">{gloss}</div>
+        </div>
+        
+        {/* Right column: Segment breakdown */}
+        <div className="segment-breakdown-column">
+          {renderSegmentRow(prefixSegment, 'prefix')}
+          {renderSegmentRow(rootSegment, 'root')}
+          {renderSegmentRow(suffixSegment, 'suffix')}
+        </div>
       </div>
       
-      {/* 2. SBL transliteration */}
-      <div className="sbl-transliteration">{sbl}</div>
-      
-      {/* 3. English gloss */}
-      <div className="english-gloss">{gloss}</div>
-      
-      {/* 4. Grammatical position */}
-      <div className="grammatical-position">
-        <span className="position-label">Part of speech:</span>
-        <span className="position-value">{pos}</span>
+      {/* Metadata row (Part of speech + Encounter) */}
+      <div className="word-metadata">
+        <div className="metadata-item">
+          <span className="metadata-label">Part of speech:</span>
+          <span className="metadata-value">{pos}</span>
+        </div>
+        <span className="metadata-separator">•</span>
+        <div className="metadata-item">
+          <span className="metadata-label">Encounter:</span>
+          <span className="metadata-value">{getEncounterText(encounterCount)}</span>
+        </div>
       </div>
       
-      {/* 5. Encounter counter */}
-      <div className="encounter-counter">
-        <span className="counter-label">Encounter:</span>
-        <span className="counter-value">{getEncounterText(encounterCount)}</span>
-      </div>
-      
-      {/* 6. Divider */}
-      <div className="divider"></div>
-      
-      {/* 7. Prefix row */}
-      {renderSegmentRow(prefixSegment, 'prefix')}
-      
-      {/* 8. Root row */}
-      {renderSegmentRow(rootSegment, 'root')}
-      
-      {/* 9. Suffix row */}
-      {renderSegmentRow(suffixSegment, 'suffix')}
-      
-      {/* 10. Divider */}
+      {/* Divider */}
       <div className="divider"></div>
       
       {/* 11. Explanation paragraph(s) */}

@@ -5,7 +5,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -80,12 +80,34 @@
   text-transform: uppercase;
 }
 
+/* Two-column header layout */
+.word-definition-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.word-headline-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.segment-breakdown-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
 /* Hebrew word display */
 .hebrew-word-display {
   font-family: var(--font-hebrew);
   font-size: 42px;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   direction: rtl;
   letter-spacing: 0;
   line-height: 1.2;
@@ -110,10 +132,10 @@
 /* SBL transliteration */
 .sbl-transliteration {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   color: var(--text-secondary);
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   letter-spacing: 0.5px;
   font-weight: 500;
 }
@@ -121,79 +143,91 @@
 /* English gloss */
 .english-gloss {
   font-family: var(--font-serif);
-  font-size: 20px;
+  font-size: 18px;
   text-align: center;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   font-weight: 600;
 }
 
-/* Grammatical position and encounter counter */
-.grammatical-position,
-.encounter-counter {
+/* Word metadata - compact layout for POS and Encounter */
+.word-metadata {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
-.position-label,
-.counter-label {
-  color: var(--text-muted);
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metadata-label {
   font-weight: 500;
 }
 
-.position-value,
-.counter-value {
+.metadata-value {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+.metadata-separator {
+  color: var(--border);
+  user-select: none;
 }
 
 /* Divider */
 .divider {
   height: 1px;
   background: var(--border);
-  margin: 16px 0;
+  margin: 10px 0;
 }
 
-/* Segment rows */
+/* Segment rows - optimized for right column */
 .segment-row {
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  padding: 4px 0;
   align-items: center;
 }
 
-.segment-row:last-child {
-  border-bottom: none;
+.segment-row-compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 6px;
+  padding: 2px 0;
+  align-items: center;
 }
 
 .segment-hebrew {
   font-family: var(--font-hebrew);
-  font-size: 22px;
+  font-size: 18px;
   text-align: center;
 }
 
 .segment-sbl {
   font-family: var(--font-serif);
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
   text-align: center;
 }
 
 .segment-gloss {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-primary);
   line-height: 1.4;
 }
 
-/* Explanation section */
+/* Explanation section - reduced margins */
 .explanation-section {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .explanation-label {
@@ -202,7 +236,7 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   opacity: 0.7;
 }
 
@@ -214,7 +248,7 @@
 }
 
 .explanation-paragraph {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .explanation-paragraph:last-child {
@@ -228,20 +262,79 @@
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
+  .word-definition-header {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
   .hebrew-word-display {
     font-size: 36px;
   }
   
   .sbl-transliteration {
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .english-gloss {
-    font-size: 18px;
+    font-size: 16px;
   }
   
-  .segment-row {
+  .segment-row,
+  .segment-row-compact {
     grid-template-columns: 1fr 1fr 1.5fr;
-    gap: 8px;
+    gap: 6px;
+  }
+  
+  .segment-hebrew {
+    font-size: 16px;
+  }
+  
+  .segment-sbl {
+    font-size: 11px;
+  }
+  
+  .segment-gloss {
+    font-size: 11px;
+  }
+  
+  .word-metadata {
+    font-size: 11px;
+    gap: 12px;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .word-definition-header {
+    gap: 12px;
+  }
+  
+  .hebrew-word-display {
+    font-size: 32px;
+  }
+  
+  .sbl-transliteration {
+    font-size: 13px;
+  }
+  
+  .english-gloss {
+    font-size: 15px;
+  }
+  
+  .segment-row-compact {
+    padding: 1px 0;
+    gap: 4px;
+  }
+  
+  .segment-hebrew {
+    font-size: 14px;
+  }
+  
+  .segment-sbl {
+    font-size: 10px;
+  }
+  
+  .segment-gloss {
+    font-size: 10px;
   }
 }
