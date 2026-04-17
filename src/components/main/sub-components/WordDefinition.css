@@ -80,12 +80,12 @@
   text-transform: uppercase;
 }
 
-/* Two-column header layout */
+/* Two-column header layout - optimized spacing */
 .word-definition-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 12px;
 }
 
 .word-headline-column {
@@ -99,18 +99,18 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 /* Hebrew word display */
 .hebrew-word-display {
   font-family: var(--font-hebrew);
-  font-size: 42px;
+  font-size: 36px;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   direction: rtl;
   letter-spacing: 0;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .hebrew-segment {
@@ -132,40 +132,40 @@
 /* SBL transliteration */
 .sbl-transliteration {
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
   color: var(--text-secondary);
-  margin-bottom: 10px;
-  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
   font-weight: 500;
 }
 
 /* English gloss */
 .english-gloss {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: 600;
 }
 
-/* Word metadata - compact layout for POS and Encounter */
+/* Word metadata - ultra compact layout for POS and Encounter */
 .word-metadata {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
-  font-size: 12px;
+  gap: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .metadata-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .metadata-label {
@@ -180,49 +180,50 @@
 .metadata-separator {
   color: var(--border);
   user-select: none;
+  font-size: 10px;
 }
 
-/* Divider */
+/* Divider - reduced margin */
 .divider {
   height: 1px;
   background: var(--border);
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 /* Segment rows - optimized for right column */
 .segment-row {
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
-  gap: 8px;
-  padding: 4px 0;
+  gap: 6px;
+  padding: 3px 0;
   align-items: center;
 }
 
 .segment-row-compact {
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
-  gap: 6px;
-  padding: 2px 0;
+  gap: 4px;
+  padding: 1px 0;
   align-items: center;
 }
 
 .segment-hebrew {
   font-family: var(--font-hebrew);
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
 }
 
 .segment-sbl {
   font-family: var(--font-serif);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   text-align: center;
 }
 
 .segment-gloss {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-primary);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* Explanation section - reduced margins */
