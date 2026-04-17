@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import GamePanel from './components/main/GamePanel'
 import LexiconPanel from './components/lexicon/LexiconPanel'
 import ProgressPanel from './components/progress/ProgressPanel'
-import FullChapter from './components/full_verse/FullChapter'
+import FullChapter from './components/full_chapter/FullChapter'
 import TabBar from './components/TabBar'
 import { useRootDiscovery } from './contexts/RootDiscoveryContext'
 

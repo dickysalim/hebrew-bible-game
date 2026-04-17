@@ -203,6 +203,18 @@ function reducer(state, action) {
       return { ...state, activeWordIdx: nextWi, errorCount: 0, wrongHebKeys: [] }
     }
 
+    case 'SELECT_WORD': {
+      // Select a specific word by index (for mouse clicks)
+      const fInc = firstIncomplete(typedCounts, currentVerse)
+      const limit = fInc === -1 ? verses[currentVerse].words.length - 1 : fInc
+      const targetWi = action.wordIndex
+
+      // Validate: can only select words up to the first incomplete
+      if (targetWi < 0 || targetWi > limit) return state
+
+      return { ...state, activeWordIdx: targetWi, errorCount: 0, wrongHebKeys: [] }
+    }
+
     case 'MOVE_VERSE': {
       const nextVi = currentVerse + action.dir
       if (nextVi < 0 || nextVi > highestVerse || nextVi >= verses.length) return state

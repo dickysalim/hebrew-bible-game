@@ -108,6 +108,26 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
     if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
   }
 
+  // Find first incomplete word in this verse
+  const firstIncomplete = verse.words.findIndex((word, wi) => {
+    const typed = typedCounts[`${vi}-${wi}`] ?? 0
+    return typed < word.id.length
+  })
+
+  const handleWordClick = (wi) => {
+    if (!dispatch) return
+    
+    const typed = typedCounts[`${vi}-${wi}`] ?? 0
+    const done = typed >= verse.words[wi].id.length
+    
+    // Word is clickable if it's done OR it's the first incomplete word
+    const isClickable = done || wi === firstIncomplete
+    
+    if (isClickable) {
+      dispatch({ type: 'SELECT_WORD', wordIndex: wi })
+    }
+  }
+
   return (
     <div className="verse-inner-wrap" ref={wrapRef}>
       {verse.words.map((word, wi) => {
@@ -116,14 +136,18 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
         const done     = typed >= letters.length
         const isActive = wi === activeWordIdx
         const types    = getLetterTypes(word.id)
+        
+        // Determine if word is clickable
+        const isClickable = done || wi === firstIncomplete
 
         const wordFlags = currentVerseFlags.filter(f => f.wordIndex === wi)
 
         return (
           <div
             key={wi}
-            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''}`}
+            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''} ${isClickable ? 'clickable-word' : ''}`}
             ref={el => { wordRefs.current[wi] = el }}
+            onClick={() => handleWordClick(wi)}
           >
             {/* Per-letter columns */}
             <div className="word-letter-cols">

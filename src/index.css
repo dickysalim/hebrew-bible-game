@@ -323,6 +323,10 @@ html, body {
   background: var(--purple-light);
   border-color: var(--purple-mid);
 }
+
+.word-block.clickable-word {
+  cursor: pointer;
+}
 /* no green underline — white letters communicate done */
 
 /* letter columns: Hebrew glyph stacked above its SBL sound */
