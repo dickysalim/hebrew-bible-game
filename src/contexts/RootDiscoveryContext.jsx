@@ -36,7 +36,7 @@ function loadDiscoveredWordsByRootFromStorage() {
 // Root discovery state that needs to be shared across components
 const RootDiscoveryContext = createContext()
 
-export function RootDiscoveryProvider({ children }) {
+export function RootDiscoveryProvider({ children, userId = null }) {
   // State for discovered roots — initialized from localStorage for persistence across refresh
   const [discoveredRoots, setDiscoveredRoots] = useState(() => loadDiscoveredRootsFromStorage())
   
@@ -53,13 +53,18 @@ export function RootDiscoveryProvider({ children }) {
   const sessionNewRootIdsRef = useRef(new Set())
 
   // Persist lexicon state (roots + words) to localStorage whenever it changes
+  // Skip localStorage persistence for authenticated users (userId exists)
   useEffect(() => {
+    if (userId) {
+      // Don't save to localStorage for authenticated users
+      return
+    }
     try {
       localStorage.setItem(LEXICON_STORAGE_KEY, JSON.stringify({ discoveredRoots, discoveredWordsByRoot }))
     } catch (e) {
       console.error('Failed to save lexicon to localStorage:', e)
     }
-  }, [discoveredRoots, discoveredWordsByRoot])
+  }, [discoveredRoots, discoveredWordsByRoot, userId])
 
   // Add a newly discovered root
   const addDiscoveredRoot = useCallback((rootData) => {
@@ -89,6 +94,16 @@ export function RootDiscoveryProvider({ children }) {
       ...prev,
       [rootId]: [...(prev[rootId] || []), ...words]
     }))
+  }, [])
+
+  // Update discovered roots from external source (e.g., Supabase)
+  const updateDiscoveredRoots = useCallback((rootsArray) => {
+    setDiscoveredRoots(rootsArray || [])
+  }, [])
+
+  // Update discovered words by root from external source (e.g., Supabase)
+  const updateDiscoveredWordsByRoot = useCallback((wordsByRoot) => {
+    setDiscoveredWordsByRoot(wordsByRoot || {})
   }, [])
 
   // Mark roots as viewed (when Lexicon panel is opened) — clears the badge count only.
@@ -139,6 +154,8 @@ export function RootDiscoveryProvider({ children }) {
     sessionNewRootIdsRef,
     addDiscoveredRoot,
     addDiscoveredWordsForRoot,
+    updateDiscoveredRoots,
+    updateDiscoveredWordsByRoot,
     markRootsAsViewed,
     clearRootHighlights,
     resetDiscoveredRoots,

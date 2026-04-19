@@ -55,6 +55,12 @@ export async function saveProgress(userId, progress) {
     current_verse_index: progress.currentVerseIndex || 0,
     updated_at: new Date().toISOString(),
   }
+  
+  // Only include discovered_words_by_root if it exists in the progress object
+  // This makes the field optional for backward compatibility
+  if (progress.discoveredWordsByRoot !== undefined) {
+    progressData.discovered_words_by_root = progress.discoveredWordsByRoot || {}
+  }
 
   try {
     const { error } = await supabase
@@ -79,9 +85,10 @@ export async function saveProgress(userId, progress) {
  * Helper function to convert game state to Supabase progress format
  * @param {object} gameState - GamePanel reducer state
  * @param {array} contextDiscoveredRoots - Array of discovered root objects from RootDiscoveryContext
+ * @param {object} contextDiscoveredWordsByRoot - Object mapping root IDs to arrays of word objects from RootDiscoveryContext
  * @returns {object} Progress data formatted for Supabase
  */
-export function formatProgressForSupabase(gameState, contextDiscoveredRoots) {
+export function formatProgressForSupabase(gameState, contextDiscoveredRoots, contextDiscoveredWordsByRoot = {}) {
   // Calculate completed verses from typedCounts
   const completedVerses = []
   if (gameState.typedCounts) {
@@ -98,6 +105,7 @@ export function formatProgressForSupabase(gameState, contextDiscoveredRoots) {
 
   return {
     discoveredRoots: contextDiscoveredRoots || [],
+    discoveredWordsByRoot: contextDiscoveredWordsByRoot || {},
     completedVerses,
     wordEncounters: gameState.wordEncounters || {},
     currentVerseIndex: gameState.currentVerse || 0,
@@ -114,6 +122,7 @@ export function formatProgressFromSupabase(supabaseProgress) {
 
   return {
     discoveredRoots: supabaseProgress.discovered_roots || [],
+    discoveredWordsByRoot: supabaseProgress.discovered_words_by_root || {},
     completedVerses: supabaseProgress.completed_verses || [],
     wordEncounters: supabaseProgress.word_encounters || {},
     currentVerseIndex: supabaseProgress.current_verse_index || 0,

@@ -5,12 +5,40 @@ import ProgressPanel from './components/progress/ProgressPanel'
 import FullChapter from './components/full_chapter/FullChapter'
 import TabBar from './components/TabBar'
 import AuthScreen from './components/ui/AuthScreen'
-import { useRootDiscovery } from './contexts/RootDiscoveryContext'
+import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
 import { supabase } from './lib/supabase'
+
+// Component for authenticated app content
+function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab }) {
+  const { newRoots } = useRootDiscovery()
+  
+  return (
+    <div className="app-container">
+      <div className="auth-header">
+        <div className="user-info">
+          <span className="user-email">{session.user.email}</span>
+          <button
+            className="sign-out-button"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+      <TabBar
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+        newRootsCount={newRoots.length}
+      />
+      <div className="tab-content">
+        {renderActiveTab()}
+      </div>
+    </div>
+  )
+}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('main')
-  const { newRoots } = useRootDiscovery()
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -78,49 +106,28 @@ export default function App() {
     }
   }
 
-  // Show loading state while checking session
-  if (loading) {
-    return (
-      <div className="app-container">
-        <div className="loading-screen">
-          <div className="loading-spinner"></div>
-          <p>Loading Hebrew Bible Game...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Show auth screen if no session
-  if (!session) {
-    return (
-      <div className="app-container">
-        <AuthScreen onAuthSuccess={handleAuthSuccess} />
-      </div>
-    )
-  }
-
-  // Show main app with tabs if authenticated
+  // Wrap everything in RootDiscoveryProvider
   return (
-    <div className="app-container">
-      <div className="auth-header">
-        <div className="user-info">
-          <span className="user-email">{session.user.email}</span>
-          <button
-            className="sign-out-button"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Sign Out
-          </button>
+    <RootDiscoveryProvider userId={session?.user?.id}>
+      {loading ? (
+        <div className="app-container">
+          <div className="loading-screen">
+            <div className="loading-spinner"></div>
+            <p>Loading Hebrew Bible Game...</p>
+          </div>
         </div>
-      </div>
-      <TabBar
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        newRootsCount={newRoots.length}
-      />
-      <div className="tab-content">
-        {renderActiveTab()}
-      </div>
-    </div>
+      ) : !session ? (
+        <div className="app-container">
+          <AuthScreen onAuthSuccess={handleAuthSuccess} />
+        </div>
+      ) : (
+        <AuthenticatedApp
+          session={session}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          renderActiveTab={renderActiveTab}
+        />
+      )}
+    </RootDiscoveryProvider>
   )
 }

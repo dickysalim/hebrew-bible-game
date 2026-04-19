@@ -323,6 +323,8 @@ export default function GamePanel({ userId }) {
   const {
     addDiscoveredRoot,
     addDiscoveredWordsForRoot,
+    updateDiscoveredRoots,
+    updateDiscoveredWordsByRoot,
     resetDiscoveredRoots,
     discoveredRoots: contextDiscoveredRoots,
     discoveredWordsByRoot
@@ -451,7 +453,20 @@ export default function GamePanel({ userId }) {
             payload: formattedProgress
           })
 
+          // Update RootDiscoveryContext with Supabase data
+          if (formattedProgress.discoveredRoots) {
+            updateDiscoveredRoots(formattedProgress.discoveredRoots)
+          }
+          if (formattedProgress.discoveredWordsByRoot) {
+            updateDiscoveredWordsByRoot(formattedProgress.discoveredWordsByRoot)
+          }
+
           console.log('Loaded progress from Supabase for user:', userId)
+        } else {
+          // No Supabase data - check if we have localStorage data to migrate
+          // The context already has localStorage data loaded on initialization
+          // We'll let the save progress effect handle saving it to Supabase
+          console.log('No Supabase data found for user, will use localStorage data:', userId)
         }
         setHasLoadedSupabaseProgress(true)
       } catch (error) {
@@ -468,7 +483,7 @@ export default function GamePanel({ userId }) {
     if (!userId || !hasLoadedSupabaseProgress) return
 
     // Format progress for Supabase
-    const progressForSupabase = formatProgressForSupabase(state, contextDiscoveredRoots)
+    const progressForSupabase = formatProgressForSupabase(state, contextDiscoveredRoots, discoveredWordsByRoot)
     
     // Save to Supabase
     const saveToSupabase = async () => {
@@ -487,7 +502,8 @@ export default function GamePanel({ userId }) {
     state.typedCounts,
     state.wordEncounters,
     state.currentVerse,
-    contextDiscoveredRoots
+    contextDiscoveredRoots,
+    discoveredWordsByRoot
   ])
 
   // Random typing sound on correct keypress
