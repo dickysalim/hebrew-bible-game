@@ -75,6 +75,9 @@ const initialState = {
   rootDiscoverySignal: 0,        // increments when root is discovered → triggers audio
   // Verse celebration tracking — persists in reducer so tab switches don't replay
   celebratedVerses: [],          // array of verse indices that have already played the sound
+  // SBL display controls
+  showSBLWord: true,             // whether to show SBL word transliteration
+  showSBLLetter: true,           // whether to show SBL letter transliteration
 }
 
 function reducer(state, action) {
@@ -270,6 +273,12 @@ function reducer(state, action) {
         celebratedVerses: [],
       }
     }
+
+    case 'TOGGLE_SBL_WORD':
+      return { ...state, showSBLWord: !state.showSBLWord }
+    
+    case 'TOGGLE_SBL_LETTER':
+      return { ...state, showSBLLetter: !state.showSBLLetter }
 
     default: return state
   }
@@ -509,6 +518,8 @@ export default function GamePanel() {
               typedCounts={typedCounts}
               activeRootFlags={state.activeRootFlags}
               dispatch={dispatch}
+              showSBLWord={state.showSBLWord}
+              showSBLLetter={state.showSBLLetter}
             />
           </div>
 
@@ -539,6 +550,10 @@ export default function GamePanel() {
         targetHeb={targetLetter}
         showActiveKey={activeWord && !wordDone && errorCount >= 3}
         wrongHebKeys={wrongHebKeys}
+        showSBLWord={state.showSBLWord}
+        showSBLLetter={state.showSBLLetter}
+        onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
+        onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
       />
 
       <div className="footer-note">

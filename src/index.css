@@ -517,12 +517,17 @@ html, body {
   border-radius: var(--radius-lg);
   padding: 8px 10px;
   min-height: 160px;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
 }
 .kb-rows {
   display: flex;
   flex-direction: column;
   gap: 3px;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 .kb-row { display: flex; gap: 2px; }
 .kb-key {
@@ -590,6 +595,42 @@ html, body {
   background: var(--purple-light) !important;
   border-color: var(--purple-mid) !important;
   z-index: 10;
+}
+
+/* ─── SBL CONTROLS ───────────────────────────────────── */
+.sbl-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 120px;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+}
+
+.sbl-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.sbl-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--purple-mid);
+}
+
+.sbl-checkbox:hover {
+  color: var(--text-primary);
 }
 
 /* ─── FOOTER ─────────────────────────────────────────── */

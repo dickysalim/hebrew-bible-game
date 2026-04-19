@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, onToggleSBLWord, onToggleSBLLetter }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -81,6 +81,24 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
         ))}
       </div>
       
+      <div className="sbl-controls">
+        <label className="sbl-checkbox">
+          <input
+            type="checkbox"
+            checked={showSBLLetter}
+            onChange={onToggleSBLLetter}
+          />
+          <span>SBL Letter</span>
+        </label>
+        <label className="sbl-checkbox">
+          <input
+            type="checkbox"
+            checked={showSBLWord}
+            onChange={onToggleSBLWord}
+          />
+          <span>SBL Word</span>
+        </label>
+      </div>
     </div>
   )
 }

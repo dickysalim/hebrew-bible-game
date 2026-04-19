@@ -20,7 +20,7 @@ import { useRef, useState, useEffect, useLayoutEffect } from 'react'
 const EXIT_MS  = 140   // exit animation duration
 const ENTER_MS = 220   // enter animation duration
 
-export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch }) {
+export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter }) {
   // --- verse transition state ---
   const [displayedVerse, setDisplayedVerse] = useState(currentVerse)
   const [animState, setAnimState]           = useState('')
@@ -97,13 +97,15 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
           dispatch={dispatch}
           wrapRef={wrapRef}
           wordRefs={wordRefs}
+          showSBLWord={showSBLWord}
+          showSBLLetter={showSBLLetter}
         />
       </div>
     </div>
   )
 }
 
-function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs }) {
+function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter }) {
   const handleFlagComplete = (flagIndex) => {
     if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
   }
@@ -159,8 +161,8 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
                 return (
                   <div key={i} className="word-letter-col">
                     <span className={`word-char ${charCls}`}>{ch}</span>
-                    <span className={`word-sbl-ch ${isTyped || done ? 'visible' : ''}`}>
-                      {(isTyped || done) ? (LETTER_SBL[ch] || '') : ''}
+                    <span className={`word-sbl-ch ${(isTyped || done) && showSBLLetter ? 'visible' : ''}`}>
+                      {(isTyped || done) && showSBLLetter ? (LETTER_SBL[ch] || '') : ''}
                     </span>
                   </div>
                 )
@@ -168,7 +170,7 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
             </div>
 
             {/* Full word SBL — only when word is done */}
-            {done && <div className="word-full-sbl">{word.sbl}</div>}
+            {done && showSBLWord && <div className="word-full-sbl">{word.sbl}</div>}
 
             {/* Root flags */}
             {wordFlags.map((flag, flagIndex) => {
