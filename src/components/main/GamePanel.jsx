@@ -406,8 +406,9 @@ export default function GamePanel({ userId }) {
   }, [state.completedWordSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save progress to localStorage when relevant state changes
+  // Skip localStorage saving for authenticated users (userId exists)
   useEffect(() => {
-    if (!isLoaded) return // Don't save before loading is complete
+    if (!isLoaded || userId) return // Don't save before loading is complete or if user is authenticated
     
     // Only save the persistent parts of state
     const progressToSave = {
@@ -423,6 +424,7 @@ export default function GamePanel({ userId }) {
     saveProgress(progressToSave)
   }, [
     isLoaded,
+    userId,
     state.typedCounts,
     state.wordEncounters,
     state.highestVerse,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 
 export default function AuthScreen({ onAuthSuccess }) {
@@ -7,10 +7,42 @@ export default function AuthScreen({ onAuthSuccess }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState('')
+  
+  // Rate limiting state
+  const lastAttemptTime = useRef(0)
+  const attemptCount = useRef(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    
+    // Client-side rate limiting
+    const now = Date.now()
+    const timeSinceLastAttempt = now - lastAttemptTime.current
+    
+    // Reset attempt count if it's been more than 5 minutes
+    if (timeSinceLastAttempt > 5 * 60 * 1000) {
+      attemptCount.current = 0
+    }
+    
+    // Check if user is trying too fast
+    if (timeSinceLastAttempt < 10000) { // 10 seconds between attempts
+      setError('Please wait 10 seconds between attempts')
+      return
+    }
+    
+    // Check if too many attempts
+    if (attemptCount.current >= 5) {
+      setError('Too many attempts. Please wait 5 minutes and try again.')
+      return
+    }
+    
+    // Update rate limiting counters
+    lastAttemptTime.current = now
+    attemptCount.current += 1
+    
     setLoading(true)
 
     try {
@@ -19,12 +51,30 @@ export default function AuthScreen({ onAuthSuccess }) {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          }
         })
-        if (error) throw error
-        // Note: In production, you might want to handle email confirmation
-        // For now, we'll treat successful signup as authentication
+        
+        if (error) {
+          // Handle specific Supabase errors
+          if (error.message.includes('rate limit') ||
+              error.message.includes('too many requests') ||
+              error.message.includes('429')) {
+            throw new Error('Email rate limit exceeded. Please wait a few minutes and try again.')
+          }
+          throw error
+        }
+        
         if (data.user) {
-          onAuthSuccess()
+          // Show confirmation message instead of calling onAuthSuccess()
+          setShowConfirmation(true)
+          setRegisteredEmail(email)
+          // Clear form fields
+          setEmail('')
+          setPassword('')
+          // Reset attempt count on successful registration
+          attemptCount.current = 0
         }
       } else {
         // Sign in
@@ -32,13 +82,41 @@ export default function AuthScreen({ onAuthSuccess }) {
           email,
           password,
         })
-        if (error) throw error
+        
+        if (error) {
+          // Check for email confirmation error
+          if (error.message.includes('Email not confirmed') || error.message.includes('confirm')) {
+            throw new Error('Please confirm your email before logging in. Check your inbox for the confirmation link.')
+          }
+          // Handle rate limit errors for login too
+          if (error.message.includes('rate limit') ||
+              error.message.includes('too many requests') ||
+              error.message.includes('429')) {
+            throw new Error('Too many login attempts. Please wait a few minutes and try again.')
+          }
+          throw error
+        }
+        
         if (data.user) {
           onAuthSuccess()
+          // Reset attempt count on successful login
+          attemptCount.current = 0
         }
       }
     } catch (err) {
-      setError(err.message || 'Authentication failed')
+      // Format error message for better user experience
+      let errorMessage = err.message || 'Authentication failed'
+      
+      // Handle specific error types
+      if (errorMessage.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please try again.'
+      } else if (errorMessage.includes('User already registered')) {
+        errorMessage = 'An account with this email already exists. Please sign in instead.'
+      } else if (errorMessage.includes('Password should be at least 6 characters')) {
+        errorMessage = 'Password must be at least 6 characters long.'
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -47,84 +125,131 @@ export default function AuthScreen({ onAuthSuccess }) {
   return (
     <div className="auth-screen">
       <div className="auth-container">
-        <h2 className="auth-title">{isSignUp ? 'Create Account' : 'Sign In'}</h2>
-        <p className="auth-subtitle">
-          {isSignUp 
-            ? 'Create an account to save your Hebrew learning progress across devices'
-            : 'Sign in to access your saved Hebrew learning progress'}
-        </p>
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={isSignUp ? 'Choose a secure password' : 'Enter your password'}
-              required
-              disabled={loading}
-              minLength={isSignUp ? 6 : undefined}
-            />
-            {isSignUp && (
-              <small className="password-hint">At least 6 characters</small>
-            )}
-          </div>
-
-          {error && (
-            <div className="auth-error">
-              {error}
+        
+        {showConfirmation ? (
+          <div className="confirmation-message">
+            <h2 className="auth-title">Check Your Email</h2>
+            <p className="auth-subtitle">
+              We've sent a confirmation email to <strong>{registeredEmail}</strong>
+            </p>
+            <p>
+              Please check your inbox and click the confirmation link to activate your account.
+              Once confirmed, you can sign in to access the game.
+            </p>
+            <div className="confirmation-hints">
+              <p className="confirmation-hint">
+                <small>
+                  <strong>Didn't receive the email?</strong>
+                </small>
+              </p>
+              <ul className="confirmation-hint-list">
+                <li>
+                  <small>Check your spam or junk folder</small>
+                </li>
+                <li>
+                  <small>Make sure you entered the correct email address</small>
+                </li>
+                <li>
+                  <small>Wait a few minutes - emails can sometimes be delayed</small>
+                </li>
+                <li>
+                  <small>If you still don't see it, you can try again in 10 minutes</small>
+                </li>
+              </ul>
             </div>
-          )}
-
-          <button 
-            type="submit" 
-            className="auth-button"
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
-          </button>
-        </form>
-
-        <div className="auth-toggle">
-          <p>
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
             <button
               type="button"
-              className="toggle-button"
+              className="auth-button"
               onClick={() => {
-                setIsSignUp(!isSignUp)
-                setError('')
+                setShowConfirmation(false)
+                setIsSignUp(false)
               }}
-              disabled={loading}
             >
-              {isSignUp ? 'Sign In' : 'Create Account'}
+              Go back to login
             </button>
-          </p>
-        </div>
+          </div>
+        ) : (
+          <>
+            <h2 className="auth-title">{isSignUp ? 'Create Account' : 'Sign In'}</h2>
+            <p className="auth-subtitle">
+              {isSignUp
+                ? 'Create an account to save your Hebrew learning progress across devices'
+                : 'Sign in to access your saved Hebrew learning progress'}
+            </p>
 
-        <div className="auth-note">
-          <p>
-            <small>
-              Your progress will be saved to the cloud and accessible from any device.
-              You can continue playing without an account, but progress will only be saved locally.
-            </small>
-          </p>
-        </div>
+            <form onSubmit={handleSubmit} className="auth-form">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={isSignUp ? 'Choose a secure password' : 'Enter your password'}
+                  required
+                  disabled={loading}
+                  minLength={isSignUp ? 6 : undefined}
+                />
+                {isSignUp && (
+                  <small className="password-hint">At least 6 characters</small>
+                )}
+              </div>
+
+              {error && (
+                <div className="auth-error">
+                  {error}
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                className="auth-button"
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
+              </button>
+            </form>
+
+            <div className="auth-toggle">
+              <p>
+                {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+                <button
+                  type="button"
+                  className="toggle-button"
+                  onClick={() => {
+                    setIsSignUp(!isSignUp)
+                    setError('')
+                  }}
+                  disabled={loading}
+                >
+                  {isSignUp ? 'Sign In' : 'Create Account'}
+                </button>
+              </p>
+            </div>
+
+            <div className="auth-note">
+              <p>
+                <small>
+                  Your progress will be saved to the cloud and accessible from any device.
+                  You can continue playing without an account, but progress will only be saved locally.
+                </small>
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

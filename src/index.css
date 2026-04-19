@@ -2129,6 +2129,81 @@ html, body {
   line-height: 1.5;
 }
 
+/* Confirmation message styles */
+.confirmation-message {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.confirmation-message .auth-title {
+  margin-bottom: 16px;
+}
+
+.confirmation-message .auth-subtitle {
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.confirmation-message p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.confirmation-message strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.confirmation-message .auth-button {
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* Confirmation hints styles */
+.confirmation-hints {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.confirmation-hint {
+  margin-bottom: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.confirmation-hint strong {
+  color: var(--text-primary);
+}
+
+.confirmation-hint-list {
+  margin-left: 20px;
+  margin-bottom: 0;
+}
+
+.confirmation-hint-list li {
+  margin-bottom: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.confirmation-hint-list li:last-child {
+  margin-bottom: 0;
+}
+
+.confirmation-hint-list li small {
+  font-size: 13px;
+}
+
 .loading-screen {
   display: flex;
   flex-direction: column;

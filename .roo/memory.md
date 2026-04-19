@@ -356,3 +356,117 @@ Table: `user_progress`
 - `src/components/main/GamePanel.jsx` - Supabase integration
 - `src/index.css` - Authentication styles
 - `src/lib/supabase.js` - Already existed, confirmed properly configured
+
+## Login Functionality Improvements (April 2026)
+
+### Problem Addressed
+1. **Registration Flow Issue**: Users saw "nothing happens" after clicking "Create Account" because the system immediately called `onAuthSuccess()` without handling email confirmation.
+2. **Progress Tracking**: System saved to both localStorage AND Supabase for authenticated users, conflicting with account-only progress tracking requirement.
+
+### Solutions Implemented
+
+#### 1. Enhanced Registration Flow
+- **AuthScreen.jsx Updates**:
+  - Added `showConfirmation` and `registeredEmail` state variables
+  - Modified signup logic to show confirmation message instead of calling `onAuthSuccess()`
+  - Added confirmation UI with "Check Your Email" message and "Go back to login" button
+  - Enhanced login error handling for unconfirmed emails with user-friendly messages
+  - Clear form fields after successful registration
+
+#### 2. Account-Only Progress Tracking
+- **GamePanel.jsx Updates**:
+  - Modified localStorage saving useEffect to skip when `userId` exists (authenticated users)
+  - Added `userId` to dependency array to properly trigger/block localStorage saves
+  - Ensured authenticated users' progress is saved only to Supabase, not localStorage
+
+#### 3. UI/UX Improvements
+- **CSS Updates**:
+  - Added `.confirmation-message` styles for better visual presentation
+  - Proper styling for email confirmation screen with centered layout
+  - Maintained consistent design with existing auth styles
+
+### Key Changes Made
+1. **`src/components/ui/AuthScreen.jsx`**:
+   - Lines 10-11: Added `showConfirmation` and `registeredEmail` state
+   - Lines 26-34: Updated signup logic to show confirmation instead of `onAuthSuccess()`
+   - Lines 43-49: Enhanced login error handling for unconfirmed emails
+   - Lines 65-85: Added confirmation message UI with "Go back to login" button
+
+2. **`src/components/main/GamePanel.jsx`**:
+   - Line 410: Added `|| userId` condition to skip localStorage saving for authenticated users
+   - Line 424: Added `userId` to dependency array
+
+3. **`src/index.css`**:
+   - Lines 2132-2148: Added `.confirmation-message` styles
+
+### User Flow
+1. **Registration**: User signs up → Sees "Check your email" confirmation → Clicks "Go back to login" → Logs in after email confirmation
+2. **Progress Tracking**: Unauthenticated users save to localStorage only → Authenticated users save to Supabase only
+3. **Error Handling**: Clear messages for unconfirmed email login attempts
+
+### Testing Considerations
+- Registration shows confirmation message (not game)
+- "Go back to login" button switches to login form
+- Form fields clear after registration
+- Authenticated users don't save progress to localStorage
+- Unconfirmed email login shows appropriate error message
+
+## Email Rate Limit Handling (April 2026)
+
+### Problem
+Users experiencing "email rate limit exceeded" errors even with fewer than 3 emails sent, likely due to:
+- Supabase free tier limitations
+- Rapid repeated attempts
+- Shared IP/network limits
+
+### Solutions Implemented
+
+#### 1. Client-Side Rate Limiting (`AuthScreen.jsx`)
+- **Added useRef for rate limiting**: `lastAttemptTime` and `attemptCount`
+- **10-second cooldown**: Prevents rapid successive attempts
+- **5-attempt limit**: Blocks further attempts for 5 minutes
+- **Automatic reset**: Counters reset after 5 minutes of inactivity
+
+#### 2. Enhanced Error Handling
+- **Specific rate limit detection**: Checks for "rate limit", "too many requests", "429" errors
+- **User-friendly messages**: Clear explanations about wait times
+- **Comprehensive error mapping**:
+  - `Invalid login credentials` → "Invalid email or password"
+  - `User already registered` → "Account exists, please sign in"
+  - `Password should be at least 6 characters` → "Password must be at least 6 characters"
+
+#### 3. Improved Confirmation UI
+- **Added helpful hints**: "Didn't receive the email?" section
+- **Troubleshooting list**: Check spam, verify email, wait, retry later
+- **CSS styling**: Added `.confirmation-hints` and `.confirmation-hint-list` styles
+
+#### 4. Supabase Configuration Improvements
+- **Added emailRedirectTo**: Proper callback URL for email confirmation
+- **Better error propagation**: More detailed error messages from Supabase
+
+### Key Code Changes
+
+#### `src/components/ui/AuthScreen.jsx`
+- **Lines 1-2**: Added `useRef` import
+- **Lines 13-15**: Added rate limiting refs: `lastAttemptTime`, `attemptCount`
+- **Lines 24-41**: Client-side rate limiting logic (10s cooldown, 5-attempt limit)
+- **Lines 55-60**: Supabase rate limit error detection
+- **Lines 73-78**: Login rate limit error handling
+- **Lines 85-95**: Enhanced error message formatting
+- **Lines 108-124**: Added confirmation hints UI
+
+#### `src/index.css`
+- **Lines 2149-2172**: Added `.confirmation-hints` styles for better UX
+
+### User Experience Improvements
+1. **Prevention**: Users can't spam registration/login attempts
+2. **Clear messaging**: Understandable error messages with solutions
+3. **Self-service**: Troubleshooting hints in confirmation screen
+4. **Graceful degradation**: System handles Supabase limits gracefully
+
+### Testing Scenarios Covered
+- Rapid registration attempts (blocked after 5 attempts)
+- Quick retries (10-second cooldown enforced)
+- Rate limit error from Supabase (user-friendly message)
+- Email delivery issues (helpful troubleshooting hints)
+- Various authentication errors (mapped to user-friendly messages)
