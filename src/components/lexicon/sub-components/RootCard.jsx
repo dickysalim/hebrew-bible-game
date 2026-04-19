@@ -74,15 +74,6 @@ export default function RootCard({
         <div className="root-card__badge">NEW</div>
       )}
 
-      {/* Search relevance indicator */}
-      {hasSearchHighlight && (
-        <div className="root-card__search-indicator" title={`Search relevance: ${Math.round(searchScore * 100)}%`}>
-          <div
-            className="root-card__search-indicator-bar"
-            style={{ width: `${Math.min(searchScore * 100, 100)}%` }}
-          />
-        </div>
-      )}
 
       {/* Hebrew root — large, RTL */}
       <div className="root-card__hebrew" dir="rtl" lang="he">
@@ -90,7 +81,7 @@ export default function RootCard({
       </div>
 
       {/* SBL transliteration */}
-      <div className="root-card__sbl">{root.sbl}</div>
+      <div className="root-card__sbl" style={{ color: '#ffffff' }}>{root.sbl}</div>
 
       {/* Gloss */}
       <div className="root-card__gloss">{root.gloss}</div>

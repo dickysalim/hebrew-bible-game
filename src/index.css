@@ -1330,12 +1330,6 @@ html, body {
    ROOT CARD — search highlighting
    ═══════════════════════════════════════════════════════════════ */
 
-/* Search match card styling */
-.root-card--search-match {
-  border-color: var(--purple-mid);
-  box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.15), var(--shadow-card);
-}
-
 /* Search relevance indicator */
 .root-card__search-indicator {
   position: absolute;
@@ -1353,12 +1347,6 @@ html, body {
   background: linear-gradient(90deg, var(--purple-light), var(--purple));
   border-radius: 0 var(--radius) 0 0;
   transition: width 0.3s ease;
-}
-
-/* Search match hover effect */
-.root-card--search-match.root-card--clickable:hover {
-  border-color: var(--purple);
-  box-shadow: 0 8px 24px rgba(128, 90, 213, 0.2);
 }
 
 /* ═══════════════════════════════════════════════════════════════

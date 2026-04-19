@@ -46,7 +46,12 @@ export default function LexiconPanel() {
   // Sort: new cards first, then the rest in discovery order, filtered by search
   const sortedRoots = useMemo(() => {
     const filteredRoots = searchQuery.trim()
-      ? searchResults.map(result => ({ id: result.id }))
+      ? searchResults.map(result => ({
+          id: result.id,
+          sbl: result.sbl,
+          gloss: result.gloss,
+          strongs: result.strongs,
+        }))
       : discoveredRoots
     
     return [...filteredRoots].sort((a, b) => {
