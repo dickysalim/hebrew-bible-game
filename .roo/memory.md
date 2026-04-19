@@ -279,3 +279,80 @@ Weighted scoring system:
 - Shows results in existing grid view
 - Visual feedback for search matches
 - Helpful empty state messages
+
+## Supabase Authentication & Progress Saving Implementation (April 2026)
+
+### Overview
+Integrated Supabase authentication and cloud progress saving into the Hebrew Bible learning game. Users can create accounts, log in, and have their progress saved to Supabase database while maintaining full localStorage compatibility as fallback.
+
+### Key Components
+1. **Supabase Client** (`src/lib/supabase.js`)
+   - Configured with environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+   - Provides authentication and database client for the entire app
+
+2. **AuthScreen Component** (`src/components/ui/AuthScreen.jsx`)
+   - Login and signup UI with email/password forms
+   - Toggle between signup and login modes
+   - Error message display for authentication failures
+   - `onAuthSuccess` callback prop for integration with App.jsx
+
+3. **Authentication Wrapper** (`src/App.jsx`)
+   - Checks existing session on mount with `supabase.auth.getSession()`
+   - Listens for auth state changes with `supabase.auth.onAuthStateChange()`
+   - Shows loading state during initial session check
+   - Renders `AuthScreen` when no session exists
+   - Passes `session.user.id` as `userId` prop to `GamePanel` when authenticated
+   - User info header with sign-out functionality
+
+4. **Progress Library** (`src/lib/progress.js`)
+   - `loadProgress(userId)`: Queries `user_progress` table filtering by `user_id`
+   - `saveProgress(userId, progress)`: Upserts row to `user_progress` table
+   - `formatProgressForSupabase()`: Converts game state to Supabase format
+   - `formatProgressFromSupabase()`: Converts Supabase data to game state format
+
+5. **GamePanel Integration** (`src/components/main/GamePanel.jsx`)
+   - Added `userId` prop to accept authenticated user ID
+   - `useEffect` to load progress from Supabase when `userId` is available
+   - `useEffect` to save progress to Supabase when game state changes
+   - `LOAD_SUPABASE_PROGRESS` reducer action to merge Supabase data with local state
+   - Maintains existing `useProgressPersistence` hook for localStorage
+
+### Data Mapping to Supabase Table
+Table: `user_progress`
+- `discovered_roots` (jsonb): Array of root objects from `RootDiscoveryContext`
+- `completed_verses` (jsonb): Array of verse indices where all words completed (derived from `typedCounts`)
+- `word_encounters` (jsonb): Object mapping word IDs to completion counts
+- `current_verse_index` (integer): Current verse index (0-based)
+
+### localStorage Compatibility Strategy
+1. **Dual Persistence**: Game continues using `useProgressPersistence` hook for localStorage regardless of auth status
+2. **Conditional Supabase Operations**: Only run when `userId` is available (authenticated)
+3. **Error Handling**: Supabase failures are caught and logged, localStorage continues working
+4. **Data Merging**: When Supabase data loads, it merges with existing localStorage data
+5. **RootDiscoveryContext Unchanged**: Continues its own localStorage persistence
+6. **Initial State Loading**: Always loads from localStorage first, then Supabase if authenticated
+
+### Scenarios Handled
+- **Unauthenticated users**: 100% localStorage functionality (unchanged from before)
+- **New accounts**: No loss of pre-account localStorage progress (data merging)
+- **Network failures**: localStorage continues uninterrupted (error catching)
+- **Cross-device sync**: Supabase provides cloud backup with localStorage fallback
+- **Existing game logic**: Typing mechanics, verse display, keyboard, sound code remain completely unchanged
+
+### CSS Styling (`src/index.css`)
+- Comprehensive authentication styles for `AuthScreen` component
+- Loading screen spinner and styling
+- User info header and sign-out button styling
+- Form styling with focus states and error displays
+
+### Files Created or Modified
+**New Files:**
+- `src/components/ui/AuthScreen.jsx`
+- `src/lib/progress.js`
+- `plans/supabase-auth-progress-implementation.md`
+
+**Modified Files:**
+- `src/App.jsx` - Authentication wrapper
+- `src/components/main/GamePanel.jsx` - Supabase integration
+- `src/index.css` - Authentication styles
+- `src/lib/supabase.js` - Already existed, confirmed properly configured

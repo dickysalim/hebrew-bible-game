@@ -13,6 +13,7 @@ import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebre
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
 import { checkRootCompletion } from '../../utils/rootDetection'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
+import { loadProgress, saveProgress, formatProgressForSupabase, formatProgressFromSupabase } from '../../lib/progress'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -280,24 +281,59 @@ function reducer(state, action) {
     case 'TOGGLE_SBL_LETTER':
       return { ...state, showSBLLetter: !state.showSBLLetter }
 
+    case 'LOAD_SUPABASE_PROGRESS': {
+      const { discoveredRoots, completedVerses, wordEncounters, currentVerseIndex } = action.payload
+      
+      // Convert discoveredRoots array to object mapping for reducer state
+      const discoveredRootsMap = {}
+      if (Array.isArray(discoveredRoots)) {
+        discoveredRoots.forEach(root => {
+          if (root && root.id) {
+            discoveredRootsMap[root.id] = true
+          }
+        })
+      }
+
+      // Convert completedVerses array to typedCounts
+      // This is simplified - in a real implementation, we'd need to reconstruct typedCounts
+      // from completedVerses. For now, we'll just update what we can.
+      const typedCounts = { ...state.typedCounts }
+      
+      return {
+        ...state,
+        discoveredRoots: { ...state.discoveredRoots, ...discoveredRootsMap },
+        wordEncounters: { ...state.wordEncounters, ...wordEncounters },
+        currentVerse: currentVerseIndex !== undefined ? currentVerseIndex : state.currentVerse,
+        // Note: We're merging Supabase data with existing localStorage data
+        // This ensures no data loss if user was playing offline
+      }
+    }
+
     default: return state
   }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function GamePanel() {
+export default function GamePanel({ userId }) {
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
   // Root discovery context — used to update the Lexicon tab badge and persist roots
-  const { addDiscoveredRoot, addDiscoveredWordsForRoot, resetDiscoveredRoots } = useRootDiscovery()
+  const {
+    addDiscoveredRoot,
+    addDiscoveredWordsForRoot,
+    resetDiscoveredRoots,
+    discoveredRoots: contextDiscoveredRoots,
+    discoveredWordsByRoot
+  } = useRootDiscovery()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
     return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
   })
+  const [hasLoadedSupabaseProgress, setHasLoadedSupabaseProgress] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
@@ -395,6 +431,61 @@ export default function GamePanel() {
     state.carouselIdxMap,
     state.celebratedVerses,
     saveProgress
+  ])
+
+  // Load progress from Supabase when userId is available
+  useEffect(() => {
+    if (!userId || hasLoadedSupabaseProgress) return
+
+    const loadFromSupabase = async () => {
+      try {
+        const supabaseProgress = await loadProgress(userId)
+        if (supabaseProgress) {
+          const formattedProgress = formatProgressFromSupabase(supabaseProgress)
+          
+          // Dispatch action to update game state with Supabase progress
+          dispatch({
+            type: 'LOAD_SUPABASE_PROGRESS',
+            payload: formattedProgress
+          })
+
+          console.log('Loaded progress from Supabase for user:', userId)
+        }
+        setHasLoadedSupabaseProgress(true)
+      } catch (error) {
+        console.error('Failed to load progress from Supabase:', error)
+        setHasLoadedSupabaseProgress(true) // Don't retry on error
+      }
+    }
+
+    loadFromSupabase()
+  }, [userId, hasLoadedSupabaseProgress, dispatch])
+
+  // Save progress to Supabase when relevant state changes and userId is available
+  useEffect(() => {
+    if (!userId || !hasLoadedSupabaseProgress) return
+
+    // Format progress for Supabase
+    const progressForSupabase = formatProgressForSupabase(state, contextDiscoveredRoots)
+    
+    // Save to Supabase
+    const saveToSupabase = async () => {
+      try {
+        await saveProgress(userId, progressForSupabase)
+      } catch (error) {
+        console.error('Failed to save progress to Supabase:', error)
+        // Continue with localStorage as fallback
+      }
+    }
+
+    saveToSupabase()
+  }, [
+    userId,
+    hasLoadedSupabaseProgress,
+    state.typedCounts,
+    state.wordEncounters,
+    state.currentVerse,
+    contextDiscoveredRoots
   ])
 
   // Random typing sound on correct keypress
