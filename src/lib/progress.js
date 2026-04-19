@@ -53,6 +53,11 @@ export async function saveProgress(userId, progress) {
     completed_verses: progress.completedVerses || [],
     word_encounters: progress.wordEncounters || {},
     current_verse_index: progress.currentVerseIndex || 0,
+    typed_counts: progress.typedCounts || {},
+    active_word_idx: progress.activeWordIdx !== undefined ? progress.activeWordIdx : 0,
+    highest_verse: progress.highestVerse || 0,
+    carousel_idx_map: progress.carouselIdxMap || {},
+    celebrated_verses: progress.celebratedVerses || [],
     updated_at: new Date().toISOString(),
   }
   
@@ -109,6 +114,11 @@ export function formatProgressForSupabase(gameState, contextDiscoveredRoots, con
     completedVerses,
     wordEncounters: gameState.wordEncounters || {},
     currentVerseIndex: gameState.currentVerse || 0,
+    typedCounts: gameState.typedCounts || {},
+    activeWordIdx: gameState.activeWordIdx !== undefined ? gameState.activeWordIdx : 0,
+    highestVerse: gameState.highestVerse || 0,
+    carouselIdxMap: gameState.carouselIdxMap || {},
+    celebratedVerses: gameState.celebratedVerses || [],
   }
 }
 
@@ -126,5 +136,10 @@ export function formatProgressFromSupabase(supabaseProgress) {
     completedVerses: supabaseProgress.completed_verses || [],
     wordEncounters: supabaseProgress.word_encounters || {},
     currentVerseIndex: supabaseProgress.current_verse_index || 0,
+    typedCounts: supabaseProgress.typed_counts || {},
+    activeWordIdx: supabaseProgress.active_word_idx !== undefined ? supabaseProgress.active_word_idx : 0,
+    highestVerse: supabaseProgress.highest_verse || 0,
+    carouselIdxMap: supabaseProgress.carousel_idx_map || {},
+    celebratedVerses: supabaseProgress.celebrated_verses || [],
   }
 }

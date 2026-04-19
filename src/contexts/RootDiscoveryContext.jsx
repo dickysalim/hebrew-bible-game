@@ -37,15 +37,28 @@ function loadDiscoveredWordsByRootFromStorage() {
 const RootDiscoveryContext = createContext()
 
 export function RootDiscoveryProvider({ children, userId = null }) {
-  // State for discovered roots — initialized from localStorage for persistence across refresh
-  const [discoveredRoots, setDiscoveredRoots] = useState(() => loadDiscoveredRootsFromStorage())
-  
+  // State for discovered roots — empty for authenticated users (loaded from Supabase), localStorage for guests
+  const [discoveredRoots, setDiscoveredRoots] = useState([])
+
   // State for new roots (roots discovered but not yet viewed in Lexicon)
   // These are NOT persisted — "new" status resets on page refresh
   const [newRoots, setNewRoots] = useState([])
-  
+
   // State for discovered words by root
-  const [discoveredWordsByRoot, setDiscoveredWordsByRoot] = useState(() => loadDiscoveredWordsByRootFromStorage())
+  const [discoveredWordsByRoot, setDiscoveredWordsByRoot] = useState({})
+
+  // Load from localStorage only for unauthenticated users.
+  // Authenticated users get their data from Supabase via updateDiscoveredRoots/updateDiscoveredWordsByRoot.
+  useEffect(() => {
+    if (!userId) {
+      setDiscoveredRoots(loadDiscoveredRootsFromStorage())
+      setDiscoveredWordsByRoot(loadDiscoveredWordsByRootFromStorage())
+    } else {
+      // Clear any localStorage data that may have loaded before session resolved
+      setDiscoveredRoots([])
+      setDiscoveredWordsByRoot({})
+    }
+  }, [userId])
 
   // Set of root IDs that are "new" for the current Lexicon visit.
   // Cleared when user leaves the Lexicon panel so highlights disappear on return.

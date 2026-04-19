@@ -13,7 +13,7 @@ import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebre
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
 import { checkRootCompletion } from '../../utils/rootDetection'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
-import { loadProgress, saveProgress, formatProgressForSupabase, formatProgressFromSupabase } from '../../lib/progress'
+import { loadProgress, saveProgress as saveProgressToSupabase, formatProgressForSupabase, formatProgressFromSupabase } from '../../lib/progress'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -282,7 +282,17 @@ function reducer(state, action) {
       return { ...state, showSBLLetter: !state.showSBLLetter }
 
     case 'LOAD_SUPABASE_PROGRESS': {
-      const { discoveredRoots, completedVerses, wordEncounters, currentVerseIndex } = action.payload
+      const {
+        discoveredRoots,
+        completedVerses,
+        wordEncounters,
+        currentVerseIndex,
+        typedCounts,
+        activeWordIdx,
+        highestVerse,
+        carouselIdxMap,
+        celebratedVerses
+      } = action.payload
       
       // Convert discoveredRoots array to object mapping for reducer state
       const discoveredRootsMap = {}
@@ -294,16 +304,18 @@ function reducer(state, action) {
         })
       }
 
-      // Convert completedVerses array to typedCounts
-      // This is simplified - in a real implementation, we'd need to reconstruct typedCounts
-      // from completedVerses. For now, we'll just update what we can.
-      const typedCounts = { ...state.typedCounts }
-      
+      // Merge Supabase data with existing state
+      // Prefer Supabase data for fields that exist in the payload
       return {
         ...state,
         discoveredRoots: { ...state.discoveredRoots, ...discoveredRootsMap },
         wordEncounters: { ...state.wordEncounters, ...wordEncounters },
         currentVerse: currentVerseIndex !== undefined ? currentVerseIndex : state.currentVerse,
+        typedCounts: typedCounts || state.typedCounts,
+        activeWordIdx: activeWordIdx !== undefined ? activeWordIdx : state.activeWordIdx,
+        highestVerse: highestVerse !== undefined ? highestVerse : state.highestVerse,
+        carouselIdxMap: carouselIdxMap || state.carouselIdxMap,
+        celebratedVerses: celebratedVerses || state.celebratedVerses,
         // Note: We're merging Supabase data with existing localStorage data
         // This ensures no data loss if user was playing offline
       }
@@ -331,6 +343,7 @@ export default function GamePanel({ userId }) {
   } = useRootDiscovery()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
+    if (userId) return initialState  // authenticated: start clean, load from Supabase
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
     return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
@@ -488,7 +501,7 @@ export default function GamePanel({ userId }) {
     // Save to Supabase
     const saveToSupabase = async () => {
       try {
-        await saveProgress(userId, progressForSupabase)
+        await saveProgressToSupabase(userId, progressForSupabase)
       } catch (error) {
         console.error('Failed to save progress to Supabase:', error)
         // Continue with localStorage as fallback
