@@ -649,7 +649,7 @@ export default function GamePanel({ userId }) {
           />
         </div>
 
-        {/* Right column: Game content */}
+        {/* Right column: Game content + keyboard */}
         <div className="game-content-column">
           <div className="verse-scroll-area">
             <VerseScroll
@@ -680,25 +680,24 @@ export default function GamePanel({ userId }) {
               esv={verse.esv}
               highlightPhrase={highlightPhrase}
             />
+
+            <KeyboardGuide
+              rows={KEYBOARD_ROWS}
+              keys={KEYS}
+              targetHeb={targetLetter}
+              showActiveKey={activeWord && !wordDone && errorCount >= 3}
+              wrongHebKeys={wrongHebKeys}
+              showSBLWord={state.showSBLWord}
+              showSBLLetter={state.showSBLLetter}
+              onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
+              onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+            />
+
+            <div className="footer-note">
+              Genesis 1:{verse.verse} — Masoretic Text (BHS) — ESV
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Keyboard Guide spans full width below the grid */}
-      <KeyboardGuide
-        rows={KEYBOARD_ROWS}
-        keys={KEYS}
-        targetHeb={targetLetter}
-        showActiveKey={activeWord && !wordDone && errorCount >= 3}
-        wrongHebKeys={wrongHebKeys}
-        showSBLWord={state.showSBLWord}
-        showSBLLetter={state.showSBLLetter}
-        onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
-        onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
-      />
-
-      <div className="footer-note">
-        Genesis 1:{verse.verse} — Masoretic Text (BHS) — ESV
       </div>
 
     </div>

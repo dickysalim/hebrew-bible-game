@@ -196,10 +196,10 @@ html, body {
 /* Main content grid for two-column layout */
 .main-content-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr 1.6fr;
   gap: 24px;
   flex: 1;
-  min-height: 0; /* Important for child overflow */
+  min-height: 0;
 }
 
 .word-definition-column {
