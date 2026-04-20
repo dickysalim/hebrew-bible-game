@@ -152,7 +152,7 @@
 
 .haber-msg-assistant .haber-msg-text {
   background: var(--bg-surface);
-  color: var(--text-secondary);
+  color: #ffffff;
   padding: 8px 12px;
   border-radius: 0 var(--radius) var(--radius) var(--radius);
   border-left: 2px solid var(--border-mid);
@@ -160,7 +160,7 @@
 
 .haber-msg-user .haber-msg-text {
   background: var(--purple-light);
-  color: var(--text-primary);
+  color: #ffffff;
   padding: 8px 12px;
   border-radius: var(--radius) 0 var(--radius) var(--radius);
 }
