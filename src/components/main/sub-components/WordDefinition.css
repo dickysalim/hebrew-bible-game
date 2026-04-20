@@ -9,8 +9,69 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* ── Inner tab navigation ── */
+
+.wd-tabs {
+  display: flex;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.wd-tab {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 6px 14px 6px 0;
+  margin-right: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.wd-tab:hover {
+  color: var(--text-secondary);
+}
+
+.wd-tab.active {
+  color: var(--text-primary);
+}
+
+.wd-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--purple);
+  border-radius: 1px 1px 0 0;
+}
+
+/* ── Tab content container ── */
+
+.wd-tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Word tab scrollable area ── */
+
+.wd-word-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .word-definition.is-new {
@@ -18,22 +79,22 @@
   box-shadow: 0 0 0 2px rgba(29, 158, 117, 0.18), 0 0 16px rgba(29, 158, 117, 0.12);
 }
 
-/* Custom scrollbar for WordDefinition */
-.word-definition::-webkit-scrollbar {
+/* Custom scrollbar for word tab content */
+.wd-word-scroll::-webkit-scrollbar {
   width: 6px;
 }
 
-.word-definition::-webkit-scrollbar-track {
+.wd-word-scroll::-webkit-scrollbar-track {
   background: var(--bg-surface);
   border-radius: 3px;
 }
 
-.word-definition::-webkit-scrollbar-thumb {
+.wd-word-scroll::-webkit-scrollbar-thumb {
   background: var(--border-mid);
   border-radius: 3px;
 }
 
-.word-definition::-webkit-scrollbar-thumb:hover {
+.wd-word-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 

@@ -1,7 +1,18 @@
+import { useState, useEffect } from 'react'
 import './WordDefinition.css'
+import HaberPanel from './HaberPanel'
 
-export default function WordDefinition({ word, wordId, sbl, encounterCount, isWordCompleted }) {
-  // If no word selected or word not completed, show placeholder
+export default function WordDefinition({
+  word, wordId, sbl, encounterCount, isWordCompleted,
+  currentWordContext, haberSessions, setHaberSessions
+}) {
+  const [activeTab, setActiveTab] = useState('word')
+
+  // Reset to Word tab when the active word changes
+  useEffect(() => {
+    setActiveTab('word')
+  }, [wordId])
+
   if (!word || !isWordCompleted) {
     return (
       <div className="word-definition empty">
@@ -14,13 +25,11 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
   }
 
   const { gloss, pos, segments, explanation } = word
-  
-  // Get segment by type
+
   const prefixSegment = segments.find(s => s.type === 'prefix')
   const rootSegment = segments.find(s => s.type === 'root')
   const suffixSegment = segments.find(s => s.type === 'suffix')
-  
-  // Format encounter counter
+
   const getEncounterText = (count) => {
     if (count === 1) return '1st time'
     if (count === 2) return '2nd time'
@@ -28,19 +37,14 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
     return `${count}th time`
   }
 
-  // Render explanation with bold text and paragraph breaks
   const renderExplanation = (text) => {
     if (!text) return null
-    
-    // Split by double newlines for paragraphs
     const paragraphs = text.split('\n\n')
-    
     return paragraphs.map((para, idx) => {
-      // Replace *text* with <strong>text</strong>
       const html = para.replace(/\*(.*?)\*/g, '<strong>$1</strong>')
       return (
-        <p 
-          key={idx} 
+        <p
+          key={idx}
           className="explanation-paragraph"
           dangerouslySetInnerHTML={{ __html: html }}
         />
@@ -48,7 +52,6 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
     })
   }
 
-  // Render Hebrew word with color coding
   const renderHebrewWord = () => {
     return segments.map((segment, idx) => {
       const letters = segment.letters.join('')
@@ -56,7 +59,6 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
       if (segment.type === 'prefix') colorClass = 'prefix-color'
       if (segment.type === 'root') colorClass = 'root-color'
       if (segment.type === 'suffix') colorClass = 'suffix-color'
-      
       return (
         <span key={idx} className={`hebrew-segment ${colorClass}`}>
           {letters}
@@ -65,29 +67,24 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
     })
   }
 
-  // Render segment row (prefix, root, or suffix) - compact version for right column
   const renderSegmentRow = (segment, type) => {
     if (!segment) return null
-    
     const letters = segment.letters.join('')
     const gloss = segment.gloss || ''
-    // Get SBL from word-level fields
-    let sbl = ''
-    if (type === 'prefix') sbl = word.prefix_sbl || `[${type} SBL]`
-    if (type === 'root') sbl = word.root_sbl || `[${type} SBL]`
-    if (type === 'suffix') sbl = word.suffix_sbl || `[${type} SBL]`
-    
+    let segSbl = ''
+    if (type === 'prefix') segSbl = word.prefix_sbl || `[${type} SBL]`
+    if (type === 'root') segSbl = word.root_sbl || `[${type} SBL]`
+    if (type === 'suffix') segSbl = word.suffix_sbl || `[${type} SBL]`
     let colorClass = ''
     if (type === 'prefix') colorClass = 'prefix-color'
     if (type === 'root') colorClass = 'root-color'
     if (type === 'suffix') colorClass = 'suffix-color'
-    
     return (
       <div className="segment-row-compact">
         <div className="segment-hebrew">
           <span className={`hebrew-letters ${colorClass}`}>{letters}</span>
         </div>
-        <div className="segment-sbl">{sbl}</div>
+        <div className="segment-sbl">{segSbl}</div>
         <div className="segment-gloss">{gloss}</div>
       </div>
     )
@@ -95,52 +92,73 @@ export default function WordDefinition({ word, wordId, sbl, encounterCount, isWo
 
   return (
     <div className={`word-definition${encounterCount === 1 ? ' is-new' : ''}`}>
-      {/* New badge for first encounter */}
       {encounterCount === 1 && (
         <div className="new-badge">New</div>
       )}
-      
-      {/* Two-column header: Left = Hebrew word details, Right = Segment breakdown */}
-      <div className="word-definition-header">
-        {/* Left column: Hebrew word, SBL, English gloss */}
-        <div className="word-headline-column">
-          <div className="hebrew-word-display">
-            {renderHebrewWord()}
+
+      {/* Tab bar */}
+      <div className="wd-tabs">
+        <button
+          className={`wd-tab${activeTab === 'word' ? ' active' : ''}`}
+          onClick={() => setActiveTab('word')}
+        >
+          Word
+        </button>
+        <button
+          className={`wd-tab${activeTab === 'haber' ? ' active' : ''}`}
+          onClick={() => setActiveTab('haber')}
+        >
+          Haber
+        </button>
+      </div>
+
+      {/* Tab content */}
+      <div className="wd-tab-content">
+        {activeTab === 'word' ? (
+          <div className="wd-word-scroll">
+            <div className="word-definition-header">
+              <div className="word-headline-column">
+                <div className="hebrew-word-display">
+                  {renderHebrewWord()}
+                </div>
+                <div className="sbl-transliteration">{sbl}</div>
+                <div className="english-gloss">{gloss}</div>
+              </div>
+              <div className="segment-breakdown-column">
+                {renderSegmentRow(prefixSegment, 'prefix')}
+                {renderSegmentRow(rootSegment, 'root')}
+                {renderSegmentRow(suffixSegment, 'suffix')}
+              </div>
+            </div>
+
+            <div className="word-metadata">
+              <div className="metadata-item">
+                <span className="metadata-label">Part of speech:</span>
+                <span className="metadata-value">{pos}</span>
+              </div>
+              <span className="metadata-separator">•</span>
+              <div className="metadata-item">
+                <span className="metadata-label">Encounter:</span>
+                <span className="metadata-value">{getEncounterText(encounterCount)}</span>
+              </div>
+            </div>
+
+            <div className="divider"></div>
+
+            <div className="explanation-section">
+              <div className="explanation-label">Explanation</div>
+              <div className="explanation-content">
+                {renderExplanation(explanation)}
+              </div>
+            </div>
           </div>
-          <div className="sbl-transliteration">{sbl}</div>
-          <div className="english-gloss">{gloss}</div>
-        </div>
-        
-        {/* Right column: Segment breakdown */}
-        <div className="segment-breakdown-column">
-          {renderSegmentRow(prefixSegment, 'prefix')}
-          {renderSegmentRow(rootSegment, 'root')}
-          {renderSegmentRow(suffixSegment, 'suffix')}
-        </div>
-      </div>
-      
-      {/* Metadata row (Part of speech + Encounter) */}
-      <div className="word-metadata">
-        <div className="metadata-item">
-          <span className="metadata-label">Part of speech:</span>
-          <span className="metadata-value">{pos}</span>
-        </div>
-        <span className="metadata-separator">•</span>
-        <div className="metadata-item">
-          <span className="metadata-label">Encounter:</span>
-          <span className="metadata-value">{getEncounterText(encounterCount)}</span>
-        </div>
-      </div>
-      
-      {/* Divider */}
-      <div className="divider"></div>
-      
-      {/* 11. Explanation paragraph(s) */}
-      <div className="explanation-section">
-        <div className="explanation-label">Explanation</div>
-        <div className="explanation-content">
-          {renderExplanation(explanation)}
-        </div>
+        ) : (
+          <HaberPanel
+            currentWordContext={currentWordContext}
+            haberSessions={haberSessions}
+            setHaberSessions={setHaberSessions}
+          />
+        )}
       </div>
     </div>
   )

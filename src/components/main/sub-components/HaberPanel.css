@@ -1,0 +1,239 @@
+/* HaberPanel Component Styles */
+
+.haber-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Invite state ── */
+
+.haber-invite {
+  align-items: center;
+  justify-content: center;
+}
+
+.haber-invite-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.haber-invite-hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 36px;
+  direction: rtl;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.haber-invite-sbl {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+
+.haber-invite-text {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-muted);
+  max-width: 220px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.haber-begin-btn {
+  background: var(--purple);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 8px 28px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+
+.haber-begin-btn:hover {
+  background: var(--purple-mid);
+}
+
+.haber-begin-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Loading state ── */
+
+.haber-loading-initial {
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Thinking dots ── */
+
+.haber-thinking,
+.haber-thinking-inline {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.haber-thinking-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: haberPulse 1.4s ease-in-out infinite;
+}
+
+.haber-thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+.haber-thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes haberPulse {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+  40%            { opacity: 1;    transform: scale(1);   }
+}
+
+/* ── Conversation state ── */
+
+.haber-name-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  opacity: 0.7;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.haber-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 2px;
+  min-height: 0;
+}
+
+.haber-messages::-webkit-scrollbar { width: 4px; }
+.haber-messages::-webkit-scrollbar-track { background: transparent; }
+.haber-messages::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 2px;
+}
+
+.haber-message {
+  max-width: 90%;
+}
+
+.haber-msg-assistant { align-self: flex-start; }
+.haber-msg-user      { align-self: flex-end; }
+
+.haber-msg-text {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.haber-msg-assistant .haber-msg-text {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border-radius: 0 var(--radius) var(--radius) var(--radius);
+  border-left: 2px solid var(--border-mid);
+}
+
+.haber-msg-user .haber-msg-text {
+  background: var(--purple-light);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: var(--radius) 0 var(--radius) var(--radius);
+}
+
+/* ── Error ── */
+
+.haber-error {
+  font-size: 12px;
+  color: var(--coral);
+  font-family: var(--font-body);
+  margin: 6px 0;
+  text-align: center;
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+/* ── Input area ── */
+
+.haber-input-area {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.haber-input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid var(--border-mid);
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-primary);
+  padding: 6px 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.haber-input::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.haber-input:focus {
+  border-bottom-color: var(--purple-mid);
+}
+
+.haber-input:disabled {
+  opacity: 0.5;
+}
+
+.haber-send-btn {
+  background: none;
+  border: none;
+  color: var(--purple);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 6px;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.1s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.haber-send-btn:hover:not(:disabled) {
+  opacity: 1;
+}
+
+.haber-send-btn:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.haber-send-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}

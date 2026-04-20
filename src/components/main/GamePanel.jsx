@@ -350,6 +350,7 @@ export default function GamePanel({ userId }) {
   })
   const [hasLoadedSupabaseProgress, setHasLoadedSupabaseProgress] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [haberSessions, setHaberSessions] = useState({})
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
@@ -532,6 +533,9 @@ export default function GamePanel({ userId }) {
   // Keyboard handler
   useEffect(() => {
     const handler = e => {
+      // Don't intercept keypresses in text inputs (e.g. Haber conversation)
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+
       // Debug reset: Ctrl+Shift+R
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
         e.preventDefault()
@@ -585,6 +589,18 @@ export default function GamePanel({ userId }) {
   const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
   const sbl = activeWord?.sbl || ''
 
+  // Context object passed to Haber for the current word
+  const currentWordContext = wordDone && wordData ? {
+    id: wordId,
+    sbl,
+    gloss: wordData.gloss,
+    root: wordData.root || '',
+    rootSbl: wordData.root_sbl || '',
+    verse: verse.verse,
+    chapter: 1,
+    verseEsv: verse.esv,
+  } : null
+
   // Verse completion sound — only fires once per verse per session
   useEffect(() => {
     if (verseDone && !alreadyCelebrated && verseCompleteRef.current) {
@@ -627,6 +643,9 @@ export default function GamePanel({ userId }) {
             sbl={sbl}
             encounterCount={encounterCount}
             isWordCompleted={wordDone}
+            currentWordContext={currentWordContext}
+            haberSessions={haberSessions}
+            setHaberSessions={setHaberSessions}
           />
         </div>
 
