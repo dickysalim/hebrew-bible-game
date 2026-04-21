@@ -19,6 +19,7 @@ import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefinition from './sub-components/WordDefinition'
+import HaberPanel from './sub-components/HaberPanel'
 
 const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
 
@@ -351,6 +352,7 @@ export default function GamePanel({ userId }) {
   const [hasLoadedSupabaseProgress, setHasLoadedSupabaseProgress] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
+  const [haberOpen, setHaberOpen] = useState(false)
   const wordCompleteRef  = useRef(null)
   const newWordRef       = useRef(null)
   const verseCompleteRef = useRef(null)
@@ -635,6 +637,18 @@ export default function GamePanel({ userId }) {
       </div>
 
       <div className="main-content-grid">
+        {/* Haber sidebar overlay */}
+        {haberOpen && currentWordContext && (
+          <div className="haber-sidebar">
+            <HaberPanel
+              currentWordContext={currentWordContext}
+              haberSessions={haberSessions}
+              setHaberSessions={setHaberSessions}
+              onClose={() => setHaberOpen(false)}
+            />
+          </div>
+        )}
+
         {/* Left column: Word Definition */}
         <div className="word-definition-column">
           <WordDefinition
@@ -643,9 +657,7 @@ export default function GamePanel({ userId }) {
             sbl={sbl}
             encounterCount={encounterCount}
             isWordCompleted={wordDone}
-            currentWordContext={currentWordContext}
-            haberSessions={haberSessions}
-            setHaberSessions={setHaberSessions}
+            onOpenHaber={() => setHaberOpen(true)}
           />
         </div>
 

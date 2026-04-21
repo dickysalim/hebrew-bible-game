@@ -13,60 +13,31 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* ── Inner tab navigation ── */
+/* ── Haber open button ── */
 
-.wd-tabs {
-  display: flex;
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+.haber-open-btn {
   flex-shrink: 0;
-}
-
-.wd-tab {
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px 0;
   background: none;
-  border: none;
+  border: 1px solid var(--purple);
+  border-radius: var(--radius-pill);
+  color: var(--purple);
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-muted);
-  padding: 6px 14px 6px 0;
-  margin-right: 10px;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  position: relative;
-  transition: color 0.2s;
-  letter-spacing: 0.3px;
+  transition: background 0.2s, color 0.2s;
 }
 
-.wd-tab:hover {
-  color: var(--text-secondary);
-}
-
-.wd-tab.active {
-  color: var(--text-primary);
-}
-
-.wd-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
+.haber-open-btn:hover {
   background: var(--purple);
-  border-radius: 1px 1px 0 0;
+  color: #fff;
 }
 
-/* ── Tab content container ── */
-
-.wd-tab-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* ── Word tab scrollable area ── */
+/* ── Word scrollable area ── */
 
 .wd-word-scroll {
   flex: 1;

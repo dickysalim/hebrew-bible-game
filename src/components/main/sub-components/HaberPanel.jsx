@@ -144,7 +144,7 @@ const MSG_TYPE_SPEED = 11
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function HaberPanel({ currentWordContext, haberSessions, setHaberSessions }) {
+export default function HaberPanel({ currentWordContext, haberSessions, setHaberSessions, onClose }) {
   const [haberLoading, setHaberLoading] = useState(false)
   const [inputText, setInputText] = useState('')
   const [haberError, setHaberError] = useState(null)
@@ -235,10 +235,15 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
     }
   }
 
+  const closeBtn = onClose ? (
+    <button className="haber-close-btn" onClick={onClose} aria-label="Close Haber">×</button>
+  ) : null
+
   // State 1 — invite screen
   if (messages.length === 0 && !haberLoading) {
     return (
       <div className="haber-panel haber-invite">
+        {closeBtn}
         <div className="haber-invite-content">
           <div className="haber-invite-hebrew">{currentWordContext.id}</div>
           <div className="haber-invite-sbl">{currentWordContext.sbl}</div>
@@ -254,6 +259,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
   if (messages.length === 0 && haberLoading) {
     return (
       <div className="haber-panel haber-loading-initial">
+        {closeBtn}
         <div className="haber-thinking-text">
           {thinkingText}
           <span className="haber-cursor">|</span>
@@ -265,7 +271,10 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
   // State 3 — conversation active
   return (
     <div className="haber-panel haber-conversation">
-      <div className="haber-name-label">Haber</div>
+      <div className="haber-panel-header">
+        <div className="haber-name-label">Haber</div>
+        {closeBtn}
+      </div>
 
       <div className="haber-messages">
         {messages.map((msg, idx) => (

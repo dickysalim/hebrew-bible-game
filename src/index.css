@@ -195,6 +195,7 @@ html, body {
 
 /* Main content grid for two-column layout */
 .main-content-grid {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1.6fr;
   gap: 24px;

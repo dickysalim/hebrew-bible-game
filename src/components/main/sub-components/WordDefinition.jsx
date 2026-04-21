@@ -1,17 +1,8 @@
-import { useState, useEffect } from 'react'
 import './WordDefinition.css'
-import HaberPanel from './HaberPanel'
 
 export default function WordDefinition({
-  word, wordId, sbl, encounterCount, isWordCompleted,
-  currentWordContext, haberSessions, setHaberSessions
+  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber
 }) {
-  const [activeTab, setActiveTab] = useState('word')
-
-  // Reset to Word tab when the active word changes
-  useEffect(() => {
-    setActiveTab('word')
-  }, [wordId])
 
   if (!word || !isWordCompleted) {
     return (
@@ -96,70 +87,47 @@ export default function WordDefinition({
         <div className="new-badge">New</div>
       )}
 
-      {/* Tab bar */}
-      <div className="wd-tabs">
-        <button
-          className={`wd-tab${activeTab === 'word' ? ' active' : ''}`}
-          onClick={() => setActiveTab('word')}
-        >
-          Word
-        </button>
-        <button
-          className={`wd-tab${activeTab === 'haber' ? ' active' : ''}`}
-          onClick={() => setActiveTab('haber')}
-        >
-          Haber
-        </button>
-      </div>
-
-      {/* Tab content */}
-      <div className="wd-tab-content">
-        {activeTab === 'word' ? (
-          <div className="wd-word-scroll">
-            <div className="word-definition-header">
-              <div className="word-headline-column">
-                <div className="hebrew-word-display">
-                  {renderHebrewWord()}
-                </div>
-                <div className="sbl-transliteration">{sbl}</div>
-                <div className="english-gloss">{gloss}</div>
-              </div>
-              <div className="segment-breakdown-column">
-                {renderSegmentRow(prefixSegment, 'prefix')}
-                {renderSegmentRow(rootSegment, 'root')}
-                {renderSegmentRow(suffixSegment, 'suffix')}
-              </div>
+      <div className="wd-word-scroll">
+        <div className="word-definition-header">
+          <div className="word-headline-column">
+            <div className="hebrew-word-display">
+              {renderHebrewWord()}
             </div>
-
-            <div className="word-metadata">
-              <div className="metadata-item">
-                <span className="metadata-label">Part of speech:</span>
-                <span className="metadata-value">{pos}</span>
-              </div>
-              <span className="metadata-separator">•</span>
-              <div className="metadata-item">
-                <span className="metadata-label">Encounter:</span>
-                <span className="metadata-value">{getEncounterText(encounterCount)}</span>
-              </div>
-            </div>
-
-            <div className="divider"></div>
-
-            <div className="explanation-section">
-              <div className="explanation-label">Explanation</div>
-              <div className="explanation-content">
-                {renderExplanation(explanation)}
-              </div>
-            </div>
+            <div className="sbl-transliteration">{sbl}</div>
+            <div className="english-gloss">{gloss}</div>
           </div>
-        ) : (
-          <HaberPanel
-            currentWordContext={currentWordContext}
-            haberSessions={haberSessions}
-            setHaberSessions={setHaberSessions}
-          />
-        )}
+          <div className="segment-breakdown-column">
+            {renderSegmentRow(prefixSegment, 'prefix')}
+            {renderSegmentRow(rootSegment, 'root')}
+            {renderSegmentRow(suffixSegment, 'suffix')}
+          </div>
+        </div>
+
+        <div className="word-metadata">
+          <div className="metadata-item">
+            <span className="metadata-label">Part of speech:</span>
+            <span className="metadata-value">{pos}</span>
+          </div>
+          <span className="metadata-separator">•</span>
+          <div className="metadata-item">
+            <span className="metadata-label">Encounter:</span>
+            <span className="metadata-value">{getEncounterText(encounterCount)}</span>
+          </div>
+        </div>
+
+        <div className="divider"></div>
+
+        <div className="explanation-section">
+          <div className="explanation-label">Explanation</div>
+          <div className="explanation-content">
+            {renderExplanation(explanation)}
+          </div>
+        </div>
       </div>
+
+      <button className="haber-open-btn" onClick={onOpenHaber}>
+        Haber
+      </button>
     </div>
   )
 }
