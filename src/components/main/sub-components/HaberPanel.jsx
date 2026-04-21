@@ -152,6 +152,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
   const [animatedCharCount, setAnimatedCharCount] = useState(0)
   const prevMsgCountRef = useRef(0)
   const messagesEndRef = useRef(null)
+  const textareaRef = useRef(null)
 
   const wordId = currentWordContext?.id
   const messages = haberSessions[wordId] || []
@@ -225,7 +226,21 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
     const updatedMessages = [...currentHistory, userMessage]
     setHaberSessions(prev => ({ ...prev, [wordId]: updatedMessages }))
     setInputText('')
+    // Reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
     await callHaber(updatedMessages, { ...currentWordContext, isRevisit: true }, user.id)
+  }
+
+  const handleTextareaChange = (e) => {
+    setInputText(e.target.value)
+    // Auto-expand textarea
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
+    }
   }
 
   const handleKeyDown = (e) => {
@@ -304,14 +319,15 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
       {haberError && <p className="haber-error">{haberError}</p>}
 
       <div className="haber-input-area">
-        <input
-          type="text"
-          className="haber-input"
+        <textarea
+          ref={textareaRef}
+          className="haber-textarea"
           placeholder="Wrestle with it..."
           value={inputText}
-          onChange={e => setInputText(e.target.value)}
+          onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           disabled={haberLoading}
+          rows={1}
         />
         <button
           className="haber-send-btn"

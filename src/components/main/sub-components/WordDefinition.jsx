@@ -126,7 +126,7 @@ export default function WordDefinition({
       </div>
 
       <button className="haber-open-btn" onClick={onOpenHaber}>
-        Haber
+        Ask Haber
       </button>
     </div>
   )
