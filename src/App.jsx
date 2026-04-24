@@ -10,7 +10,7 @@ import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscover
 import { supabase } from './lib/supabase'
 
 // Component for authenticated app content
-function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab }) {
+function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab, onBackToMenu }) {
   const { newRoots } = useRootDiscovery()
   
   return (
@@ -30,6 +30,7 @@ function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab }) 
         activeTab={activeTab}
         onTabChange={onTabChange}
         newRootsCount={newRoots.length}
+        onBackToMenu={onBackToMenu}
       />
       <div className="tab-content">
         {renderActiveTab()}
@@ -149,6 +150,7 @@ export default function App() {
           activeTab={activeTab}
           onTabChange={handleTabChange}
           renderActiveTab={renderActiveTab}
+          onBackToMenu={() => setScreen('mainMenu')}
         />
       )}
     </RootDiscoveryProvider>

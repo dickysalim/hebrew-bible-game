@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TabBar = ({ activeTab, onTabChange, newRootsCount = 0 }) => {
+const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => {
   const tabs = [
     { id: 'main', label: 'Main' },
     { id: 'full_chapter', label: 'Full Chapter' },
@@ -34,6 +34,17 @@ const TabBar = ({ activeTab, onTabChange, newRootsCount = 0 }) => {
           </button>
         ))}
       </div>
+
+      {onBackToMenu && (
+        <button
+          className="tab-back-btn"
+          onClick={onBackToMenu}
+          aria-label="Back to main menu"
+          title="Back to Main Menu"
+        >
+          ← Menu
+        </button>
+      )}
     </div>
   );
 };

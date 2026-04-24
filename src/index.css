@@ -656,11 +656,36 @@ html, body {
   padding: 0 80px;
   flex-shrink: 0;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .tab-list {
   display: flex;
   gap: 2px;
+}
+
+/* Back-to-menu button in tab bar */
+.tab-back-btn {
+  background: none;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tab-back-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--purple-mid);
+  background: var(--purple-light);
 }
 
 .tab-button {
