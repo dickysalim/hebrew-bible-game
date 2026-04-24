@@ -413,8 +413,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     discoveredWordsByRoot
   } = useRootDiscovery()
 
-  // Determine which stageIndex to start on
+  // Determine which stageIndex to start on.
+  // jumpToStageIndex takes priority (from chapter-select); otherwise resume saved progress.
+  const isJumping = jumpToStageIndex != null
   const resolvedInitialStage = (() => {
+    if (isJumping) return jumpToStageIndex
     if (userId && cacheStatus === 'ready' && cachedProgress) {
       return cachedProgress.stageIndex || 1
     }
@@ -437,6 +440,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   versesRef = verses
 
   const [state, dispatch] = useReducer(reducer, null, () => {
+    // Chapter-select jump: start fresh at verse 0 of the target stage
+    if (isJumping) {
+      const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
+      return { ...initialState, stageIndex: jumpToStageIndex, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
+    }
     if (userId) {
       if (cacheStatus === 'ready' && cachedProgress) {
         return buildInitialStateFromCache(cachedProgress)
@@ -448,13 +456,18 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     return { ...initialState, ...saved, stageIndex: saved.stageIndex || 1, discoveredRoots: persistedDiscoveredRoots }
   })
 
-  // Handle jumpToStageIndex prop changes (from chapter-select in App)
-  const prevJumpRef = useRef(jumpToStageIndex)
+  // Handle jumpToStageIndex prop changes AFTER mount (e.g. if GamePanel stays mounted
+  // and user navigates back to menu and picks a different chapter).
+  // prevJumpRef starts at null so the mount-time jump is handled by the reducer init above.
+  const prevJumpRef = useRef(null)
   useEffect(() => {
     if (jumpToStageIndex != null && jumpToStageIndex !== prevJumpRef.current) {
+      // Skip the very first render — that's already handled by reducer init
+      if (prevJumpRef.current !== null) {
+        jumpToStage(jumpToStageIndex)
+        dispatch({ type: 'JUMP_TO_STAGE', stageIndex: jumpToStageIndex })
+      }
       prevJumpRef.current = jumpToStageIndex
-      jumpToStage(jumpToStageIndex)
-      dispatch({ type: 'JUMP_TO_STAGE', stageIndex: jumpToStageIndex })
     }
   }, [jumpToStageIndex, jumpToStage])
 
