@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
-import versesFile from '../../data/verses/genesis-1.json'
+import genesis1File from '../../data/verses/genesis-1.json'
+import genesis2File from '../../data/verses/genesis-2.json'
 import wordsData from '../../data/words.json'
 import rootsData from '../../data/roots.json'
 import wordCompleteAudio from '../../assets/audio/word_complete.mp3'
@@ -41,20 +42,26 @@ function loadDiscoveredRootIdsFromStorage() {
   return {}
 }
 
-const verses = versesFile.verses
+const VERSE_FILES = {
+  'genesis-1': genesis1File,
+  'genesis-2': genesis2File,
+}
 
-// ─── Reducer helpers ──────────────────────────────────────────────────────────
+// ─── Reducer helpers (take verses as first arg) ──────────────────────────────
 
 const wkey = (vi, wi) => `${vi}-${wi}`
-const wordLen = (vi, wi) => verses[vi]?.words[wi]?.id?.length ?? 0
+const wordLen = (verses, vi, wi) => verses[vi]?.words[wi]?.id?.length ?? 0
 const getTyped = (counts, vi, wi) => counts[wkey(vi, wi)] ?? 0
-const isDone = (counts, vi, wi) => getTyped(counts, vi, wi) >= wordLen(vi, wi)
-const isVerseDone = (counts, vi) =>
-  verses[vi]?.words.every((_, wi) => isDone(counts, vi, wi)) ?? false
+const isDone = (verses, counts, vi, wi) => getTyped(counts, vi, wi) >= wordLen(verses, vi, wi)
+const isVerseDone = (verses, counts, vi) =>
+  verses[vi]?.words.every((_, wi) => isDone(verses, counts, vi, wi)) ?? false
 
 // Index of first incomplete word in a verse; -1 if all done
-const firstIncomplete = (counts, vi) =>
-  verses[vi]?.words.findIndex((_, wi) => !isDone(counts, vi, wi)) ?? -1
+const firstIncomplete = (verses, counts, vi) =>
+  verses[vi]?.words.findIndex((_, wi) => !isDone(verses, counts, vi, wi)) ?? -1
+
+// Module-level ref so the reducer can access current verses without prop threading
+let versesRef = genesis1File.verses
 
 // ─── Game reducer ─────────────────────────────────────────────────────────────
 
@@ -83,6 +90,7 @@ const initialState = {
 }
 
 function reducer(state, action) {
+  const verses = versesRef
   const { currentVerse, activeWordIdx, typedCounts, highestVerse } = state
 
   switch (action.type) {
@@ -91,7 +99,7 @@ function reducer(state, action) {
       // Auto-select first incomplete word if nothing is active
       let wi = activeWordIdx
       if (wi === null) {
-        wi = firstIncomplete(typedCounts, currentVerse)
+        wi = firstIncomplete(verses, typedCounts, currentVerse)
         if (wi === -1) return state
       }
 
@@ -104,7 +112,7 @@ function reducer(state, action) {
         const newCounts = { ...typedCounts, [wkey(currentVerse, wi)]: newTyped }
         const wordDone = newTyped >= wordId.length
         const verseDone = wordDone && verses[currentVerse].words.every((_, i) =>
-          i === wi ? true : isDone(newCounts, currentVerse, i)
+          i === wi ? true : isDone(verses, newCounts, currentVerse, i)
         )
         // Update wordEncounters if word is completed
         let newWordEncounters = state.wordEncounters
@@ -165,7 +173,7 @@ function reducer(state, action) {
       if (activeWordIdx === null) return state
 
       const typed = getTyped(typedCounts, currentVerse, activeWordIdx)
-      const wLen  = wordLen(currentVerse, activeWordIdx)
+      const wLen  = wordLen(verses, currentVerse, activeWordIdx)
 
       // Partially typed — ignore space
       if (typed > 0 && typed < wLen) return state
@@ -174,11 +182,11 @@ function reducer(state, action) {
       if (typed === 0) return { ...state, activeWordIdx: null }
 
       // Done word — jump to first incomplete, or next verse
-      const fInc = firstIncomplete(typedCounts, currentVerse)
+      const fInc = firstIncomplete(verses, typedCounts, currentVerse)
       if (fInc !== -1) {
         return { ...state, activeWordIdx: fInc, errorCount: 0, wrongHebKeys: [] }
       }
-      if (isVerseDone(typedCounts, currentVerse) && currentVerse < verses.length - 1) {
+      if (isVerseDone(verses, typedCounts, currentVerse) && currentVerse < verses.length - 1) {
         const nextVi = currentVerse + 1
         return {
           ...state,
@@ -194,7 +202,7 @@ function reducer(state, action) {
 
     case 'MOVE_WORD': {
       // dir +1 = left arrow (forward in RTL), -1 = right arrow (backward)
-      const fInc = firstIncomplete(typedCounts, currentVerse)
+      const fInc = firstIncomplete(verses, typedCounts, currentVerse)
       const limit = fInc === -1 ? verses[currentVerse].words.length - 1 : fInc
 
       // Nothing selected: activate first incomplete
@@ -210,7 +218,7 @@ function reducer(state, action) {
 
     case 'SELECT_WORD': {
       // Select a specific word by index (for mouse clicks)
-      const fInc = firstIncomplete(typedCounts, currentVerse)
+      const fInc = firstIncomplete(verses, typedCounts, currentVerse)
       const limit = fInc === -1 ? verses[currentVerse].words.length - 1 : fInc
       const targetWi = action.wordIndex
 
@@ -328,7 +336,13 @@ function reducer(state, action) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function GamePanel({ userId }) {
+export default function GamePanel({ userId, startChapter }) {
+  // Resolve verse data based on selected chapter (defaults to genesis-1)
+  const chapterId = startChapter?.id ?? 'genesis-1'
+  const versesFile = VERSE_FILES[chapterId] ?? genesis1File
+  const verses = versesFile.verses
+  // Keep module-level ref in sync for the reducer
+  versesRef = verses
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
@@ -344,6 +358,11 @@ export default function GamePanel({ userId }) {
   } = useRootDiscovery()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
+    if (startChapter) {
+      // Chapter select: always start at verse 0 of the selected chapter
+      const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
+      return { ...initialState, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
+    }
     if (userId) return initialState  // authenticated: start clean, load from Supabase
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
@@ -375,7 +394,7 @@ export default function GamePanel({ userId }) {
   useEffect(() => {
     if (state.completedWordSignal > 0 && state.lastCompletedWordId) {
       // If this word also completed the verse, let the verse-complete effect handle audio
-      const currentVerseDone = isVerseDone(state.typedCounts, state.currentVerse)
+      const currentVerseDone = isVerseDone(verses, state.typedCounts, state.currentVerse)
       if (currentVerseDone) return
 
       const wordId = state.lastCompletedWordId
@@ -577,9 +596,9 @@ export default function GamePanel({ userId }) {
   const wordId     = activeWord?.id ?? ''
   const typedCount = activeWordIdx !== null ? getTyped(typedCounts, currentVerse, activeWordIdx) : 0
   const wordDone   = activeWordIdx !== null
-    ? getTyped(typedCounts, currentVerse, activeWordIdx) >= wordLen(currentVerse, activeWordIdx)
+    ? getTyped(typedCounts, currentVerse, activeWordIdx) >= wordLen(verses, currentVerse, activeWordIdx)
     : false
-  const verseDone  = isVerseDone(typedCounts, currentVerse)
+  const verseDone  = isVerseDone(verses, typedCounts, currentVerse)
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
 
   // Whether this verse's completion has already been celebrated (sound + animation)

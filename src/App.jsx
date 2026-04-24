@@ -5,6 +5,7 @@ import ProgressPanel from './components/progress/ProgressPanel'
 import FullChapter from './components/full_chapter/FullChapter'
 import TabBar from './components/TabBar'
 import AuthScreen from './components/ui/AuthScreen'
+import MainMenu from './components/ui/MainMenu'
 import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
 import { supabase } from './lib/supabase'
 
@@ -41,6 +42,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('main')
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  // 'mainMenu' | 'game'
+  const [screen, setScreen] = useState('mainMenu')
+  // chapter to start GamePanel on: { id, chapter } or null (continue)
+  const [startChapter, setStartChapter] = useState(null)
 
   // Check for existing session on mount and listen for auth changes
   useEffect(() => {
@@ -91,10 +96,20 @@ export default function App() {
     // Auth successful, session will be updated via onAuthStateChange
   }
 
+  const handleEnterMidrash = () => {
+    setStartChapter(null) // continue from saved progress
+    setScreen('game')
+  }
+
+  const handleSelectChapter = (chapter) => {
+    setStartChapter(chapter)
+    setScreen('game')
+  }
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'main':
-        return <GamePanel userId={session?.user?.id} />
+        return <GamePanel userId={session?.user?.id} startChapter={startChapter} />
       case 'full_chapter':
         return <FullChapter />
       case 'lexicon':
@@ -102,7 +117,7 @@ export default function App() {
       case 'progress':
         return <ProgressPanel />
       default:
-        return <GamePanel userId={session?.user?.id} />
+        return <GamePanel userId={session?.user?.id} startChapter={startChapter} />
     }
   }
 
@@ -119,6 +134,14 @@ export default function App() {
       ) : !session ? (
         <div className="app-container">
           <AuthScreen onAuthSuccess={handleAuthSuccess} />
+        </div>
+      ) : screen === 'mainMenu' ? (
+        <div className="app-container">
+          <MainMenu
+            session={session}
+            onEnterMidrash={handleEnterMidrash}
+            onSelectChapter={handleSelectChapter}
+          />
         </div>
       ) : (
         <AuthenticatedApp
