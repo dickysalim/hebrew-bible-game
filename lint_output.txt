@@ -1,0 +1,10 @@
+
+/Users/yongkroo/Documents/hebrew-bible-game/src/components/main/GamePanel.jsx
+  586:6  warning  React Hook useEffect has missing dependencies: 'state.currentVerse', 'state.typedCounts', and 'verses'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  668:6  warning  React Hook useEffect has missing dependencies: 'state' and 'updateCache'. Either include them or remove the dependency array                                react-hooks/exhaustive-deps
+  681:6  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  724:6  warning  React Hook useEffect has missing dependencies: 'clearCache' and 'resetDiscoveredRoots'. Either include them or remove the dependency array                  react-hooks/exhaustive-deps
+
+✖ 4 problems (0 errors, 4 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

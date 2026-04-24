@@ -46,6 +46,33 @@ function removeLocalCache(userId) {
   }
 }
 
+/**
+ * Migrate old flat Supabase cache → per-chapter (v2) structure.
+ * If the cache already has a `chapters` map, returns as-is.
+ */
+function ensurePerChapterCache(formatted) {
+  if (!formatted) return null
+  // Already v2 — has a chapters map
+  if (formatted.chapters) return formatted
+  // Flat v1 → wrap current stageIndex progress into chapters map
+  const si = formatted.stageIndex || 1
+  return {
+    ...formatted,
+    stageIndex: si,
+    chapters: {
+      [si]: {
+        typedCounts: formatted.typedCounts || {},
+        wordEncounters: formatted.wordEncounters || {},
+        highestVerse: formatted.highestVerse || 0,
+        currentVerse: formatted.currentVerseIndex ?? formatted.currentVerse ?? 0,
+        activeWordIdx: formatted.activeWordIdx ?? 0,
+        carouselIdxMap: formatted.carouselIdxMap || {},
+        celebratedVerses: formatted.celebratedVerses || [],
+      },
+    },
+  }
+}
+
 const ProgressCacheContext = createContext(null)
 
 /**
@@ -91,7 +118,7 @@ export function ProgressCacheProvider({ children, userId }) {
       // 1. Try local cache (fresh within 24h)
       const local = loadFromLocalCache(userId)
       if (local) {
-        setCachedProgress(local)
+        setCachedProgress(ensurePerChapterCache(local))
         setCacheStatus('ready')
         return
       }
@@ -101,7 +128,7 @@ export function ProgressCacheProvider({ children, userId }) {
       try {
         const supabaseProgress = await loadProgress(userId)
         const formatted = supabaseProgress
-          ? formatProgressFromSupabase(supabaseProgress)
+          ? ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
           : null
 
         // Store in memory + local cache
@@ -124,42 +151,65 @@ export function ProgressCacheProvider({ children, userId }) {
    * Updates in-memory cache and localStorage immediately, then debounces the
    * Supabase write so rapid typing doesn't send a request per keypress.
    *
-   * @param {object} progressFormatted — already-formatted progress object
-   *   (same shape as formatProgressForSupabase output)
-   * @param {object} rawGameState — raw reducer state (for Supabase formatter)
+   * Now stores per-chapter state in a `chapters` map keyed by stageIndex.
+   *
+   * @param {object} rawGameState — raw reducer state
    * @param {array}  discoveredRoots — from RootDiscoveryContext
    * @param {object} discoveredWordsByRoot — from RootDiscoveryContext
    */
   const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot) => {
     if (!userId) return
 
-    // Build the formatted object for local cache
-    const formatted = {
-      discoveredRoots: discoveredRoots || [],
-      discoveredWordsByRoot: discoveredWordsByRoot || {},
-      completedVerses: [],
-      wordEncounters: rawGameState.wordEncounters || {},
-      currentVerseIndex: rawGameState.currentVerse || 0,
+    const si = rawGameState.stageIndex || 1
+
+    // Build per-chapter entry for the CURRENT stageIndex
+    const chapterEntry = {
       typedCounts: rawGameState.typedCounts || {},
-      activeWordIdx: rawGameState.activeWordIdx ?? 0,
+      wordEncounters: rawGameState.wordEncounters || {},
       highestVerse: rawGameState.highestVerse || 0,
-      stageIndex: rawGameState.stageIndex || 1,
+      currentVerse: rawGameState.currentVerse || 0,
+      activeWordIdx: rawGameState.activeWordIdx ?? 0,
       carouselIdxMap: rawGameState.carouselIdxMap || {},
       celebratedVerses: rawGameState.celebratedVerses || [],
     }
 
-    // Update in-memory cache and localStorage immediately
-    setCachedProgress(formatted)
-    writeToLocalCache(userId, formatted)
+    // Merge with existing cache — keep other chapters' data intact
+    setCachedProgress(prev => {
+      const prevChapters = prev?.chapters || {}
+      const updated = {
+        discoveredRoots: discoveredRoots || [],
+        discoveredWordsByRoot: discoveredWordsByRoot || {},
+        stageIndex: si,
+        chapters: {
+          ...prevChapters,
+          [si]: chapterEntry,
+        },
+      }
+      writeToLocalCache(userId, updated)
+      return updated
+    })
 
     // Debounce the Supabase write
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
+        // Read the latest cache to make sure we send ALL chapters
+        const latestRaw = localStorage.getItem(cacheKey(userId))
+        let latestChapters = {}
+        if (latestRaw) {
+          try {
+            const parsed = JSON.parse(latestRaw)
+            latestChapters = parsed?.data?.chapters || {}
+          } catch { /* ignore */ }
+        }
+        // Ensure current chapter is included
+        latestChapters[si] = chapterEntry
+
         const progressForSupabase = formatProgressForSupabase(
           rawGameState,
           discoveredRoots,
-          discoveredWordsByRoot
+          discoveredWordsByRoot,
+          latestChapters
         )
         await saveProgressToSupabase(userId, progressForSupabase)
       } catch (err) {

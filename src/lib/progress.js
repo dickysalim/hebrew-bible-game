@@ -67,6 +67,11 @@ export async function saveProgress(userId, progress) {
     progressData.discovered_words_by_root = progress.discoveredWordsByRoot || {}
   }
 
+  // Store per-chapter progress map (v2)
+  if (progress.chapters !== undefined) {
+    progressData.chapters = progress.chapters
+  }
+
   try {
     const { error } = await supabase
       .from('user_progress')
@@ -91,9 +96,10 @@ export async function saveProgress(userId, progress) {
  * @param {object} gameState - GamePanel reducer state
  * @param {array} contextDiscoveredRoots - Array of discovered root objects from RootDiscoveryContext
  * @param {object} contextDiscoveredWordsByRoot - Object mapping root IDs to arrays of word objects from RootDiscoveryContext
+ * @param {object} allChapters - Per-chapter progress map { [stageIndex]: { typedCounts, ... } }
  * @returns {object} Progress data formatted for Supabase
  */
-export function formatProgressForSupabase(gameState, contextDiscoveredRoots, contextDiscoveredWordsByRoot = {}) {
+export function formatProgressForSupabase(gameState, contextDiscoveredRoots, contextDiscoveredWordsByRoot = {}, allChapters = {}) {
   // Calculate completed verses from typedCounts
   const completedVerses = []
   if (gameState.typedCounts) {
@@ -119,6 +125,8 @@ export function formatProgressForSupabase(gameState, contextDiscoveredRoots, con
     highestVerse: gameState.highestVerse || 0,
     carouselIdxMap: gameState.carouselIdxMap || {},
     celebratedVerses: gameState.celebratedVerses || [],
+    stageIndex: gameState.stageIndex || 1,
+    chapters: allChapters,
   }
 }
 
@@ -130,7 +138,7 @@ export function formatProgressForSupabase(gameState, contextDiscoveredRoots, con
 export function formatProgressFromSupabase(supabaseProgress) {
   if (!supabaseProgress) return null
 
-  return {
+  const result = {
     discoveredRoots: supabaseProgress.discovered_roots || [],
     discoveredWordsByRoot: supabaseProgress.discovered_words_by_root || {},
     completedVerses: supabaseProgress.completed_verses || [],
@@ -141,5 +149,13 @@ export function formatProgressFromSupabase(supabaseProgress) {
     highestVerse: supabaseProgress.highest_verse || 0,
     carouselIdxMap: supabaseProgress.carousel_idx_map || {},
     celebratedVerses: supabaseProgress.celebrated_verses || [],
+    stageIndex: supabaseProgress.stage_index || 1,
   }
+
+  // Include per-chapter map if it exists in Supabase
+  if (supabaseProgress.chapters) {
+    result.chapters = supabaseProgress.chapters
+  }
+
+  return result
 }

@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'hebrew-bible-game-progress';
-const VERSION = '1.0';
+const VERSION = '2.0'; // Bumped — now stores per-chapter progress
 
-// Structure of saved progress data
-const defaultProgress = {
-  version: VERSION,
-  stageIndex: 1,
+// Per-chapter progress shape (stored inside chapters map)
+const defaultChapterProgress = {
   typedCounts: {},
   wordEncounters: {},
   highestVerse: 0,
@@ -14,7 +12,13 @@ const defaultProgress = {
   activeWordIdx: 0,
   carouselIdxMap: {},
   celebratedVerses: [],
-  // We don't save temporary UI state like errorCount, wrongHebKeys, etc.
+};
+
+// Top-level saved structure
+const defaultProgress = {
+  version: VERSION,
+  stageIndex: 1,             // which chapter the user is currently on
+  chapters: {},              // { [stageIndex]: defaultChapterProgress }
 };
 
 /**
@@ -30,21 +34,40 @@ export function useProgressPersistence() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        
-        // Validate version and merge with defaults
+
         if (parsed.version === VERSION) {
+          // v2.0 — per-chapter structure
           setProgress({
             ...defaultProgress,
             ...parsed,
-            version: VERSION, // Ensure correct version
+            version: VERSION,
           });
+        } else if (parsed.version === '1.0') {
+          // ── Migrate v1.0 (flat) → v2.0 (per-chapter) ──
+          const si = parsed.stageIndex || 1;
+          const migrated = {
+            version: VERSION,
+            stageIndex: si,
+            chapters: {
+              [si]: {
+                typedCounts: parsed.typedCounts || {},
+                wordEncounters: parsed.wordEncounters || {},
+                highestVerse: parsed.highestVerse || 0,
+                currentVerse: parsed.currentVerse || 0,
+                activeWordIdx: parsed.activeWordIdx ?? 0,
+                carouselIdxMap: parsed.carouselIdxMap || {},
+                celebratedVerses: parsed.celebratedVerses || [],
+              },
+            },
+          };
+          setProgress(migrated);
+          // Persist the migration immediately
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
         } else {
-          // Version mismatch - could implement migration here
           console.warn(`Progress version mismatch: expected ${VERSION}, got ${parsed.version}. Using defaults.`);
           setProgress(defaultProgress);
         }
       } else {
-        // No saved progress, use defaults
         setProgress(defaultProgress);
       }
     } catch (error) {
@@ -59,19 +82,11 @@ export function useProgressPersistence() {
   const saveProgress = useCallback((data) => {
     try {
       const progressToSave = {
-        ...data,
         version: VERSION,
-        // Don't save temporary UI state
         stageIndex: data.stageIndex || 1,
-        typedCounts: data.typedCounts || {},
-        wordEncounters: data.wordEncounters || {},
-        highestVerse: data.highestVerse || 0,
-        currentVerse: data.currentVerse || 0,
-        activeWordIdx: data.activeWordIdx ?? 0,
-        carouselIdxMap: data.carouselIdxMap || {},
-        celebratedVerses: data.celebratedVerses || [],
+        chapters: data.chapters || {},
       };
-      
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(progressToSave));
       return true;
     } catch (error) {
@@ -96,13 +111,7 @@ export function useProgressPersistence() {
   const getProgressData = useCallback(() => {
     return {
       stageIndex: progress.stageIndex,
-      typedCounts: progress.typedCounts,
-      wordEncounters: progress.wordEncounters,
-      highestVerse: progress.highestVerse,
-      currentVerse: progress.currentVerse,
-      activeWordIdx: progress.activeWordIdx,
-      carouselIdxMap: progress.carouselIdxMap,
-      celebratedVerses: progress.celebratedVerses,
+      chapters: progress.chapters,
     };
   }, [progress]);
 
@@ -134,22 +143,37 @@ export function saveProgressToStorage(data) {
 
 /**
  * Utility function to load progress directly (for use outside hooks)
+ * Returns the v2 per-chapter structure.
  */
 export function loadProgressFromStorage() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
+
       if (parsed.version === VERSION) {
         return {
           stageIndex: parsed.stageIndex || 1,
-          typedCounts: parsed.typedCounts || {},
-          wordEncounters: parsed.wordEncounters || {},
-          highestVerse: parsed.highestVerse || 0,
-          currentVerse: parsed.currentVerse || 0,
-          activeWordIdx: parsed.activeWordIdx ?? 0,
-          carouselIdxMap: parsed.carouselIdxMap || {},
-          celebratedVerses: parsed.celebratedVerses || [],
+          chapters: parsed.chapters || {},
+        };
+      }
+
+      // Migrate v1.0 on-the-fly read
+      if (parsed.version === '1.0') {
+        const si = parsed.stageIndex || 1;
+        return {
+          stageIndex: si,
+          chapters: {
+            [si]: {
+              typedCounts: parsed.typedCounts || {},
+              wordEncounters: parsed.wordEncounters || {},
+              highestVerse: parsed.highestVerse || 0,
+              currentVerse: parsed.currentVerse || 0,
+              activeWordIdx: parsed.activeWordIdx ?? 0,
+              carouselIdxMap: parsed.carouselIdxMap || {},
+              celebratedVerses: parsed.celebratedVerses || [],
+            },
+          },
         };
       }
     }
@@ -158,12 +182,25 @@ export function loadProgressFromStorage() {
   }
   return {
     stageIndex: 1,
-    typedCounts: {},
-    wordEncounters: {},
-    highestVerse: 0,
-    currentVerse: 0,
-    activeWordIdx: 0,
-    carouselIdxMap: {},
+    chapters: {},
+  };
+}
+
+/**
+ * Helper: extract the flat chapter-progress for a given stageIndex
+ * from the v2 structure. Returns defaultChapterProgress if not found.
+ */
+export function getChapterProgress(progressV2, stageIndex) {
+  const ch = progressV2?.chapters?.[stageIndex];
+  if (!ch) return { ...defaultChapterProgress };
+  return {
+    typedCounts: ch.typedCounts || {},
+    wordEncounters: ch.wordEncounters || {},
+    highestVerse: ch.highestVerse || 0,
+    currentVerse: ch.currentVerse || 0,
+    activeWordIdx: ch.activeWordIdx ?? 0,
+    carouselIdxMap: ch.carouselIdxMap || {},
+    celebratedVerses: ch.celebratedVerses || [],
   };
 }
 

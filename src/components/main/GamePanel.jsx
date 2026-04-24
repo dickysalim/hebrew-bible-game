@@ -9,7 +9,7 @@ import typingSound2 from '../../assets/audio/typing_sound2.mp3'
 import typingSound3 from '../../assets/audio/typing_sound3.mp3'
 import rootFoundAudio from '../../assets/audio/root_found.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
-import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
+import { useProgressPersistence, loadProgressFromStorage, getChapterProgress } from '../../utils/useProgressPersistence'
 import { useChapterLoader, stageIndexFromId } from '../../utils/useChapterLoader'
 import { checkRootCompletion } from '../../utils/rootDetection'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
@@ -85,6 +85,8 @@ const initialState = {
   showSBLLetter: true,           // whether to show SBL letter transliteration
   // Signal that chapter is complete and we need to load the next one
   chapterEndSignal: 0,           // increments when last verse of chapter is completed via SPACE
+  // Per-chapter progress map — { [stageIndex]: { typedCounts, wordEncounters, highestVerse, ... } }
+  chapters: {},
 }
 
 function reducer(state, action) {
@@ -284,40 +286,77 @@ function reducer(state, action) {
         recentTypedLetter: null,
         celebratedVerses: [],
         chapterEndSignal: 0,
+        chapters: {},
       }
     }
 
-    // New chapter's verses have been loaded — reset verse-local state
+    // New chapter's verses have been loaded — save current chapter, restore target
     case 'LOAD_CHAPTER': {
+      // Save the current chapter's progress into the chapters map
+      const prevSi = state.stageIndex
+      const updatedChapters = {
+        ...state.chapters,
+        [prevSi]: {
+          typedCounts: state.typedCounts,
+          wordEncounters: state.wordEncounters,
+          highestVerse: state.highestVerse,
+          currentVerse: state.currentVerse,
+          activeWordIdx: state.activeWordIdx,
+          carouselIdxMap: state.carouselIdxMap,
+          celebratedVerses: state.celebratedVerses,
+        },
+      }
+      // Load saved progress for the target chapter (or defaults)
+      const targetSaved = updatedChapters[action.stageIndex]
       return {
         ...state,
         stageIndex: action.stageIndex,
-        currentVerse: action.startAtVerse ?? 0,
-        activeWordIdx: 0,
-        highestVerse: action.startAtVerse ?? 0,
-        typedCounts: {},
-        carouselIdxMap: {},
-        celebratedVerses: [],
+        currentVerse: action.startAtVerse ?? (targetSaved?.currentVerse ?? 0),
+        activeWordIdx: targetSaved?.activeWordIdx ?? 0,
+        highestVerse: targetSaved?.highestVerse ?? (action.startAtVerse ?? 0),
+        typedCounts: targetSaved?.typedCounts ?? {},
+        wordEncounters: targetSaved?.wordEncounters ?? state.wordEncounters,
+        carouselIdxMap: targetSaved?.carouselIdxMap ?? {},
+        celebratedVerses: targetSaved?.celebratedVerses ?? [],
         errorCount: 0,
         wrongHebKeys: [],
         chapterEndSignal: 0,
+        chapters: updatedChapters,
       }
     }
 
-    // Jump to a stage from chapter-select (clears chapter progress)
+    // Jump to a stage from chapter-select — save current, restore target
     case 'JUMP_TO_STAGE': {
+      // Save the current chapter's progress into the chapters map
+      const prevStage = state.stageIndex
+      const chaptersAfterSave = {
+        ...state.chapters,
+        [prevStage]: {
+          typedCounts: state.typedCounts,
+          wordEncounters: state.wordEncounters,
+          highestVerse: state.highestVerse,
+          currentVerse: state.currentVerse,
+          activeWordIdx: state.activeWordIdx,
+          carouselIdxMap: state.carouselIdxMap,
+          celebratedVerses: state.celebratedVerses,
+        },
+      }
+      // Load saved progress for the target chapter (or defaults)
+      const targetChSaved = chaptersAfterSave[action.stageIndex]
       return {
         ...state,
         stageIndex: action.stageIndex,
-        currentVerse: 0,
-        activeWordIdx: 0,
-        highestVerse: 0,
-        typedCounts: {},
-        carouselIdxMap: {},
-        celebratedVerses: [],
+        currentVerse: targetChSaved?.currentVerse ?? 0,
+        activeWordIdx: targetChSaved?.activeWordIdx ?? 0,
+        highestVerse: targetChSaved?.highestVerse ?? 0,
+        typedCounts: targetChSaved?.typedCounts ?? {},
+        wordEncounters: targetChSaved?.wordEncounters ?? state.wordEncounters,
+        carouselIdxMap: targetChSaved?.carouselIdxMap ?? {},
+        celebratedVerses: targetChSaved?.celebratedVerses ?? [],
         errorCount: 0,
         wrongHebKeys: [],
         chapterEndSignal: 0,
+        chapters: chaptersAfterSave,
       }
     }
 
@@ -379,17 +418,23 @@ function buildInitialStateFromCache(cp) {
       if (root?.id) discoveredRootsMap[root.id] = true
     })
   }
+  const si = cp.stageIndex || 1
+  // If per-chapter data exists, use it for the current chapter
+  const chaptersMap = cp.chapters || {}
+  const chapterProgress = chaptersMap[si] || {}
+  // Prefer per-chapter data; fall back to flat fields for v1 migration
   return {
     ...initialState,
-    stageIndex:      cp.stageIndex       || 1,
-    typedCounts:     cp.typedCounts     || {},
-    wordEncounters:  cp.wordEncounters  || {},
-    highestVerse:    cp.highestVerse    || 0,
-    currentVerse:    cp.currentVerseIndex || 0,
-    activeWordIdx:   cp.activeWordIdx   ?? 0,
-    carouselIdxMap:  cp.carouselIdxMap  || {},
-    celebratedVerses: cp.celebratedVerses || [],
+    stageIndex:      si,
+    typedCounts:     chapterProgress.typedCounts     || cp.typedCounts     || {},
+    wordEncounters:  chapterProgress.wordEncounters  || cp.wordEncounters  || {},
+    highestVerse:    chapterProgress.highestVerse     ?? cp.highestVerse    ?? 0,
+    currentVerse:    chapterProgress.currentVerse     ?? cp.currentVerseIndex ?? 0,
+    activeWordIdx:   chapterProgress.activeWordIdx    ?? cp.activeWordIdx   ?? 0,
+    carouselIdxMap:  chapterProgress.carouselIdxMap   || cp.carouselIdxMap  || {},
+    celebratedVerses: chapterProgress.celebratedVerses || cp.celebratedVerses || [],
     discoveredRoots: discoveredRootsMap,
+    chapters:        chaptersMap,
   }
 }
 
@@ -440,10 +485,31 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   versesRef = verses
 
   const [state, dispatch] = useReducer(reducer, null, () => {
-    // Chapter-select jump: start fresh at verse 0 of the target stage
+    // Chapter-select jump: restore target chapter from cache if it exists
     if (isJumping) {
       const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-      return { ...initialState, stageIndex: jumpToStageIndex, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
+      // Try to restore per-chapter state for the target chapter
+      let chaptersMap = {}
+      if (userId && cacheStatus === 'ready' && cachedProgress?.chapters) {
+        chaptersMap = cachedProgress.chapters
+      } else if (!userId) {
+        const savedLocal = loadProgressFromStorage()
+        chaptersMap = savedLocal.chapters || {}
+      }
+      const targetChProgress = chaptersMap[jumpToStageIndex] || {}
+      return {
+        ...initialState,
+        stageIndex: jumpToStageIndex,
+        currentVerse: targetChProgress.currentVerse ?? 0,
+        activeWordIdx: targetChProgress.activeWordIdx ?? 0,
+        highestVerse: targetChProgress.highestVerse ?? 0,
+        typedCounts: targetChProgress.typedCounts ?? {},
+        wordEncounters: targetChProgress.wordEncounters ?? {},
+        carouselIdxMap: targetChProgress.carouselIdxMap ?? {},
+        celebratedVerses: targetChProgress.celebratedVerses ?? [],
+        discoveredRoots: persistedDiscoveredRoots,
+        chapters: chaptersMap,
+      }
     }
     if (userId) {
       if (cacheStatus === 'ready' && cachedProgress) {
@@ -453,7 +519,22 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     }
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-    return { ...initialState, ...saved, stageIndex: saved.stageIndex || 1, discoveredRoots: persistedDiscoveredRoots }
+    const chMap = saved.chapters || {}
+    const si = saved.stageIndex || 1
+    const chProgress = chMap[si] || {}
+    return {
+      ...initialState,
+      stageIndex: si,
+      typedCounts: chProgress.typedCounts || {},
+      wordEncounters: chProgress.wordEncounters || {},
+      highestVerse: chProgress.highestVerse ?? 0,
+      currentVerse: chProgress.currentVerse ?? 0,
+      activeWordIdx: chProgress.activeWordIdx ?? 0,
+      carouselIdxMap: chProgress.carouselIdxMap || {},
+      celebratedVerses: chProgress.celebratedVerses || [],
+      discoveredRoots: persistedDiscoveredRoots,
+      chapters: chMap,
+    }
   })
 
   // Handle jumpToStageIndex prop changes AFTER mount (e.g. if GamePanel stays mounted
@@ -574,19 +655,25 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   useEffect(() => {
     if (!isLoaded || userId) return // Don't save before loading is complete or if user is authenticated
     
-    // Only save the persistent parts of state
-    const progressToSave = {
-      stageIndex: state.stageIndex,
-      typedCounts: state.typedCounts,
-      wordEncounters: state.wordEncounters,
-      highestVerse: state.highestVerse,
-      currentVerse: state.currentVerse,
-      activeWordIdx: state.activeWordIdx,
-      carouselIdxMap: state.carouselIdxMap,
-      celebratedVerses: state.celebratedVerses,
+    // Build the per-chapter map with current chapter included
+    const si = state.stageIndex
+    const updatedChapters = {
+      ...state.chapters,
+      [si]: {
+        typedCounts: state.typedCounts,
+        wordEncounters: state.wordEncounters,
+        highestVerse: state.highestVerse,
+        currentVerse: state.currentVerse,
+        activeWordIdx: state.activeWordIdx,
+        carouselIdxMap: state.carouselIdxMap,
+        celebratedVerses: state.celebratedVerses,
+      },
     }
 
-    saveProgress(progressToSave)
+    saveProgress({
+      stageIndex: si,
+      chapters: updatedChapters,
+    })
   }, [
     isLoaded,
     userId,
@@ -598,6 +685,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     state.activeWordIdx,
     state.carouselIdxMap,
     state.celebratedVerses,
+    state.chapters,
     saveProgress
   ])
 
