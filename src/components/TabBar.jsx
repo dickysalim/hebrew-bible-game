@@ -2,14 +2,26 @@ import React from 'react';
 
 const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => {
   const tabs = [
-    { id: 'main', label: 'Main' },
-    { id: 'full_chapter', label: 'Full Chapter' },
+    { id: 'main', label: 'Reading' },
+    { id: 'full_chapter', label: 'Chapter' },
     { id: 'lexicon', label: 'Lexicon' },
     { id: 'progress', label: 'Progress' },
   ];
 
   return (
     <div className="tab-bar">
+      {/* Back to menu always on the LEFT — universal UX pattern */}
+      {onBackToMenu && (
+        <button
+          className="tab-back-btn"
+          onClick={onBackToMenu}
+          aria-label="Back to main menu"
+          title="Back to Main Menu"
+        >
+          ← Menu
+        </button>
+      )}
+
       <div className="tab-list">
         {tabs.map((tab) => (
           <button
@@ -34,17 +46,6 @@ const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => 
           </button>
         ))}
       </div>
-
-      {onBackToMenu && (
-        <button
-          className="tab-back-btn"
-          onClick={onBackToMenu}
-          aria-label="Back to main menu"
-          title="Back to Main Menu"
-        >
-          ← Menu
-        </button>
-      )}
     </div>
   );
 };

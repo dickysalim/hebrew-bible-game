@@ -6,23 +6,23 @@ import { playCorrect } from './shared/sounds.js'
 const LETTERS = lettersData.letters
 const TARGET_STREAK = 10
 
-// Curated Hebrew words: { word (with nikud for display), consonants (list of letter names in RTL order), sbl }
+// Curated Hebrew words: consonantal only (no nikud), with SBL transliteration
 const WORD_LIST = [
-  { display: 'בְּרֵאשִׁית', consonants: ['Bet', 'Resh', 'Aleph', 'Shin', 'Yod', 'Tav'], sbl: 'bĕrēʾšît' },
-  { display: 'אֱלֹהִים',    consonants: ['Aleph', 'Lamed', 'He', 'Yod', 'Mem'],          sbl: 'ʾĕlōhîm' },
-  { display: 'שָׁלוֹם',     consonants: ['Shin', 'Lamed', 'Vav', 'Mem'],                  sbl: 'šālôm' },
-  { display: 'תּוֹרָה',      consonants: ['Tav', 'Vav', 'Resh', 'He'],                    sbl: 'tôrāh' },
-  { display: 'מֶלֶךְ',       consonants: ['Mem', 'Lamed', 'Kaf'],                         sbl: 'melek' },
-  { display: 'דָּבָר',       consonants: ['Dalet', 'Bet', 'Resh'],                        sbl: 'dābār' },
-  { display: 'אֶרֶץ',       consonants: ['Aleph', 'Resh', 'Tsade'],                      sbl: 'ʾereṣ' },
-  { display: 'יוֹם',         consonants: ['Yod', 'Vav', 'Mem'],                           sbl: 'yôm' },
-  { display: 'לֵב',          consonants: ['Lamed', 'Bet'],                                sbl: 'lēb' },
-  { display: 'נֶפֶשׁ',        consonants: ['Nun', 'Pe', 'Shin'],                          sbl: 'nepeš' },
-  { display: 'כֹּהֵן',        consonants: ['Kaf', 'He', 'Nun'],                           sbl: 'kōhēn' },
-  { display: 'עַם',           consonants: ['Ayin', 'Mem'],                                sbl: 'ʿam' },
-  { display: 'בַּיִת',        consonants: ['Bet', 'Yod', 'Tav'],                          sbl: 'bayit' },
-  { display: 'אוֹר',          consonants: ['Aleph', 'Vav', 'Resh'],                       sbl: 'ʾôr' },
-  { display: 'שֶׁמֶשׁ',       consonants: ['Shin', 'Mem', 'Shin'],                        sbl: 'šemeš' },
+  { display: 'בראשית', consonants: ['Bet', 'Resh', 'Aleph', 'Shin', 'Yod', 'Tav'], sbl: 'bĕrēʾšît' },
+  { display: 'אלהים',  consonants: ['Aleph', 'Lamed', 'He', 'Yod', 'Mem'],          sbl: 'ʾĕlōhîm' },
+  { display: 'שלום',   consonants: ['Shin', 'Lamed', 'Vav', 'Mem'],                  sbl: 'šālôm' },
+  { display: 'תורה',   consonants: ['Tav', 'Vav', 'Resh', 'He'],                    sbl: 'tôrāh' },
+  { display: 'מלך',    consonants: ['Mem', 'Lamed', 'Kaf'],                         sbl: 'melek' },
+  { display: 'דבר',    consonants: ['Dalet', 'Bet', 'Resh'],                        sbl: 'dābār' },
+  { display: 'ארץ',    consonants: ['Aleph', 'Resh', 'Tsade'],                      sbl: 'ʾereṣ' },
+  { display: 'יום',    consonants: ['Yod', 'Vav', 'Mem'],                           sbl: 'yôm' },
+  { display: 'לב',     consonants: ['Lamed', 'Bet'],                                sbl: 'lēb' },
+  { display: 'נפש',    consonants: ['Nun', 'Pe', 'Shin'],                           sbl: 'nepeš' },
+  { display: 'כהן',    consonants: ['Kaf', 'He', 'Nun'],                            sbl: 'kōhēn' },
+  { display: 'עם',     consonants: ['Ayin', 'Mem'],                                 sbl: 'ʿam' },
+  { display: 'בית',    consonants: ['Bet', 'Yod', 'Tav'],                           sbl: 'bayit' },
+  { display: 'אור',    consonants: ['Aleph', 'Vav', 'Resh'],                        sbl: 'ʾôr' },
+  { display: 'שמש',    consonants: ['Shin', 'Mem', 'Shin'],                         sbl: 'šemeš' },
 ]
 
 function shuffle(arr) {

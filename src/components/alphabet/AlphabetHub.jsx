@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import Level1 from './Level1.jsx'
 import Level2 from './Level2.jsx'
 import Level3 from './Level3.jsx'
@@ -9,35 +9,35 @@ const STORAGE_KEY = 'alphabet_progress'
 const LEVEL_META = [
   {
     id: 1,
-    hebrewNumeral: 'א',
+    numeral: '01',
     title: 'SBL Sounds',
-    desc: 'Match each letter to its SBL transliteration',
+    desc: 'Match each letter to its sound transliteration',
     mechanic: 'Sequential · Try again on wrong',
-    emoji: '🔊',
+    icon: '🔊',
   },
   {
     id: 2,
-    hebrewNumeral: 'ב',
+    numeral: '02',
     title: 'Letter Names',
-    desc: 'Name every letter — in order, no mistakes',
+    desc: 'Name every letter in order — no mistakes allowed',
     mechanic: 'Sequential · Reset to Aleph on wrong',
-    emoji: '📖',
+    icon: '📖',
   },
   {
     id: 3,
-    hebrewNumeral: 'ג',
+    numeral: '03',
     title: '22-Streak',
     desc: 'Name letters in random order — 22 in a row',
     mechanic: 'Random shuffle · Streak resets on wrong',
-    emoji: '🔥',
+    icon: '🔥',
   },
   {
     id: 4,
-    hebrewNumeral: 'ד',
+    numeral: '04',
     title: 'Spell It',
     desc: 'Tap letter names to spell Hebrew words',
     mechanic: '10-word streak · Order matters',
-    emoji: '👑',
+    icon: '👑',
   },
 ]
 
@@ -55,13 +55,9 @@ function saveProgress(progress) {
   } catch {}
 }
 
-/**
- * AlphabetHub — Level selection lobby
- * Manages progress unlocks and renders the active level component.
- */
 export default function AlphabetHub({ onBack }) {
   const [progress, setProgress] = useState(loadProgress)
-  const [activeLevel, setActiveLevel] = useState(null)  // 1 | 2 | 3 | 4 | null
+  const [activeLevel, setActiveLevel] = useState(null)
 
   const isUnlocked = (levelId) => {
     if (levelId === 1) return true
@@ -76,41 +72,38 @@ export default function AlphabetHub({ onBack }) {
     setActiveLevel(null)
   }, [progress])
 
-  // Render active level
-  if (activeLevel === 1) {
-    return <Level1 onComplete={() => handleLevelComplete(1)} onBack={() => setActiveLevel(null)} />
-  }
-  if (activeLevel === 2) {
-    return <Level2 onComplete={() => handleLevelComplete(2)} onBack={() => setActiveLevel(null)} />
-  }
-  if (activeLevel === 3) {
-    return <Level3 onComplete={() => handleLevelComplete(3)} onBack={() => setActiveLevel(null)} />
-  }
-  if (activeLevel === 4) {
-    return <Level4 onComplete={() => handleLevelComplete(4)} onBack={() => setActiveLevel(null)} />
-  }
+  if (activeLevel === 1) return <Level1 onComplete={() => handleLevelComplete(1)} onBack={() => setActiveLevel(null)} />
+  if (activeLevel === 2) return <Level2 onComplete={() => handleLevelComplete(2)} onBack={() => setActiveLevel(null)} />
+  if (activeLevel === 3) return <Level3 onComplete={() => handleLevelComplete(3)} onBack={() => setActiveLevel(null)} />
+  if (activeLevel === 4) return <Level4 onComplete={() => handleLevelComplete(4)} onBack={() => setActiveLevel(null)} />
 
-  // Hub view
+  const completedCount = [1,2,3,4].filter(n => progress[`level${n}`]).length
+
   return (
     <div className="alphabet-hub-screen">
-      {/* Decorative background */}
+      {/* Background decorative letters — no nikud */}
       <div className="menu-bg-letters" aria-hidden="true">
-        <span>אבג</span>
-        <span>דהו</span>
-        <span>זחט</span>
-        <span>יכל</span>
+        <span lang="he">אבג</span>
+        <span lang="he">דהו</span>
+        <span lang="he">זחט</span>
+        <span lang="he">יכל</span>
       </div>
 
       <div className="alphabet-hub-content">
-        {/* Header */}
+        {/* Header with back button on left */}
         <div className="hub-header">
-          <button className="level-back-btn" onClick={onBack} aria-label="Back to main menu">
+          <button className="hub-back-btn" onClick={onBack} aria-label="Back to main menu">
             ← Main Menu
           </button>
           <div className="hub-title-block">
-            <div className="hub-hebrew-title" lang="he" dir="rtl">אָלֶף-בֵּית</div>
-            <h1 className="hub-title">Learn Hebrew Alphabet</h1>
-            <p className="hub-subtitle">Complete each level to unlock the next</p>
+            {/* No nikud — plain consonantal Hebrew */}
+            <div className="hub-hebrew-title" lang="he" dir="rtl">אלף-בית</div>
+            <h1 className="hub-title">Hebrew Alphabet</h1>
+            <p className="hub-subtitle">
+              {completedCount === 4
+                ? 'All levels complete — you know the alphabet!'
+                : `${completedCount} of 4 levels complete`}
+            </p>
           </div>
         </div>
 
@@ -123,17 +116,22 @@ export default function AlphabetHub({ onBack }) {
               <button
                 key={meta.id}
                 id={`hub-level-${meta.id}`}
-                className={`level-card${unlocked ? '' : ' level-card--locked'}${completed ? ' level-card--done' : ''}`}
+                className={`level-card${!unlocked ? ' level-card--locked' : ''}${completed ? ' level-card--done' : ''}`}
                 onClick={() => unlocked && setActiveLevel(meta.id)}
                 disabled={!unlocked}
                 aria-label={`Level ${meta.id}: ${meta.title}${!unlocked ? ' — locked' : completed ? ' — completed' : ''}`}
               >
-                {/* Hebrew numeral + lock / checkmark */}
-                <div className="level-card-numeral" lang="he">
-                  {!unlocked ? '🔒' : completed ? '✓' : meta.hebrewNumeral}
+                {/* Status indicator */}
+                <div className="level-card-status">
+                  {!unlocked ? (
+                    <span className="level-card-lock-icon">🔒</span>
+                  ) : completed ? (
+                    <span className="level-card-check-icon">✓</span>
+                  ) : (
+                    <span className="level-card-icon" aria-hidden="true">{meta.icon}</span>
+                  )}
                 </div>
 
-                {/* Level info */}
                 <div className="level-card-body">
                   <div className="level-card-tag">Level {meta.id}</div>
                   <div className="level-card-title">{meta.title}</div>
@@ -141,17 +139,15 @@ export default function AlphabetHub({ onBack }) {
                   <div className="level-card-mechanic">{meta.mechanic}</div>
                 </div>
 
-                {/* Emoji badge */}
-                <div className="level-card-emoji" aria-hidden="true">
-                  {completed ? '✅' : unlocked ? meta.emoji : ''}
-                </div>
+                {unlocked && !completed && (
+                  <span className="level-card-arrow" aria-hidden="true">›</span>
+                )}
               </button>
             )
           })}
         </div>
 
-        {/* Footer hint */}
-        <p className="hub-footer-note">Progress is saved automatically</p>
+        <p className="hub-footer-note">Progress is saved automatically in your browser</p>
       </div>
     </div>
   )

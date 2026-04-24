@@ -7,7 +7,7 @@ const CHAPTERS = [
     stageIndex: 1,
     book: 'Genesis',
     chapter: 1,
-    hebrewTitle: 'בְּרֵאשִׁית א',
+    hebrewTitle: 'בראשית א',
     description: 'In the beginning — Creation',
     verseCount: 31,
     available: true,
@@ -17,14 +17,14 @@ const CHAPTERS = [
     stageIndex: 2,
     book: 'Genesis',
     chapter: 2,
-    hebrewTitle: 'בְּרֵאשִׁית ב',
+    hebrewTitle: 'בראשית ב',
     description: 'The seventh day — The Garden',
     verseCount: 25,
     available: true,
   },
 ]
 
-export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session }) {
+export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut }) {
   const [showChapterSelect, setShowChapterSelect] = useState(false)
 
   const handleChapterClick = (chapter) => {
@@ -34,18 +34,18 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
 
   return (
     <div className="main-menu-screen">
-      {/* Decorative Hebrew letters background */}
+      {/* Decorative Hebrew letters background — no nikud */}
       <div className="menu-bg-letters" aria-hidden="true">
-        <span>בְּרֵאשִׁית</span>
-        <span>אֱלֹהִים</span>
-        <span>תּוֹרָה</span>
-        <span>שָׁלוֹם</span>
+        <span>בראשית</span>
+        <span>אלהים</span>
+        <span>תורה</span>
+        <span>שלום</span>
       </div>
 
       <div className="menu-content">
         {/* Title block */}
         <header className="menu-header">
-          <div className="menu-hebrew-title">מִדְרַשׁ</div>
+          <div className="menu-hebrew-title" lang="he" dir="rtl">מדרש</div>
           <h1 className="menu-title">Hebrew Bible Game</h1>
           <p className="menu-subtitle">
             Learn to read the Masoretic Text, word by word
@@ -74,7 +74,8 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
                   disabled={!ch.available}
                   aria-label={`${ch.book} chapter ${ch.chapter}${!ch.available ? ' — locked' : ''}`}
                 >
-                  <div className="chapter-card-hebrew">{ch.hebrewTitle}</div>
+                  {/* No nikud on Hebrew titles */}
+                  <div className="chapter-card-hebrew" lang="he" dir="rtl">{ch.hebrewTitle}</div>
                   <div className="chapter-card-main">
                     <span className="chapter-card-name">
                       {ch.book} {ch.chapter}
@@ -96,16 +97,16 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
             </div>
           </div>
         ) : (
-          /* Main option buttons */
+          /* Main option buttons — all uniform style */
           <nav className="menu-options" aria-label="Main menu options">
             {/* Enter Midrash */}
             <button
               id="btn-enter-midrash"
-              className="menu-option menu-option--primary"
+              className="menu-option"
               onClick={onEnterMidrash}
             >
               <div className="menu-option-icon" aria-hidden="true">
-                <span className="menu-option-hebrew">קְרָא</span>
+                <span className="menu-option-hebrew" lang="he">קרא</span>
               </div>
               <div className="menu-option-text">
                 <span className="menu-option-title">Enter Midrash</span>
@@ -117,11 +118,11 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
             {/* Chapter Select */}
             <button
               id="btn-chapter-select"
-              className="menu-option menu-option--secondary"
+              className="menu-option"
               onClick={() => setShowChapterSelect(true)}
             >
               <div className="menu-option-icon" aria-hidden="true">
-                <span className="menu-option-hebrew">פֶּרֶק</span>
+                <span className="menu-option-hebrew" lang="he">פרק</span>
               </div>
               <div className="menu-option-text">
                 <span className="menu-option-title">Chapter Select</span>
@@ -133,12 +134,12 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
             {/* Learn Hebrew Alphabet */}
             <button
               id="btn-learn-alphabet"
-              className="menu-option menu-option--alphabet"
+              className="menu-option"
               onClick={onLearnAlphabet}
               aria-label="Learn Hebrew Alphabet"
             >
               <div className="menu-option-icon" aria-hidden="true">
-                <span className="menu-option-hebrew">אבג</span>
+                <span className="menu-option-hebrew" lang="he">אבג</span>
               </div>
               <div className="menu-option-text">
                 <span className="menu-option-title">Learn Hebrew Alphabet</span>
@@ -149,12 +150,17 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           </nav>
         )}
 
-        {/* Footer */}
+        {/* Footer — email + sign out */}
         <footer className="menu-footer">
-          {session && (
-            <span className="menu-user">{session.user.email}</span>
-          )}
           <span className="menu-footer-note">Masoretic Text (BHS) · ESV Translation</span>
+          {session && (
+            <div className="menu-account">
+              <span className="menu-user">{session.user.email}</span>
+              <button className="menu-signout-btn" onClick={onSignOut}>
+                Sign Out
+              </button>
+            </div>
+          )}
         </footer>
       </div>
     </div>

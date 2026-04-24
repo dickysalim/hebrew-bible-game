@@ -31,17 +31,6 @@ function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab, on
 
   return (
     <div className="app-container">
-      <div className="auth-header">
-        <div className="user-info">
-          <span className="user-email">{session.user.email}</span>
-          <button
-            className="sign-out-button"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
       <TabBar
         activeTab={activeTab}
         onTabChange={onTabChange}
@@ -166,6 +155,7 @@ export default function App() {
             onEnterMidrash={handleEnterMidrash}
             onSelectChapter={handleSelectChapter}
             onLearnAlphabet={handleLearnAlphabet}
+            onSignOut={() => supabase.auth.signOut()}
           />
         </div>
       ) : screen === 'alphabet' ? (
