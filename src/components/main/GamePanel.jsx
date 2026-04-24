@@ -17,7 +17,7 @@ import { useProgressCache } from '../../contexts/ProgressCacheContext'
 import { formatProgressFromSupabase } from '../../lib/progress'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
-import ESVStrip from './sub-components/ESVStrip'
+import ESVStrip, { getEsvText } from './sub-components/ESVStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefinition from './sub-components/WordDefinition'
 import HaberPanel from './sub-components/HaberPanel'
@@ -714,7 +714,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     rootSbl: wordData.root_sbl || '',
     verse: verse.verse,
     chapter: chapterNum,
-    verseEsv: verse.esv,
+    verseEsv: getEsvText(verse.esv),
   } : null
 
   // Verse completion sound — only fires once per verse per session
@@ -729,8 +729,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // Always track target letter for idle pulse hint (5s timer in KeyboardGuide)
   const targetLetter = (activeWord && !wordDone) ? wordId[typedCount] : null
 
-  // ESV highlight: the phrase for the currently selected word (even mid-typing)
-  const highlightPhrase = activeWord?.esvH ?? null
+  // ESV highlight: pass the word index to ESVStrip for positional matching
 
   // Stable callbacks so InsightCarousel's setInterval doesn't reset on every render
   const handleCarouselPrev = useCallback(
@@ -816,7 +815,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
             <ESVStrip
               esv={verse.esv}
-              highlightPhrase={highlightPhrase}
+              activeWordIndex={activeWordIdx}
             />
 
             <KeyboardGuide

@@ -4,6 +4,7 @@ import genesis2 from '../../../data/verses/genesis-2.json'
 import wordsData from '../../../data/words.json'
 import rootsData from '../../../data/roots.json'
 import { loadProgressFromStorage } from '../../../utils/useProgressPersistence'
+import { getEsvText } from '../../main/sub-components/ESVStrip'
 
 const VERSE_SOURCES = [
   { book: 'Genesis', chapter: 1, verses: genesis1.verses, progressKey: 'genesis-1' },
@@ -17,25 +18,7 @@ function isVerseCompleted(verseIdx, progressKey, celebratedVerses) {
   return false
 }
 
-function buildESVSegments(fullText, phrases) {
-  if (!fullText) return []
-  let segments = [{ text: fullText, highlight: false }]
-  for (const phrase of phrases) {
-    if (!phrase) continue
-    const next = []
-    for (const seg of segments) {
-      if (seg.highlight) { next.push(seg); continue }
-      const idx = seg.text.indexOf(phrase)
-      if (idx === -1) { next.push(seg); continue }
-      if (idx > 0) next.push({ text: seg.text.slice(0, idx), highlight: false })
-      next.push({ text: phrase, highlight: true })
-      const rest = seg.text.slice(idx + phrase.length)
-      if (rest) next.push({ text: rest, highlight: false })
-    }
-    segments = next
-  }
-  return segments
-}
+
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
@@ -162,8 +145,14 @@ export default function ConcordancePanel({ wordKey, onBack }) {
 
 function VerseEntry({ entry, wordKey }) {
   const { book, chapter, verseNum, verse, matchIndices } = entry
-  const matchedEsvPhrases = matchIndices.map(wi => verse.words[wi]?.esvH).filter(Boolean)
-  const esvSegments = buildESVSegments(verse.esv, matchedEsvPhrases)
+
+  // Build ESV segments with highlighting based on word index matching
+  const esvSegments = Array.isArray(verse.esv)
+    ? verse.esv.map(seg => ({
+        text: seg.t,
+        highlight: seg.w !== null && matchIndices.includes(seg.w),
+      }))
+    : [{ text: typeof verse.esv === 'string' ? verse.esv : getEsvText(verse.esv), highlight: false }]
 
   return (
     <div className="concordance__verse-entry">
