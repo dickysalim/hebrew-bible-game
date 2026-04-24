@@ -6,6 +6,7 @@ import FullChapter from './components/full_chapter/FullChapter'
 import TabBar from './components/TabBar'
 import AuthScreen from './components/ui/AuthScreen'
 import MainMenu from './components/ui/MainMenu'
+import AlphabetHub from './components/alphabet/AlphabetHub'
 import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
 import { supabase } from './lib/supabase'
 
@@ -43,7 +44,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('main')
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
-  // 'mainMenu' | 'game'
+  // 'mainMenu' | 'game' | 'alphabet'
   const [screen, setScreen] = useState('mainMenu')
   // chapter to start GamePanel on: { id, chapter } or null (continue)
   const [startChapter, setStartChapter] = useState(null)
@@ -107,6 +108,10 @@ export default function App() {
     setScreen('game')
   }
 
+  const handleLearnAlphabet = () => {
+    setScreen('alphabet')
+  }
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'main':
@@ -142,7 +147,12 @@ export default function App() {
             session={session}
             onEnterMidrash={handleEnterMidrash}
             onSelectChapter={handleSelectChapter}
+            onLearnAlphabet={handleLearnAlphabet}
           />
+        </div>
+      ) : screen === 'alphabet' ? (
+        <div className="app-container">
+          <AlphabetHub onBack={() => setScreen('mainMenu')} />
         </div>
       ) : (
         <AuthenticatedApp

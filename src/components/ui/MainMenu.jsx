@@ -22,7 +22,7 @@ const CHAPTERS = [
   },
 ]
 
-export default function MainMenu({ onEnterMidrash, onSelectChapter, session }) {
+export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session }) {
   const [showChapterSelect, setShowChapterSelect] = useState(false)
 
   const handleChapterClick = (chapter) => {
@@ -128,21 +128,21 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, session }) {
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
 
-            {/* Learn Hebrew Alphabet — coming soon */}
+            {/* Learn Hebrew Alphabet */}
             <button
               id="btn-learn-alphabet"
-              className="menu-option menu-option--disabled"
-              disabled
-              aria-label="Learn Hebrew Alphabet — coming soon"
+              className="menu-option menu-option--alphabet"
+              onClick={onLearnAlphabet}
+              aria-label="Learn Hebrew Alphabet"
             >
               <div className="menu-option-icon" aria-hidden="true">
                 <span className="menu-option-hebrew">אבג</span>
               </div>
               <div className="menu-option-text">
                 <span className="menu-option-title">Learn Hebrew Alphabet</span>
-                <span className="menu-option-desc">Coming soon — alphabet learning module</span>
+                <span className="menu-option-desc">4 levels · SBL sounds, names &amp; spelling</span>
               </div>
-              <span className="menu-option-badge">Soon</span>
+              <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
           </nav>
         )}
