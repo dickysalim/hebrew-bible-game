@@ -31,6 +31,9 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const trackRef = useRef(null)   // .scroll-track — the clipping viewport
   const wrapRef  = useRef(null)   // .verse-inner-wrap — the element we translate
   const wordRefs = useRef([])     // individual word-block refs
+  // True on first layout after mount or verse change — suppresses the CSS transition
+  // so the initial position snaps in instead of animating from y=0.
+  const isFirstLayoutRef = useRef(true)
 
   // ── Verse transition ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -43,6 +46,8 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     setAnimState(`exit-${dir}`)
 
     timerRef.current = setTimeout(() => {
+      // New verse — next centering layout should also snap instantly
+      isFirstLayoutRef.current = true
       setDisplayedVerse(currentVerse)
       setAnimState(`enter-${dir}`)
 
@@ -62,24 +67,35 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     const trackH = trackRef.current.offsetHeight
     if (trackH === 0) return
 
+    // Snap without transition on first layout after mount or verse change
+    if (isFirstLayoutRef.current) {
+      wrapRef.current.classList.add('verse-inner-wrap--instant')
+    }
+
     // If nothing selected, center the top of the wrap
     if (activeWordIdx === null) {
       wrapRef.current.style.transform = `translateY(0px)`
-      return
+    } else {
+      const wordEl = wordRefs.current[activeWordIdx]
+      if (wordEl) {
+        // offsetTop is measured from the nearest positioned ancestor.
+        // .scroll-track has position:relative, so offsetTop is relative to it.
+        const wordTop    = wordEl.offsetTop
+        const wordHeight = wordEl.offsetHeight
+
+        // Desired: centre of word row == centre of track
+        const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2))
+        wrapRef.current.style.transform = `translateY(${ty}px)`
+      }
     }
 
-    const wordEl = wordRefs.current[activeWordIdx]
-    if (!wordEl) return
-
-    // offsetTop is measured from the nearest positioned ancestor.
-    // .scroll-track has position:relative, so offsetTop is relative to it.
-    const wordTop    = wordEl.offsetTop
-    const wordHeight = wordEl.offsetHeight
-
-    // Desired: centre of word row == centre of track
-    const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2))
-
-    wrapRef.current.style.transform = `translateY(${ty}px)`
+    // Remove the instant class after one frame so future movements animate
+    if (isFirstLayoutRef.current) {
+      isFirstLayoutRef.current = false
+      requestAnimationFrame(() => {
+        if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
+      })
+    }
   }, [activeWordIdx, displayedVerse, typedCounts])
 
   const verse = verses[displayedVerse]

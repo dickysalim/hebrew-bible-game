@@ -334,6 +334,27 @@ function reducer(state, action) {
     default: return state
   }
 }
+// Build reducer initial state from a cached progress snapshot (same shape as
+// formatProgressFromSupabase output). Runs synchronously inside useReducer init.
+function buildInitialStateFromCache(cp) {
+  const discoveredRootsMap = {}
+  if (Array.isArray(cp.discoveredRoots)) {
+    cp.discoveredRoots.forEach(root => {
+      if (root?.id) discoveredRootsMap[root.id] = true
+    })
+  }
+  return {
+    ...initialState,
+    typedCounts:     cp.typedCounts     || {},
+    wordEncounters:  cp.wordEncounters  || {},
+    highestVerse:    cp.highestVerse    || 0,
+    currentVerse:    cp.currentVerseIndex || 0,
+    activeWordIdx:   cp.activeWordIdx   ?? 0,
+    carouselIdxMap:  cp.carouselIdxMap  || {},
+    celebratedVerses: cp.celebratedVerses || [],
+    discoveredRoots: discoveredRootsMap,
+  }
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -367,13 +388,24 @@ export default function GamePanel({ userId, startChapter }) {
       const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
       return { ...initialState, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
     }
-    if (userId) return initialState  // authenticated: start clean, cache will hydrate via useEffect
+    if (userId) {
+      // Cache is always ready here because AuthenticatedApp blocks on 'loading'.
+      // Initialising directly means VerseScroll mounts with the correct activeWordIdx
+      // — no async dispatch needed, no scroll animation on entry.
+      if (cacheStatus === 'ready' && cachedProgress) {
+        return buildInitialStateFromCache(cachedProgress)
+      }
+      return initialState // fallback: cache error or no data
+    }
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
     return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
   })
-  // Whether we have applied the cached progress to the reducer (do this only once per mount)
-  const [hasAppliedCache, setHasAppliedCache] = useState(false)
+  // True when the reducer was initialised from the cache (or there is no userId).
+  // Used to gate Supabase saves so we don't write back an empty state on first render.
+  const readyToSaveRef = useRef(
+    !userId || (cacheStatus === 'ready' && !!cachedProgress) || !userId
+  )
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
   const [haberOpen, setHaberOpen] = useState(false)
@@ -477,30 +509,22 @@ export default function GamePanel({ userId, startChapter }) {
     saveProgress
   ])
 
-  // Hydrate reducer from cache — runs once when the cache becomes ready
-  // (either from localStorage or Supabase, handled by ProgressCacheContext)
+  // Sync RootDiscoveryContext from cache on mount (lexicon badge needs the root list).
+  // The reducer already has the correct state — this only updates the context.
   useEffect(() => {
-    if (!userId || hasAppliedCache || cacheStatus !== 'ready' || startChapter) return
+    if (!userId || !cachedProgress) return
+    if (cachedProgress.discoveredRoots) updateDiscoveredRoots(cachedProgress.discoveredRoots)
+    if (cachedProgress.discoveredWordsByRoot) updateDiscoveredWordsByRoot(cachedProgress.discoveredWordsByRoot)
+    readyToSaveRef.current = true
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (cachedProgress) {
-      dispatch({ type: 'LOAD_SUPABASE_PROGRESS', payload: cachedProgress })
-
-      // Also hydrate the RootDiscoveryContext so the lexicon tab badge is correct
-      if (cachedProgress.discoveredRoots) updateDiscoveredRoots(cachedProgress.discoveredRoots)
-      if (cachedProgress.discoveredWordsByRoot) updateDiscoveredWordsByRoot(cachedProgress.discoveredWordsByRoot)
-    }
-
-    setHasAppliedCache(true)
-  }, [userId, cacheStatus, hasAppliedCache, startChapter]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Save progress via cache whenever relevant state changes (authenticated users only)
+  // Save progress via cache whenever relevant state changes (authenticated users only).
   // ProgressCacheContext debounces the actual Supabase write.
   useEffect(() => {
-    if (!userId || !hasAppliedCache) return
+    if (!userId || !readyToSaveRef.current) return
     updateCache(state, contextDiscoveredRoots, discoveredWordsByRoot)
   }, [
     userId,
-    hasAppliedCache,
     state.typedCounts,
     state.wordEncounters,
     state.currentVerse,

@@ -308,6 +308,11 @@ html, body {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
+/* Applied on first mount / remount so the initial position snaps instantly
+   without animating from translateY(0) to the real position. */
+.verse-inner-wrap--instant {
+  transition: none !important;
+}
 .word-block {
   display: inline-flex;
   flex-direction: column;
