@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import lettersData from '../../data/letters.json'
 import StreakBar from './shared/StreakBar.jsx'
+import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 const TARGET_STREAK = 10
@@ -62,6 +63,7 @@ export default function Level4({ onComplete, onBack }) {
     if (wordComplete || wordFeedback === 'wrong-click') return
 
     if (name === expectedNext) {
+      playCorrect()
       const newClicked = [...clickedSoFar, name]
       setClickedSoFar(newClicked)
       setLastWrongName(null)

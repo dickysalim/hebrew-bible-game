@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react'
 import lettersData from '../../data/letters.json'
 import QuizCard from './shared/QuizCard.jsx'
 import StreakBar from './shared/StreakBar.jsx'
+import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 const TARGET_STREAK = 22
@@ -68,6 +69,7 @@ export default function Level3({ onComplete, onBack }) {
   const handleChoice = useCallback((id) => {
     setSelected(id)
     if (id === current.name) {
+      playCorrect()
       setFeedback('correct')
       setTimeout(() => nextLetter(streak + 1), 800)
     } else {

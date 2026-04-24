@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import lettersData from '../../data/letters.json'
 import QuizCard from './shared/QuizCard.jsx'
+import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
@@ -33,6 +34,7 @@ export default function Level2({ onComplete, onBack }) {
   const handleChoice = useCallback((id) => {
     setSelected(id)
     if (id === current.name) {
+      playCorrect()
       setFeedback('correct')
       setTimeout(() => {
         const next = index + 1
