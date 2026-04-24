@@ -4,6 +4,7 @@ import { useState } from 'react'
 const CHAPTERS = [
   {
     id: 'genesis-1',
+    stageIndex: 1,
     book: 'Genesis',
     chapter: 1,
     hebrewTitle: 'בְּרֵאשִׁית א',
@@ -13,6 +14,7 @@ const CHAPTERS = [
   },
   {
     id: 'genesis-2',
+    stageIndex: 2,
     book: 'Genesis',
     chapter: 2,
     hebrewTitle: 'בְּרֵאשִׁית ב',

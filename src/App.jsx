@@ -10,6 +10,7 @@ import AlphabetHub from './components/alphabet/AlphabetHub'
 import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
 import { ProgressCacheProvider, useProgressCache } from './contexts/ProgressCacheContext'
 import { supabase } from './lib/supabase'
+import { stageIndexFromId } from './utils/useChapterLoader'
 
 // Component for authenticated app content
 function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab, onBackToMenu }) {
@@ -60,8 +61,8 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   // 'mainMenu' | 'game' | 'alphabet'
   const [screen, setScreen] = useState('mainMenu')
-  // chapter to start GamePanel on: { id, chapter } or null (continue)
-  const [startChapter, setStartChapter] = useState(null)
+  // stageIndex to jump GamePanel to (from chapter-select), or null (continue from saved)
+  const [jumpToStageIndex, setJumpToStageIndex] = useState(null)
 
   // Check for existing session on mount and listen for auth changes
   useEffect(() => {
@@ -113,12 +114,14 @@ export default function App() {
   }
 
   const handleEnterMidrash = () => {
-    setStartChapter(null) // continue from saved progress
+    setJumpToStageIndex(null) // continue from saved progress
     setScreen('game')
   }
 
   const handleSelectChapter = (chapter) => {
-    setStartChapter(chapter)
+    // chapter.id is e.g. 'genesis-2', resolve to stage_index
+    const si = stageIndexFromId(chapter.id)
+    setJumpToStageIndex(si)
     setScreen('game')
   }
 
@@ -129,7 +132,7 @@ export default function App() {
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'main':
-        return <GamePanel userId={session?.user?.id} startChapter={startChapter} />
+        return <GamePanel userId={session?.user?.id} jumpToStageIndex={jumpToStageIndex} />
       case 'full_chapter':
         return <FullChapter />
       case 'lexicon':
@@ -137,7 +140,7 @@ export default function App() {
       case 'progress':
         return <ProgressPanel />
       default:
-        return <GamePanel userId={session?.user?.id} startChapter={startChapter} />
+        return <GamePanel userId={session?.user?.id} jumpToStageIndex={jumpToStageIndex} />
     }
   }
 

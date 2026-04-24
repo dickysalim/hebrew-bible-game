@@ -143,6 +143,7 @@ export function ProgressCacheProvider({ children, userId }) {
       typedCounts: rawGameState.typedCounts || {},
       activeWordIdx: rawGameState.activeWordIdx ?? 0,
       highestVerse: rawGameState.highestVerse || 0,
+      stageIndex: rawGameState.stageIndex || 1,
       carouselIdxMap: rawGameState.carouselIdxMap || {},
       celebratedVerses: rawGameState.celebratedVerses || [],
     }

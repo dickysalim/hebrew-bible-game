@@ -6,6 +6,7 @@ const VERSION = '1.0';
 // Structure of saved progress data
 const defaultProgress = {
   version: VERSION,
+  stageIndex: 1,
   typedCounts: {},
   wordEncounters: {},
   highestVerse: 0,
@@ -61,6 +62,7 @@ export function useProgressPersistence() {
         ...data,
         version: VERSION,
         // Don't save temporary UI state
+        stageIndex: data.stageIndex || 1,
         typedCounts: data.typedCounts || {},
         wordEncounters: data.wordEncounters || {},
         highestVerse: data.highestVerse || 0,
@@ -93,6 +95,7 @@ export function useProgressPersistence() {
   // Get progress data for GamePanel initialization
   const getProgressData = useCallback(() => {
     return {
+      stageIndex: progress.stageIndex,
       typedCounts: progress.typedCounts,
       wordEncounters: progress.wordEncounters,
       highestVerse: progress.highestVerse,
@@ -139,6 +142,7 @@ export function loadProgressFromStorage() {
       const parsed = JSON.parse(saved);
       if (parsed.version === VERSION) {
         return {
+          stageIndex: parsed.stageIndex || 1,
           typedCounts: parsed.typedCounts || {},
           wordEncounters: parsed.wordEncounters || {},
           highestVerse: parsed.highestVerse || 0,
@@ -153,6 +157,7 @@ export function loadProgressFromStorage() {
     console.error('Failed to load progress:', error);
   }
   return {
+    stageIndex: 1,
     typedCounts: {},
     wordEncounters: {},
     highestVerse: 0,

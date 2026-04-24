@@ -1,6 +1,4 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
-import genesis1File from '../../data/verses/genesis-1.json'
-import genesis2File from '../../data/verses/genesis-2.json'
 import wordsData from '../../data/words.json'
 import rootsData from '../../data/roots.json'
 import wordCompleteAudio from '../../assets/audio/word_complete.mp3'
@@ -12,6 +10,7 @@ import typingSound3 from '../../assets/audio/typing_sound3.mp3'
 import rootFoundAudio from '../../assets/audio/root_found.mp3'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
+import { useChapterLoader, stageIndexFromId } from '../../utils/useChapterLoader'
 import { checkRootCompletion } from '../../utils/rootDetection'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
@@ -43,11 +42,6 @@ function loadDiscoveredRootIdsFromStorage() {
   return {}
 }
 
-const VERSE_FILES = {
-  'genesis-1': genesis1File,
-  'genesis-2': genesis2File,
-}
-
 // ─── Reducer helpers (take verses as first arg) ──────────────────────────────
 
 const wkey = (vi, wi) => `${vi}-${wi}`
@@ -62,11 +56,12 @@ const firstIncomplete = (verses, counts, vi) =>
   verses[vi]?.words.findIndex((_, wi) => !isDone(verses, counts, vi, wi)) ?? -1
 
 // Module-level ref so the reducer can access current verses without prop threading
-let versesRef = genesis1File.verses
+let versesRef = []
 
 // ─── Game reducer ─────────────────────────────────────────────────────────────
 
 const initialState = {
+  stageIndex: 1,          // current chapter's stage_index (1-based)
   currentVerse: 0,
   activeWordIdx: 0,       // null = nothing selected
   typedCounts: {},
@@ -88,6 +83,8 @@ const initialState = {
   // SBL display controls
   showSBLWord: true,             // whether to show SBL word transliteration
   showSBLLetter: true,           // whether to show SBL letter transliteration
+  // Signal that chapter is complete and we need to load the next one
+  chapterEndSignal: 0,           // increments when last verse of chapter is completed via SPACE
 }
 
 function reducer(state, action) {
@@ -198,6 +195,10 @@ function reducer(state, action) {
           wrongHebKeys: [],
         }
       }
+      // Last verse of chapter completed — signal chapter-end so component can load next
+      if (isVerseDone(verses, typedCounts, currentVerse) && currentVerse >= verses.length - 1) {
+        return { ...state, chapterEndSignal: state.chapterEndSignal + 1 }
+      }
       return state
     }
 
@@ -268,7 +269,7 @@ function reducer(state, action) {
       // Reset to initial state but keep audio refs and other non-persistent state
       return {
         ...initialState,
-        // Keep the current verse as 0, but reset all progress
+        stageIndex: 1,
         currentVerse: 0,
         activeWordIdx: 0,
         typedCounts: {},
@@ -282,6 +283,41 @@ function reducer(state, action) {
         typingSignal: 0,
         recentTypedLetter: null,
         celebratedVerses: [],
+        chapterEndSignal: 0,
+      }
+    }
+
+    // New chapter's verses have been loaded — reset verse-local state
+    case 'LOAD_CHAPTER': {
+      return {
+        ...state,
+        stageIndex: action.stageIndex,
+        currentVerse: action.startAtVerse ?? 0,
+        activeWordIdx: 0,
+        highestVerse: action.startAtVerse ?? 0,
+        typedCounts: {},
+        carouselIdxMap: {},
+        celebratedVerses: [],
+        errorCount: 0,
+        wrongHebKeys: [],
+        chapterEndSignal: 0,
+      }
+    }
+
+    // Jump to a stage from chapter-select (clears chapter progress)
+    case 'JUMP_TO_STAGE': {
+      return {
+        ...state,
+        stageIndex: action.stageIndex,
+        currentVerse: 0,
+        activeWordIdx: 0,
+        highestVerse: 0,
+        typedCounts: {},
+        carouselIdxMap: {},
+        celebratedVerses: [],
+        errorCount: 0,
+        wrongHebKeys: [],
+        chapterEndSignal: 0,
       }
     }
 
@@ -345,6 +381,7 @@ function buildInitialStateFromCache(cp) {
   }
   return {
     ...initialState,
+    stageIndex:      cp.stageIndex       || 1,
     typedCounts:     cp.typedCounts     || {},
     wordEncounters:  cp.wordEncounters  || {},
     highestVerse:    cp.highestVerse    || 0,
@@ -358,13 +395,7 @@ function buildInitialStateFromCache(cp) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function GamePanel({ userId, startChapter }) {
-  // Resolve verse data based on selected chapter (defaults to genesis-1)
-  const chapterId = startChapter?.id ?? 'genesis-1'
-  const versesFile = VERSE_FILES[chapterId] ?? genesis1File
-  const verses = versesFile.verses
-  // Keep module-level ref in sync for the reducer
-  versesRef = verses
+export default function GamePanel({ userId, jumpToStageIndex }) {
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
@@ -382,25 +413,71 @@ export default function GamePanel({ userId, startChapter }) {
     discoveredWordsByRoot
   } = useRootDiscovery()
 
-  const [state, dispatch] = useReducer(reducer, null, () => {
-    if (startChapter) {
-      // Chapter select: always start at verse 0 of the selected chapter
-      const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-      return { ...initialState, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
+  // Determine which stageIndex to start on
+  const resolvedInitialStage = (() => {
+    if (userId && cacheStatus === 'ready' && cachedProgress) {
+      return cachedProgress.stageIndex || 1
     }
+    if (!userId) {
+      const saved = loadProgressFromStorage()
+      return saved.stageIndex || 1
+    }
+    return 1
+  })()
+
+  // Dynamic chapter loader — only loads the chapter we need
+  const {
+    chapterData, chapterMeta, stageIndex: loaderStageIndex,
+    isLoading: chapterLoading, hasNext, jumpToStage, advanceToNext
+  } = useChapterLoader(resolvedInitialStage)
+
+  // Derive verses from loaded chapter data (empty while loading)
+  const verses = chapterData?.verses ?? []
+  // Keep module-level ref in sync for the reducer
+  versesRef = verses
+
+  const [state, dispatch] = useReducer(reducer, null, () => {
     if (userId) {
-      // Cache is always ready here because AuthenticatedApp blocks on 'loading'.
-      // Initialising directly means VerseScroll mounts with the correct activeWordIdx
-      // — no async dispatch needed, no scroll animation on entry.
       if (cacheStatus === 'ready' && cachedProgress) {
         return buildInitialStateFromCache(cachedProgress)
       }
-      return initialState // fallback: cache error or no data
+      return { ...initialState, stageIndex: resolvedInitialStage }
     }
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-    return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
+    return { ...initialState, ...saved, stageIndex: saved.stageIndex || 1, discoveredRoots: persistedDiscoveredRoots }
   })
+
+  // Handle jumpToStageIndex prop changes (from chapter-select in App)
+  const prevJumpRef = useRef(jumpToStageIndex)
+  useEffect(() => {
+    if (jumpToStageIndex != null && jumpToStageIndex !== prevJumpRef.current) {
+      prevJumpRef.current = jumpToStageIndex
+      jumpToStage(jumpToStageIndex)
+      dispatch({ type: 'JUMP_TO_STAGE', stageIndex: jumpToStageIndex })
+    }
+  }, [jumpToStageIndex, jumpToStage])
+
+  // When chapter data finishes loading (after advance or jump), sync reducer
+  const prevLoaderStageRef = useRef(loaderStageIndex)
+  useEffect(() => {
+    if (!chapterLoading && chapterData && loaderStageIndex !== prevLoaderStageRef.current) {
+      prevLoaderStageRef.current = loaderStageIndex
+      // Only dispatch LOAD_CHAPTER if reducer hasn't already been set (e.g. by JUMP_TO_STAGE)
+      if (state.stageIndex !== loaderStageIndex) {
+        dispatch({ type: 'LOAD_CHAPTER', stageIndex: loaderStageIndex })
+      }
+    }
+  }, [chapterLoading, chapterData, loaderStageIndex]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-advance to next chapter when user presses SPACE on last verse
+  useEffect(() => {
+    if (state.chapterEndSignal > 0 && hasNext) {
+      advanceToNext()
+      dispatch({ type: 'LOAD_CHAPTER', stageIndex: loaderStageIndex + 1 })
+    }
+  }, [state.chapterEndSignal]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // True when the reducer was initialised from the cache (or there is no userId).
   // Used to gate Supabase saves so we don't write back an empty state on first render.
   const readyToSaveRef = useRef(
@@ -486,6 +563,7 @@ export default function GamePanel({ userId, startChapter }) {
     
     // Only save the persistent parts of state
     const progressToSave = {
+      stageIndex: state.stageIndex,
       typedCounts: state.typedCounts,
       wordEncounters: state.wordEncounters,
       highestVerse: state.highestVerse,
@@ -499,6 +577,7 @@ export default function GamePanel({ userId, startChapter }) {
   }, [
     isLoaded,
     userId,
+    state.stageIndex,
     state.typedCounts,
     state.wordEncounters,
     state.highestVerse,
@@ -525,6 +604,7 @@ export default function GamePanel({ userId, startChapter }) {
     updateCache(state, contextDiscoveredRoots, discoveredWordsByRoot)
   }, [
     userId,
+    state.stageIndex,
     state.typedCounts,
     state.wordEncounters,
     state.currentVerse,
@@ -587,14 +667,20 @@ export default function GamePanel({ userId, startChapter }) {
   }, [])
 
   const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap, celebratedVerses } = state
-  const verse      = verses[currentVerse]
-  const activeWord = activeWordIdx !== null ? verse.words[activeWordIdx] : null
+
+  // Dynamic book/chapter label from loaded chapter metadata
+  const bookLabel = chapterMeta?.book ?? 'Genesis'
+  const chapterNum = chapterMeta?.chapter ?? 1
+
+  // Guard: while chapter is loading, verses may be empty
+  const verse      = verses[currentVerse] ?? null
+  const activeWord = (verse && activeWordIdx !== null) ? verse.words[activeWordIdx] : null
   const wordId     = activeWord?.id ?? ''
   const typedCount = activeWordIdx !== null ? getTyped(typedCounts, currentVerse, activeWordIdx) : 0
-  const wordDone   = activeWordIdx !== null
+  const wordDone   = activeWordIdx !== null && verse
     ? getTyped(typedCounts, currentVerse, activeWordIdx) >= wordLen(verses, currentVerse, activeWordIdx)
     : false
-  const verseDone  = isVerseDone(verses, typedCounts, currentVerse)
+  const verseDone  = verse ? isVerseDone(verses, typedCounts, currentVerse) : false
   const carouselIdx = carouselIdxMap[currentVerse] ?? 0
 
   // Whether this verse's completion has already been celebrated (sound + animation)
@@ -607,14 +693,14 @@ export default function GamePanel({ userId, startChapter }) {
   const sbl = activeWord?.sbl || ''
 
   // Context object passed to Haber for the current word
-  const currentWordContext = wordDone && wordData ? {
+  const currentWordContext = wordDone && wordData && verse ? {
     id: wordId,
     sbl,
     gloss: wordData.gloss,
     root: wordData.root || '',
     rootSbl: wordData.root_sbl || '',
     verse: verse.verse,
-    chapter: 1,
+    chapter: chapterNum,
     verseEsv: verse.esv,
   } : null
 
@@ -643,11 +729,23 @@ export default function GamePanel({ userId, startChapter }) {
     [currentVerse]
   )
 
+  // Show loading screen while chapter data is being fetched
+  if (chapterLoading || !verse) {
+    return (
+      <div className="game-panel">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Loading {bookLabel} {chapterNum}...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={`game-panel${isTyping ? ' cursor-none' : ''}`}>
 
       <div className="verse-header">
-        <span className="verse-ref">Genesis 1:{verse.verse}</span>
+        <span className="verse-ref">{bookLabel} {chapterNum}:{verse.verse}</span>
         <span className="progress-pill">verse {currentVerse + 1} of {verses.length}</span>
       </div>
 
@@ -721,7 +819,7 @@ export default function GamePanel({ userId, startChapter }) {
             />
 
             <div className="footer-note">
-              Genesis 1:{verse.verse} — Masoretic Text (BHS) — ESV
+              {bookLabel} {chapterNum}:{verse.verse} — Masoretic Text (BHS) — ESV
             </div>
           </div>
         </div>
