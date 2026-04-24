@@ -8,12 +8,26 @@ import AuthScreen from './components/ui/AuthScreen'
 import MainMenu from './components/ui/MainMenu'
 import AlphabetHub from './components/alphabet/AlphabetHub'
 import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
+import { ProgressCacheProvider, useProgressCache } from './contexts/ProgressCacheContext'
 import { supabase } from './lib/supabase'
 
 // Component for authenticated app content
 function AuthenticatedApp({ session, activeTab, onTabChange, renderActiveTab, onBackToMenu }) {
   const { newRoots } = useRootDiscovery()
-  
+  const { cacheStatus } = useProgressCache()
+
+  // Show a blocking spinner until the first Supabase fetch completes
+  if (cacheStatus === 'loading') {
+    return (
+      <div className="app-container">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Loading your progress...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app-container">
       <div className="auth-header">
@@ -127,8 +141,9 @@ export default function App() {
     }
   }
 
-  // Wrap everything in RootDiscoveryProvider
+  // Wrap everything in providers — ProgressCacheProvider fetches Supabase once per session
   return (
+    <ProgressCacheProvider userId={session?.user?.id}>
     <RootDiscoveryProvider userId={session?.user?.id}>
       {loading ? (
         <div className="app-container">
@@ -164,5 +179,6 @@ export default function App() {
         />
       )}
     </RootDiscoveryProvider>
+    </ProgressCacheProvider>
   )
 }

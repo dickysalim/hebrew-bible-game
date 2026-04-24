@@ -14,7 +14,8 @@ import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebre
 import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
 import { checkRootCompletion } from '../../utils/rootDetection'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
-import { loadProgress, saveProgress as saveProgressToSupabase, formatProgressForSupabase, formatProgressFromSupabase } from '../../lib/progress'
+import { useProgressCache } from '../../contexts/ProgressCacheContext'
+import { formatProgressFromSupabase } from '../../lib/progress'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip from './sub-components/ESVStrip'
@@ -346,6 +347,9 @@ export default function GamePanel({ userId, startChapter }) {
   // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
+  // Progress cache — fetched once after login, survives tab switches
+  const { cachedProgress, cacheStatus, updateCache, clearCache } = useProgressCache()
+
   // Root discovery context — used to update the Lexicon tab badge and persist roots
   const {
     addDiscoveredRoot,
@@ -363,12 +367,13 @@ export default function GamePanel({ userId, startChapter }) {
       const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
       return { ...initialState, currentVerse: 0, activeWordIdx: 0, discoveredRoots: persistedDiscoveredRoots }
     }
-    if (userId) return initialState  // authenticated: start clean, load from Supabase
+    if (userId) return initialState  // authenticated: start clean, cache will hydrate via useEffect
     const saved = loadProgressFromStorage()
     const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
     return { ...initialState, ...saved, discoveredRoots: persistedDiscoveredRoots }
   })
-  const [hasLoadedSupabaseProgress, setHasLoadedSupabaseProgress] = useState(false)
+  // Whether we have applied the cached progress to the reducer (do this only once per mount)
+  const [hasAppliedCache, setHasAppliedCache] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
   const [haberOpen, setHaberOpen] = useState(false)
@@ -472,74 +477,40 @@ export default function GamePanel({ userId, startChapter }) {
     saveProgress
   ])
 
-  // Load progress from Supabase when userId is available
+  // Hydrate reducer from cache — runs once when the cache becomes ready
+  // (either from localStorage or Supabase, handled by ProgressCacheContext)
   useEffect(() => {
-    if (!userId || hasLoadedSupabaseProgress) return
+    if (!userId || hasAppliedCache || cacheStatus !== 'ready' || startChapter) return
 
-    const loadFromSupabase = async () => {
-      try {
-        const supabaseProgress = await loadProgress(userId)
-        if (supabaseProgress) {
-          const formattedProgress = formatProgressFromSupabase(supabaseProgress)
-          
-          // Dispatch action to update game state with Supabase progress
-          dispatch({
-            type: 'LOAD_SUPABASE_PROGRESS',
-            payload: formattedProgress
-          })
+    if (cachedProgress) {
+      dispatch({ type: 'LOAD_SUPABASE_PROGRESS', payload: cachedProgress })
 
-          // Update RootDiscoveryContext with Supabase data
-          if (formattedProgress.discoveredRoots) {
-            updateDiscoveredRoots(formattedProgress.discoveredRoots)
-          }
-          if (formattedProgress.discoveredWordsByRoot) {
-            updateDiscoveredWordsByRoot(formattedProgress.discoveredWordsByRoot)
-          }
-
-          console.log('Loaded progress from Supabase for user:', userId)
-        } else {
-          // No Supabase data - check if we have localStorage data to migrate
-          // The context already has localStorage data loaded on initialization
-          // We'll let the save progress effect handle saving it to Supabase
-          console.log('No Supabase data found for user, will use localStorage data:', userId)
-        }
-        setHasLoadedSupabaseProgress(true)
-      } catch (error) {
-        console.error('Failed to load progress from Supabase:', error)
-        setHasLoadedSupabaseProgress(true) // Don't retry on error
-      }
+      // Also hydrate the RootDiscoveryContext so the lexicon tab badge is correct
+      if (cachedProgress.discoveredRoots) updateDiscoveredRoots(cachedProgress.discoveredRoots)
+      if (cachedProgress.discoveredWordsByRoot) updateDiscoveredWordsByRoot(cachedProgress.discoveredWordsByRoot)
     }
 
-    loadFromSupabase()
-  }, [userId, hasLoadedSupabaseProgress, dispatch])
+    setHasAppliedCache(true)
+  }, [userId, cacheStatus, hasAppliedCache, startChapter]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Save progress to Supabase when relevant state changes and userId is available
+  // Save progress via cache whenever relevant state changes (authenticated users only)
+  // ProgressCacheContext debounces the actual Supabase write.
   useEffect(() => {
-    if (!userId || !hasLoadedSupabaseProgress) return
-
-    // Format progress for Supabase
-    const progressForSupabase = formatProgressForSupabase(state, contextDiscoveredRoots, discoveredWordsByRoot)
-    
-    // Save to Supabase
-    const saveToSupabase = async () => {
-      try {
-        await saveProgressToSupabase(userId, progressForSupabase)
-      } catch (error) {
-        console.error('Failed to save progress to Supabase:', error)
-        // Continue with localStorage as fallback
-      }
-    }
-
-    saveToSupabase()
+    if (!userId || !hasAppliedCache) return
+    updateCache(state, contextDiscoveredRoots, discoveredWordsByRoot)
   }, [
     userId,
-    hasLoadedSupabaseProgress,
+    hasAppliedCache,
     state.typedCounts,
     state.wordEncounters,
     state.currentVerse,
+    state.highestVerse,
+    state.activeWordIdx,
+    state.carouselIdxMap,
+    state.celebratedVerses,
     contextDiscoveredRoots,
-    discoveredWordsByRoot
-  ])
+    discoveredWordsByRoot,
+  ]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Random typing sound on correct keypress
   useEffect(() => {
@@ -563,6 +534,7 @@ export default function GamePanel({ userId, startChapter }) {
         if (window.confirm('Reset all progress? This will clear all saved typing progress.')) {
           resetProgress()
           resetDiscoveredRoots()
+          clearCache()
           dispatch({ type: 'RESET_PROGRESS' })
           console.log('Progress reset for debugging')
         }
