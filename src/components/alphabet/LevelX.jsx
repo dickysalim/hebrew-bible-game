@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import lettersData from '../../data/letters.json'
 import StreakBar from './shared/StreakBar.jsx'
-import { playCorrect } from './shared/sounds.js'
+import { playCorrect, playLevelComplete } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 const TARGET_STREAK = 10
@@ -74,6 +74,7 @@ export default function Level4({ onComplete, onBack }) {
         setWordFeedback('correct')
         setWordComplete(true)
         if (newStreak >= TARGET_STREAK) {
+          playLevelComplete()
           setTimeout(() => setDone(true), 1600)
         } else {
           setTimeout(() => {

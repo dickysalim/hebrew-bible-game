@@ -3,7 +3,7 @@ import lettersData from '../../data/letters.json'
 import { LATIN_TO_HEB } from '../../utils/hebrewData'
 import TrainingKeyboard from './shared/TrainingKeyboard.jsx'
 import StreakBar from './shared/StreakBar.jsx'
-import { playCorrect } from './shared/sounds.js'
+import { playCorrect, playLevelComplete } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
@@ -95,6 +95,7 @@ export default function Level4({ onComplete, onBack }) {
   const advance = useCallback(() => {
     const newStreak = streak + 1
     if (newStreak >= TARGET_STREAK) {
+      playLevelComplete()
       setDone(true)
       return
     }

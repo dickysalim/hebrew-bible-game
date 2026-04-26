@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from 'react'
 import lettersData from '../../data/letters.json'
 import QuizCard from './shared/QuizCard.jsx'
 import StreakBar from './shared/StreakBar.jsx'
-import { playCorrect } from './shared/sounds.js'
+import { playCorrect, playLevelComplete } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
@@ -108,6 +108,7 @@ export default function Level3({ onComplete, onBack }) {
 
   const nextLetter = useCallback((newStreak) => {
     if (newStreak >= TARGET_STREAK) {
+      playLevelComplete()
       setDone(true)
       return
     }

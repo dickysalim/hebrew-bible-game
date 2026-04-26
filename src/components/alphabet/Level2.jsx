@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import lettersData from '../../data/letters.json'
 import QuizCard from './shared/QuizCard.jsx'
-import { playCorrect } from './shared/sounds.js'
+import { playCorrect, playLevelComplete } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
@@ -102,6 +102,7 @@ export default function Level2({ onComplete, onBack }) {
       setTimeout(() => {
         const next = index + 1
         if (next >= LETTERS.length) {
+          playLevelComplete()
           setDone(true)
         } else {
           setIndex(next)

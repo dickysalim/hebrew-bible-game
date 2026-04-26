@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import lettersData from '../../data/letters.json'
-import { playCorrect } from './shared/sounds.js'
+import { playCorrect, playLevelComplete } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
@@ -64,6 +64,7 @@ export default function Level1({ onComplete, onBack }) {
       setTimeout(() => {
         const next = index + 1
         if (next >= LETTERS.length) {
+          playLevelComplete()
           setDone(true)
         } else {
           setIndex(next)
