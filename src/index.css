@@ -4037,3 +4037,147 @@ html, body {
   .l1-level-intro { padding: 24px 20px; }
   .l1-quiz-choices .quiz-choices { width: min(300px, 100%); }
 }
+
+/* ─── LEVEL INTRO RULE BANNER (Level 2 & 3) ─────────────── */
+.l2-intro-rule {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(255, 95, 64, 0.07);
+  border: 1px solid rgba(255, 95, 64, 0.25);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.l2-intro-rule-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+  margin-top: 1px;
+}
+
+.l2-intro-rule strong { color: var(--coral); }
+
+/* ═══════════════════════════════════════════════════════════
+   LEVEL 2 — SOFIT PANEL
+   ═══════════════════════════════════════════════════════════ */
+
+/* Level body variant — row layout when sofit panel present */
+.level-body--l2 {
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.l2-sofit-panel {
+  width: min(440px, 100%);
+  background: rgba(0, 191, 165, 0.06);
+  border: 1px solid rgba(0, 191, 165, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: menuFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.l2-sofit-panel-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.l2-sofit-panel-glyphs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.l2-sofit-panel-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.l2-sofit-panel-glyph {
+  font-family: var(--font-hebrew);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--text-primary);
+  direction: rtl;
+  line-height: 1;
+}
+
+.l2-sofit-panel-glyph--final {
+  color: var(--teal);
+}
+
+.l2-sofit-panel-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.l2-sofit-panel-tag--sofit {
+  color: var(--teal);
+}
+
+.l2-sofit-panel-arrow {
+  font-size: 20px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.l2-sofit-panel-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEVEL 3 — SOFIT BADGE
+   ═══════════════════════════════════════════════════════════ */
+
+/* Override level-body to allow badge above card */
+.level-body:has(.l3-sofit-badge) {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.l3-sofit-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(0, 191, 165, 0.1);
+  border: 1px solid rgba(0, 191, 165, 0.3);
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  animation: menuFadeIn 0.25s ease both;
+}
+
+@media (max-width: 480px) {
+  .hub-intro { gap: 18px; }
+  .hub-intro-level { padding: 12px 14px; gap: 10px; }
+  .hub-intro-begin-btn { padding: 12px 28px; font-size: 14px; }
+  .level-body--l2 { padding: 14px 14px; gap: 12px; }
+  .l2-sofit-panel { padding: 12px 14px; }
+  .l2-sofit-panel-glyph { font-size: 36px; }
+}
+

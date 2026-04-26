@@ -6,20 +6,21 @@ import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
-// Build 5 sofit variants as separate quiz entries
+// Build 5 sofit variants as fully independent quiz entries
 const SOFIT_ITEMS = LETTERS
   .filter((l) => l.sofit)
   .map((l) => ({
-    letter: l.sofit.glyph,
-    name:   l.sofit.quizLabel,   // e.g. "Mem (Sofit)"
-    sbl:    l.sbl,
+    letter:  l.sofit.glyph,
+    name:    l.sofit.quizLabel,   // e.g. "Mem (Sofit)"
+    sbl:     l.sbl,
     isSofit: true,
   }))
 
-// Full pool: 22 standard + 5 sofit = 27 items
+// Full pool: 22 standard + 5 sofit = 27 independent items
 const ALL_ITEMS = [...LETTERS, ...SOFIT_ITEMS]
 
-const TARGET_STREAK = 22
+// Streak target equals the full pool — must name every form without a single mistake
+const TARGET_STREAK = ALL_ITEMS.length  // 27
 
 function shuffle(arr) {
   const a = [...arr]
@@ -47,11 +48,54 @@ function buildChoices(correct) {
 }
 
 /**
- * Level 3 — Random shuffle, 22-streak required
+ * Level 3 intro — shown once before the streak begins.
+ * Explains the 27-form pool, sofit as standalone, and the streak mechanic.
+ */
+function LevelIntro({ onBegin }) {
+  return (
+    <div className="l1-level-intro">
+      <div className="l1-intro-icon" aria-hidden="true">🔥</div>
+      <h2 className="l1-intro-title">27-Form Streak Challenge</h2>
+      <div className="l1-intro-body">
+        <p>
+          You've learned the sounds and the names. Now it's time to <strong>prove it</strong> —
+          with no hints, no order, no help.
+        </p>
+        <div className="l1-intro-examples">
+          <span>22 base letters</span>
+          <span>+</span>
+          <span>5 sofit forms</span>
+          <span>=</span>
+          <span><strong>27 to master</strong></span>
+        </div>
+        <p>
+          Every letter and every sofit variant appears in a <strong>random shuffle</strong>.
+          Sofit letters are treated as their own independent forms — you must distinguish
+          <em> Mem</em> from <em> Mem (Sofit)</em> by shape alone.
+        </p>
+        <div className="l2-intro-rule">
+          <span className="l2-intro-rule-icon">🔥</span>
+          <span>
+            Name <strong>all 27 in a row</strong> without a mistake to complete the level.
+            One wrong answer resets your streak to zero and reshuffles the deck.
+          </span>
+        </div>
+      </div>
+      <button className="intro-got-it-btn" onClick={onBegin}>
+        Begin Streak →
+      </button>
+    </div>
+  )
+}
+
+/**
+ * Level 3 — Random shuffle, 27-streak required (all 27 forms)
  * Pool is 27 items: 22 standard letters + 5 sofit variants.
+ * Sofit letters are standalone — "Mem (Sofit)" is a distinct answer from "Mem".
  * Wrong answer resets streak AND reshuffles queue.
  */
 export default function Level3({ onComplete, onBack }) {
+  const [started, setStarted] = useState(false)
   const queueRef   = useRef(buildQueue())
   const [queueIndex, setQueueIndex] = useState(0)
   const [choices, setChoices]       = useState(() => buildChoices(queueRef.current[0]))
@@ -108,7 +152,7 @@ export default function Level3({ onComplete, onBack }) {
           <div className="level-complete-icon" aria-hidden="true">🔥</div>
           <h2 className="level-complete-title">Level 3 Complete!</h2>
           <p className="level-complete-desc">
-            Perfect 22-streak through all 27 forms — standard and sofit!
+            Perfect 27-streak — all 22 base letters and all 5 sofit forms named correctly in a row!
           </p>
           <button className="level-complete-btn" onClick={onComplete}>
             Continue →
@@ -118,24 +162,47 @@ export default function Level3({ onComplete, onBack }) {
     )
   }
 
+  // Shared header
+  const header = (
+    <div className="level-header">
+      <button className="level-back-btn" onClick={onBack} aria-label="Back to levels">
+        ← Back
+      </button>
+      <div className="level-header-title">
+        <span className="level-tag">Level 3</span>
+        <span className="level-desc">27-Streak · 27 Forms</span>
+      </div>
+      {started && (
+        <div className="level-progress-text streak-count-display">{streak}/{TARGET_STREAK}</div>
+      )}
+    </div>
+  )
+
+  // One-time intro
+  if (!started) {
+    return (
+      <div className="alphabet-level-screen">
+        {header}
+        <LevelIntro onBegin={() => setStarted(true)} />
+      </div>
+    )
+  }
+
   return (
     <div className="alphabet-level-screen">
-      {/* Header */}
-      <div className="level-header">
-        <button className="level-back-btn" onClick={onBack} aria-label="Back to levels">
-          ← Back
-        </button>
-        <div className="level-header-title">
-          <span className="level-tag">Level 3</span>
-          <span className="level-desc">22-Streak · 27 Forms</span>
-        </div>
-        <div className="level-progress-text streak-count-display">{streak}/{TARGET_STREAK}</div>
-      </div>
+      {header}
 
       {/* Streak bar */}
       <StreakBar current={streak} total={TARGET_STREAK} label="Streak" />
 
       <div className="level-body">
+        {/* Sofit badge — shown above card when displaying a sofit glyph */}
+        {current.isSofit && (
+          <div className="l3-sofit-badge" aria-label="This is an end-of-word (sofit) form">
+            ✦ Sofit — end-of-word form
+          </div>
+        )}
+
         <QuizCard
           letter={current.letter}
           name={null}
