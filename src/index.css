@@ -2455,12 +2455,7 @@ html, body {
   box-shadow: var(--shadow-card);
 }
 
-/* Remove all color-specific variants — they're unified now */
-.menu-option--primary,
-.menu-option--secondary,
-.menu-option--alphabet {
-  /* inherits from .menu-option */
-}
+/* .menu-option--primary, --secondary, --alphabet all inherit from .menu-option — no overrides needed */
 
 .menu-option--disabled {
   opacity: 0.5;
@@ -3915,7 +3910,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: safe center;
+  justify-content: center;
   gap: 16px;
   padding: 20px 24px 28px;
   animation: menuFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
