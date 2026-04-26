@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import Level1 from './Level1.jsx'
 import Level2 from './Level2.jsx'
 import Level3 from './Level3.jsx'
-import Level4 from './Level4.jsx'
+// Level4 parked as LevelX.jsx — pending major rework
 
 const STORAGE_KEY = 'alphabet_progress'
 
@@ -31,14 +31,7 @@ const LEVEL_META = [
     mechanic: 'Random shuffle · Streak resets on wrong',
     icon: '🔥',
   },
-  {
-    id: 4,
-    numeral: '04',
-    title: 'Spell It',
-    desc: 'Tap letter names to spell Hebrew words',
-    mechanic: '10-word streak · Order matters',
-    icon: '👑',
-  },
+  // Level 4 (Spell It) parked — coming soon
 ]
 
 function loadProgress() {
@@ -46,7 +39,7 @@ function loadProgress() {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) return JSON.parse(raw)
   } catch {}
-  return { level1: false, level2: false, level3: false, level4: false }
+  return { level1: false, level2: false, level3: false }
 }
 
 function saveProgress(progress) {
@@ -75,9 +68,8 @@ export default function AlphabetHub({ onBack }) {
   if (activeLevel === 1) return <Level1 onComplete={() => handleLevelComplete(1)} onBack={() => setActiveLevel(null)} />
   if (activeLevel === 2) return <Level2 onComplete={() => handleLevelComplete(2)} onBack={() => setActiveLevel(null)} />
   if (activeLevel === 3) return <Level3 onComplete={() => handleLevelComplete(3)} onBack={() => setActiveLevel(null)} />
-  if (activeLevel === 4) return <Level4 onComplete={() => handleLevelComplete(4)} onBack={() => setActiveLevel(null)} />
 
-  const completedCount = [1,2,3,4].filter(n => progress[`level${n}`]).length
+  const completedCount = [1,2,3].filter(n => progress[`level${n}`]).length
 
   return (
     <div className="alphabet-hub-screen">
@@ -100,9 +92,9 @@ export default function AlphabetHub({ onBack }) {
             <div className="hub-hebrew-title" lang="he" dir="rtl">אלף-בית</div>
             <h1 className="hub-title">Hebrew Alphabet</h1>
             <p className="hub-subtitle">
-              {completedCount === 4
-                ? 'All levels complete — you know the alphabet!'
-                : `${completedCount} of 4 levels complete`}
+              {completedCount === 3
+              ? 'All current levels complete — well done!'
+              : `${completedCount} of 3 levels complete`}
             </p>
           </div>
         </div>

@@ -3423,3 +3423,208 @@ html, body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   FULL CHAPTER — WORK IN PROGRESS SCREEN
+   ═══════════════════════════════════════════════════════════ */
+
+.full-chapter-panel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.wip-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Decorative background Hebrew letters */
+.wip-bg-glyphs {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.wip-bg-glyphs span {
+  font-family: var(--font-hebrew);
+  font-size: clamp(120px, 22vw, 200px);
+  font-weight: 700;
+  color: var(--text-primary);
+  opacity: 0.03;
+  line-height: 1;
+  direction: rtl;
+}
+
+/* Main content card */
+.wip-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: min(540px, 90vw);
+  padding: 44px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  animation: menuFadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+  text-align: center;
+}
+
+/* Gold star badge */
+.wip-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  border: 2px solid var(--gold-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wip-badge-icon {
+  font-size: 22px;
+  color: var(--gold);
+}
+
+/* Title */
+.wip-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.wip-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: -10px;
+}
+
+/* Ornamental divider */
+.wip-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold-mid), transparent);
+  border-radius: 2px;
+}
+
+/* Verse blockquote */
+.wip-verse {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  text-align: center;
+}
+
+.wip-verse-hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  direction: rtl;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+}
+
+.wip-verse-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.wip-lord {
+  font-variant: small-caps;
+  font-style: normal;
+  letter-spacing: 1px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.wip-verse-ref {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Status pill with pulsing dot */
+@keyframes wipPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+
+.wip-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+}
+
+.wip-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold-mid);
+  animation: wipPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .wip-content {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  .wip-verse {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+@media (max-width: 480px) {
+  .wip-content {
+    padding: 32px 24px;
+    gap: 18px;
+  }
+  .wip-verse {
+    padding: 14px 16px;
+  }
+  .wip-verse-text {
+    font-size: 14px;
+  }
+}
