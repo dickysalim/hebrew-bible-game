@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Level1 from './Level1.jsx'
 import Level2 from './Level2.jsx'
 import Level3 from './Level3.jsx'
@@ -10,7 +11,6 @@ const STORAGE_KEY = 'alphabet_progress'
 const LEVEL_META = [
   {
     id: 1,
-    numeral: '01',
     title: 'SBL Sounds',
     desc: 'Match each letter to its sound transliteration',
     mechanic: 'Sequential · Try again on wrong',
@@ -18,7 +18,6 @@ const LEVEL_META = [
   },
   {
     id: 2,
-    numeral: '02',
     title: 'Letter Names',
     desc: 'Name every letter in order — see sofit forms too',
     mechanic: 'Sequential · Reset to Aleph on wrong',
@@ -26,7 +25,6 @@ const LEVEL_META = [
   },
   {
     id: 3,
-    numeral: '03',
     title: '27-Streak',
     desc: 'Name all 27 forms in random order — 27 in a row',
     mechanic: 'Random shuffle · Streak resets on wrong',
@@ -34,7 +32,6 @@ const LEVEL_META = [
   },
   {
     id: 4,
-    numeral: '04',
     title: 'Type the Symbol',
     desc: 'See the name — type the Hebrew key. 27 in a row',
     mechanic: 'Random shuffle · Space to advance · Try again on wrong',
@@ -42,7 +39,6 @@ const LEVEL_META = [
   },
   {
     id: 5,
-    numeral: '05',
     title: 'Sound to Symbol',
     desc: 'See the SBL sound — type the Hebrew key. 27 in a row',
     mechanic: 'Random shuffle · Space to advance · Try again on wrong',
@@ -64,34 +60,13 @@ function saveProgress(progress) {
   } catch {}
 }
 
-export default function AlphabetHub({ onBack }) {
-  const [progress, setProgress] = useState(loadProgress)
-  const [activeLevel, setActiveLevel] = useState(null)
-
-  const isUnlocked = (levelId) => {
-    if (levelId === 1) return true
-    return progress[`level${levelId - 1}`]
-  }
-
-  const handleLevelComplete = useCallback((levelId) => {
-    const key = `level${levelId}`
-    const updated = { ...progress, [key]: true }
-    setProgress(updated)
-    saveProgress(updated)
-    setActiveLevel(null)
-  }, [progress])
-
-  if (activeLevel === 1) return <Level1 onComplete={() => handleLevelComplete(1)} onBack={() => setActiveLevel(null)} />
-  if (activeLevel === 2) return <Level2 onComplete={() => handleLevelComplete(2)} onBack={() => setActiveLevel(null)} />
-  if (activeLevel === 3) return <Level3 onComplete={() => handleLevelComplete(3)} onBack={() => setActiveLevel(null)} />
-  if (activeLevel === 4) return <Level4 onComplete={() => handleLevelComplete(4)} onBack={() => setActiveLevel(null)} />
-  if (activeLevel === 5) return <Level5 onComplete={() => handleLevelComplete(5)} onBack={() => setActiveLevel(null)} />
-
-  const completedCount = [1,2,3,4,5].filter(n => progress[`level${n}`]).length
+// ─── Hub grid (shown at /alphabet) ──────────────────────────────────────────
+function HubGrid({ progress, onBack, onLevelSelect }) {
+  const isUnlocked = (id) => (id === 1 ? true : !!progress[`level${id - 1}`])
+  const completedCount = [1, 2, 3, 4, 5].filter((n) => progress[`level${n}`]).length
 
   return (
     <div className="alphabet-hub-screen">
-      {/* Background decorative letters — no nikud */}
       <div className="menu-bg-letters" aria-hidden="true">
         <span lang="he">אבג</span>
         <span lang="he">דהו</span>
@@ -100,24 +75,21 @@ export default function AlphabetHub({ onBack }) {
       </div>
 
       <div className="alphabet-hub-content">
-        {/* Header with back button on left */}
         <div className="hub-header">
           <button className="hub-back-btn" onClick={onBack} aria-label="Back to main menu">
             ← Main Menu
           </button>
           <div className="hub-title-block">
-            {/* No nikud — plain consonantal Hebrew */}
             <div className="hub-hebrew-title" lang="he" dir="rtl">אלף-בית</div>
             <h1 className="hub-title">Hebrew Alphabet</h1>
             <p className="hub-subtitle">
               {completedCount === 5
-              ? 'All levels complete — well done!'
-              : `${completedCount} of 5 levels complete`}
+                ? 'All levels complete — well done!'
+                : `${completedCount} of 5 levels complete`}
             </p>
           </div>
         </div>
 
-        {/* Level cards */}
         <div className="hub-level-grid">
           {LEVEL_META.map((meta) => {
             const unlocked = isUnlocked(meta.id)
@@ -127,11 +99,10 @@ export default function AlphabetHub({ onBack }) {
                 key={meta.id}
                 id={`hub-level-${meta.id}`}
                 className={`level-card${!unlocked ? ' level-card--locked' : ''}${completed ? ' level-card--done' : ''}`}
-                onClick={() => unlocked && setActiveLevel(meta.id)}
+                onClick={() => unlocked && onLevelSelect(meta.id)}
                 disabled={!unlocked}
                 aria-label={`Level ${meta.id}: ${meta.title}${!unlocked ? ' — locked' : completed ? ' — completed' : ''}`}
               >
-                {/* Status indicator */}
                 <div className="level-card-status">
                   {!unlocked ? (
                     <span className="level-card-lock-icon">🔒</span>
@@ -141,14 +112,12 @@ export default function AlphabetHub({ onBack }) {
                     <span className="level-card-icon" aria-hidden="true">{meta.icon}</span>
                   )}
                 </div>
-
                 <div className="level-card-body">
                   <div className="level-card-tag">Level {meta.id}</div>
                   <div className="level-card-title">{meta.title}</div>
                   <div className="level-card-desc">{meta.desc}</div>
                   <div className="level-card-mechanic">{meta.mechanic}</div>
                 </div>
-
                 {unlocked && !completed && (
                   <span className="level-card-arrow" aria-hidden="true">›</span>
                 )}
@@ -160,5 +129,61 @@ export default function AlphabetHub({ onBack }) {
         <p className="hub-footer-note">Progress is saved automatically in your browser</p>
       </div>
     </div>
+  )
+}
+
+// ─── Level wrapper — picks the right component by id ────────────────────────
+const LEVEL_COMPONENTS = { 1: Level1, 2: Level2, 3: Level3, 4: Level4, 5: Level5 }
+
+function LevelRoute({ id, onComplete, onBack }) {
+  const LevelComponent = LEVEL_COMPONENTS[id]
+  if (!LevelComponent) return null
+  return <LevelComponent onComplete={onComplete} onBack={onBack} />
+}
+
+// ─── Root export ─────────────────────────────────────────────────────────────
+export default function AlphabetHub({ onBack }) {
+  const [progress, setProgress] = useState(loadProgress)
+  const navigate = useNavigate()
+
+  const handleLevelComplete = useCallback(
+    (levelId) => {
+      const key = `level${levelId}`
+      const updated = { ...progress, [key]: true }
+      setProgress(updated)
+      saveProgress(updated)
+      navigate('/alphabet', { replace: true })
+    },
+    [progress, navigate]
+  )
+
+  return (
+    <Routes>
+      {/* Hub grid */}
+      <Route
+        index
+        element={
+          <HubGrid
+            progress={progress}
+            onBack={onBack}
+            onLevelSelect={(id) => navigate(`/alphabet/level/${id}`)}
+          />
+        }
+      />
+      {/* Individual levels — back button = browser back = /alphabet */}
+      {[1, 2, 3, 4, 5].map((id) => (
+        <Route
+          key={id}
+          path={`level/${id}`}
+          element={
+            <LevelRoute
+              id={id}
+              onComplete={() => handleLevelComplete(id)}
+              onBack={() => navigate('/alphabet')}
+            />
+          }
+        />
+      ))}
+    </Routes>
   )
 }
