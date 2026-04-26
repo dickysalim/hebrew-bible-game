@@ -1,63 +1,40 @@
 import { useState, useCallback } from 'react'
 import lettersData from '../../data/letters.json'
-import QuizCard from './shared/QuizCard.jsx'
 import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
 
-/** Pick 3 wrong SBL options, return 4-choice array */
 function buildChoices(correct) {
   const pool = LETTERS.map((l) => l.sbl).filter((s) => s !== correct.sbl)
   const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, 3)
   return [...shuffled, correct.sbl].sort(() => Math.random() - 0.5).map((s) => ({ id: s, label: s }))
 }
 
-/** Intro slide shown before each letter's sound quiz */
-function IntroSlide({ letter, onContinue }) {
+/**
+ * One-time intro shown before the very first letter.
+ * Explains the instinctual sound-picking strategy.
+ */
+function LevelIntro({ onBegin }) {
   return (
-    <div className="intro-slide">
-      {/* Large glyph + name */}
-      <div className="intro-letter-block">
-        <div className="intro-glyph" lang="he" dir="rtl">{letter.letter}</div>
-        <div className="intro-name-row">
-          <span className="intro-letter-name">{letter.name}</span>
-          <span className="intro-sbl-badge">{letter.sbl}</span>
+    <div className="l1-level-intro">
+      <div className="l1-intro-icon" aria-hidden="true">🔊</div>
+      <h2 className="l1-intro-title">SBL Sound Quiz</h2>
+      <div className="l1-intro-body">
+        <p>
+          Each Hebrew letter has a <strong>name</strong> — and that name sounds like the letter itself.
+        </p>
+        <div className="l1-intro-examples">
+          <span><em>Bet</em> → <strong>b</strong></span>
+          <span><em>Mem</em> → <strong>m</strong></span>
+          <span><em>Shin</em> → <strong>sh</strong></span>
         </div>
+        <p>
+          You'll see each letter with its mnemonic story, then pick the sound you think it makes.
+          <strong> Trust your instincts</strong> — the name tells you!
+        </p>
       </div>
-
-      {/* Mnemonic */}
-      <div className="intro-mnemonic">
-        <div className="intro-mnemonic-keyword">{letter.mnemonic.keyword}</div>
-        <p className="intro-mnemonic-tip">{letter.mnemonic.tip}</p>
-        <div className="intro-word-example">
-          <span lang="he" dir="rtl">{letter.mnemonic.wordExample.hebrew}</span>
-          <span className="intro-word-meaning">— {letter.mnemonic.wordExample.meaning}</span>
-        </div>
-      </div>
-
-      {/* Sofit panel — only for the 5 final-form letters */}
-      {letter.sofit && (
-        <div className="intro-sofit-panel">
-          <div className="intro-sofit-header">
-            <span className="intro-sofit-label">✦ Sofit · Final Form</span>
-          </div>
-          <div className="intro-sofit-glyph-pair">
-            <div className="intro-sofit-col">
-              <span className="intro-sofit-glyph intro-sofit-glyph--standard" lang="he">{letter.letter}</span>
-              <span className="intro-sofit-sub">Standard</span>
-            </div>
-            <span className="intro-sofit-arrow" aria-hidden="true">→</span>
-            <div className="intro-sofit-col">
-              <span className="intro-sofit-glyph intro-sofit-glyph--final" lang="he">{letter.sofit.glyph}</span>
-              <span className="intro-sofit-sub">End of word</span>
-            </div>
-          </div>
-          <p className="intro-sofit-explanation">{letter.sofit.explanation}</p>
-        </div>
-      )}
-
-      <button className="intro-got-it-btn" onClick={onContinue}>
-        Got it →
+      <button className="intro-got-it-btn" onClick={onBegin}>
+        Let's Begin →
       </button>
     </div>
   )
@@ -65,22 +42,21 @@ function IntroSlide({ letter, onContinue }) {
 
 /**
  * Level 1 — SBL Sound Quiz (sequential, try-again on wrong)
- * Each letter shows an intro slide first, then the sound quiz.
- * Passes when all 22 letters answered correctly in order.
+ * Single unified screen: glyph + mnemonic + sofit (if any) + quiz choices.
+ * A one-time level intro is shown before the first letter.
  */
 export default function Level1({ onComplete, onBack }) {
-  const [index, setIndex]     = useState(0)
-  const [phase, setPhase]     = useState('intro')   // 'intro' | 'quiz'
-  const [choices, setChoices] = useState(() => buildChoices(LETTERS[0]))
-  const [feedback, setFeedback] = useState(null)
+  const [started, setStarted]   = useState(false)
+  const [index, setIndex]       = useState(0)
+  const [choices, setChoices]   = useState(() => buildChoices(LETTERS[0]))
+  const [feedback, setFeedback] = useState(null)   // null | 'correct' | 'wrong'
   const [selected, setSelected] = useState(null)
-  const [done, setDone]       = useState(false)
+  const [done, setDone]         = useState(false)
 
   const current = LETTERS[index]
 
-  const handleGotIt = useCallback(() => setPhase('quiz'), [])
-
   const handleChoice = useCallback((id) => {
+    if (feedback) return
     setSelected(id)
     if (id === current.sbl) {
       playCorrect()
@@ -94,7 +70,6 @@ export default function Level1({ onComplete, onBack }) {
           setChoices(buildChoices(LETTERS[next]))
           setFeedback(null)
           setSelected(null)
-          setPhase('intro')   // ← intro slide for next letter
         }
       }, 900)
     } else {
@@ -104,7 +79,7 @@ export default function Level1({ onComplete, onBack }) {
         setSelected(null)
       }, 1000)
     }
-  }, [index, current])
+  }, [feedback, index, current])
 
   if (done) {
     return (
@@ -123,46 +98,111 @@ export default function Level1({ onComplete, onBack }) {
     )
   }
 
-  return (
-    <div className="alphabet-level-screen">
-      {/* Header — always visible */}
+  // Shared header — always visible
+  const header = (
+    <>
       <div className="level-header">
         <button className="level-back-btn" onClick={onBack} aria-label="Back to levels">
           ← Back
         </button>
         <div className="level-header-title">
           <span className="level-tag">Level 1</span>
-          <span className="level-desc">
-            {phase === 'intro' ? `Meet ${current.name}` : 'SBL Sound Quiz'}
-          </span>
+          <span className="level-desc">SBL Sound Quiz</span>
         </div>
-        <div className="level-progress-text">{index + 1} / {LETTERS.length}</div>
+        {started && (
+          <div className="level-progress-text">{index + 1} / {LETTERS.length}</div>
+        )}
       </div>
-
-      {/* Progress track */}
-      <div className="level-progress-track" aria-label={`Letter ${index + 1} of ${LETTERS.length}`}>
-        <div
-          className="level-progress-fill"
-          style={{ width: `${(index / LETTERS.length) * 100}%` }}
-        />
-      </div>
-
-      {/* Content — switches between intro and quiz */}
-      {phase === 'intro' ? (
-        <IntroSlide letter={current} onContinue={handleGotIt} />
-      ) : (
-        <div className="level-body">
-          <QuizCard
-            letter={current.letter}
-            name={current.name}
-            choices={choices}
-            onChoice={handleChoice}
-            feedback={feedback}
-            selectedId={selected}
-            correctId={current.sbl}
+      {started && (
+        <div className="level-progress-track" aria-label={`Letter ${index + 1} of ${LETTERS.length}`}>
+          <div
+            className="level-progress-fill"
+            style={{ width: `${(index / LETTERS.length) * 100}%` }}
           />
         </div>
       )}
+    </>
+  )
+
+  // One-time level intro
+  if (!started) {
+    return (
+      <div className="alphabet-level-screen">
+        {header}
+        <LevelIntro onBegin={() => setStarted(true)} />
+      </div>
+    )
+  }
+
+  // Per-letter: glyph + mnemonic + sofit + quiz — all on one screen
+  return (
+    <div className="alphabet-level-screen">
+      {header}
+
+      <div className="l1-letter-quiz">
+        {/* Glyph + name */}
+        <div className="l1-letter-block">
+          <div className="l1-glyph" lang="he" dir="rtl">{current.letter}</div>
+          <div className="intro-name-row">
+            <span className="intro-letter-name">{current.name}</span>
+          </div>
+        </div>
+
+        {/* Mnemonic */}
+        <div className="l1-mnemonic">
+          <span className="l1-keyword">{current.mnemonic.keyword}</span>
+          <p className="l1-tip">{current.mnemonic.tip}</p>
+          <div className="intro-word-example">
+            <span lang="he" dir="rtl">{current.mnemonic.wordExample.hebrew}</span>
+            <span className="intro-word-meaning">— {current.mnemonic.wordExample.meaning}</span>
+          </div>
+        </div>
+
+        {/* Sofit panel — compact inline version */}
+        {current.sofit && (
+          <div className="l1-sofit-strip">
+            <span className="l1-sofit-strip-label">✦ Sofit</span>
+            <span className="l1-sofit-strip-glyphs">
+              <span lang="he">{current.letter}</span>
+              <span className="l1-sofit-strip-arrow">→</span>
+              <span className="l1-sofit-strip-final" lang="he">{current.sofit.glyph}</span>
+            </span>
+            <span className="l1-sofit-strip-note">{current.sofit.explanation}</span>
+          </div>
+        )}
+
+        {/* Quiz prompt */}
+        <p className="l1-quiz-prompt">
+          What sound does <strong>{current.name}</strong> make?
+        </p>
+
+        {/* Choices — constrained width, centered */}
+        <div className="l1-quiz-choices">
+          <div className="quiz-choices">
+            {choices.map((choice) => {
+              const isCorrect = feedback === 'correct' && choice.id === current.sbl
+              const isWrong   = feedback === 'wrong'   && choice.id === selected
+              return (
+                <button
+                  key={choice.id}
+                  id={`l1-choice-${choice.id}`}
+                  className={`quiz-btn${isCorrect ? ' quiz-btn--correct' : ''}${isWrong ? ' quiz-btn--wrong' : ''}`}
+                  onClick={() => handleChoice(choice.id)}
+                  disabled={!!feedback}
+                >
+                  {choice.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {feedback === 'wrong' && (
+          <div className="level-reset-banner" role="alert">
+            ✗ Not quite — try again!
+          </div>
+        )}
+      </div>
     </div>
   )
 }
