@@ -834,8 +834,17 @@ html, body {
 .progress-panel {
   height: 100%;
   background: var(--bg);
-  padding: 30px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* When the panel hosts scrollable content (stats, etc.) it can switch back */
+.progress-panel--scrollable {
   overflow-y: auto;
+  padding: 30px;
+  display: block;
 }
 
 .progress-header {
