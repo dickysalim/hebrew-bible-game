@@ -3628,3 +3628,210 @@ html, body {
     font-size: 14px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   LEVEL 1 — INTRO SLIDE
+   ═══════════════════════════════════════════════════════════ */
+
+.intro-slide {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 24px 36px;
+  animation: menuFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.intro-letter-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.intro-glyph {
+  font-family: var(--font-hebrew);
+  font-size: clamp(80px, 14vw, 120px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  direction: rtl;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+.intro-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.intro-letter-name {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.intro-sbl-badge {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  background: rgba(13, 148, 136, 0.1);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.5px;
+}
+
+.intro-mnemonic {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.intro-mnemonic-keyword {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+
+.intro-mnemonic-tip {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.intro-word-example {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-pill);
+  padding: 5px 16px;
+  margin-top: 4px;
+}
+
+.intro-word-example [lang="he"] {
+  font-family: var(--font-hebrew);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  direction: rtl;
+}
+
+.intro-word-meaning {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+}
+
+.intro-sofit-panel {
+  width: min(420px, 100%);
+  background: var(--gold-light);
+  border: 1.5px solid var(--gold-mid);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.intro-sofit-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.intro-sofit-glyph-pair {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.intro-sofit-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.intro-sofit-glyph {
+  font-family: var(--font-hebrew);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  direction: rtl;
+}
+
+.intro-sofit-glyph--standard {
+  color: var(--text-primary);
+  opacity: 0.45;
+}
+
+.intro-sofit-glyph--final {
+  color: var(--gold);
+}
+
+.intro-sofit-arrow {
+  font-size: 22px;
+  color: var(--gold-mid);
+  margin-bottom: 20px;
+}
+
+.intro-sofit-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.intro-sofit-explanation {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: center;
+  font-style: italic;
+}
+
+.intro-got-it-btn {
+  margin-top: 4px;
+  padding: 13px 44px;
+  background: var(--gold);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+
+.intro-got-it-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.35);
+  filter: brightness(1.08);
+}
+
+.intro-got-it-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+@media (max-width: 480px) {
+  .intro-slide { gap: 16px; padding: 20px 16px 28px; }
+  .intro-sofit-panel { padding: 14px 16px; }
+  .intro-sofit-glyph { font-size: 42px; }
+}

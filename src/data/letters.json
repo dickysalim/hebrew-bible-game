@@ -4,139 +4,268 @@
       "letter": "א",
       "name": "Aleph",
       "sbl": "ʾ",
-      "sound": "glottal stop / silent"
+      "sound": "glottal stop / silent",
+      "mnemonic": {
+        "keyword": "Ox",
+        "tip": "Silent like an ox holding its breath — Aleph carries sound but makes none itself.",
+        "wordExample": { "hebrew": "אב", "meaning": "father" }
+      }
     },
     {
       "letter": "ב",
       "name": "Bet",
       "sbl": "b/v",
-      "sound": "b or v"
+      "sound": "b or v",
+      "mnemonic": {
+        "keyword": "House",
+        "tip": "Bet looks like a house floor plan — it literally means 'house' (bayit).",
+        "wordExample": { "hebrew": "בית", "meaning": "house" }
+      }
     },
     {
       "letter": "ג",
       "name": "Gimel",
       "sbl": "g",
-      "sound": "g"
+      "sound": "g",
+      "mnemonic": {
+        "keyword": "Camel",
+        "tip": "Gimel's foot stretches forward like a camel's neck — gimel means 'camel'.",
+        "wordExample": { "hebrew": "גמל", "meaning": "camel" }
+      }
     },
     {
       "letter": "ד",
       "name": "Dalet",
       "sbl": "d",
-      "sound": "d"
+      "sound": "d",
+      "mnemonic": {
+        "keyword": "Door",
+        "tip": "Dalet looks like a doorway — it means 'door' (delet).",
+        "wordExample": { "hebrew": "דלת", "meaning": "door" }
+      }
     },
     {
       "letter": "ה",
       "name": "He",
       "sbl": "h",
-      "sound": "h"
+      "sound": "h",
+      "mnemonic": {
+        "keyword": "Window",
+        "tip": "He looks like a person with arms raised — breathe out an H and you've said it.",
+        "wordExample": { "hebrew": "הר", "meaning": "mountain" }
+      }
     },
     {
       "letter": "ו",
       "name": "Vav",
       "sbl": "w",
-      "sound": "v / w"
+      "sound": "v / w",
+      "mnemonic": {
+        "keyword": "Hook",
+        "tip": "Vav is a vertical hook or nail — vav literally means 'hook'.",
+        "wordExample": { "hebrew": "וו", "meaning": "hook" }
+      }
     },
     {
       "letter": "ז",
       "name": "Zayin",
       "sbl": "z",
-      "sound": "z"
+      "sound": "z",
+      "mnemonic": {
+        "keyword": "Sword",
+        "tip": "Zayin looks like a sword hilt — think Z for zig-zag blade.",
+        "wordExample": { "hebrew": "זהב", "meaning": "gold" }
+      }
     },
     {
       "letter": "ח",
       "name": "Chet",
       "sbl": "ḥ",
-      "sound": "ch (guttural)"
+      "sound": "ch (guttural)",
+      "mnemonic": {
+        "keyword": "Fence",
+        "tip": "Chet looks like a fence with two posts — it's the guttural H you hear in Bach.",
+        "wordExample": { "hebrew": "חיים", "meaning": "life" }
+      }
     },
     {
       "letter": "ט",
       "name": "Tet",
       "sbl": "ṭ",
-      "sound": "t (emphatic)"
+      "sound": "t (emphatic)",
+      "mnemonic": {
+        "keyword": "Basket",
+        "tip": "Tet's coiled shape looks like a basket or a snake curled inward.",
+        "wordExample": { "hebrew": "טוב", "meaning": "good" }
+      }
     },
     {
       "letter": "י",
       "name": "Yod",
       "sbl": "y",
-      "sound": "y"
+      "sound": "y",
+      "mnemonic": {
+        "keyword": "Hand",
+        "tip": "The tiniest letter — Yod means 'hand' (yad). Jesus said not even a Yod would pass away.",
+        "wordExample": { "hebrew": "יד", "meaning": "hand" }
+      }
     },
     {
       "letter": "כ",
       "name": "Kaf",
       "sbl": "k/kh",
       "sound": "k or kh",
-      "note": "becomes ך at the end of a word"
+      "mnemonic": {
+        "keyword": "Palm",
+        "tip": "Kaf looks like an open palm — kaf means 'palm of the hand'.",
+        "wordExample": { "hebrew": "כף", "meaning": "palm" }
+      },
+      "sofit": {
+        "glyph": "ך",
+        "quizLabel": "Kaf (Sofit)",
+        "explanation": "At the end of a word, Kaf's palm opens wide and drops below the line — it unfolds into a long descending tail."
+      }
     },
     {
       "letter": "ל",
       "name": "Lamed",
       "sbl": "l",
-      "sound": "l"
+      "sound": "l",
+      "mnemonic": {
+        "keyword": "Staff",
+        "tip": "The tallest letter — Lamed is a shepherd's staff reaching upward. It means 'to teach'.",
+        "wordExample": { "hebrew": "למד", "meaning": "to learn" }
+      }
     },
     {
       "letter": "מ",
       "name": "Mem",
       "sbl": "m",
       "sound": "m",
-      "note": "becomes ם at the end of a word"
+      "mnemonic": {
+        "keyword": "Water",
+        "tip": "Mem looks like waves — it means 'water' (mayim). Water flows from the open bottom.",
+        "wordExample": { "hebrew": "מים", "meaning": "water" }
+      },
+      "sofit": {
+        "glyph": "ם",
+        "quizLabel": "Mem (Sofit)",
+        "explanation": "At the end of a word, Mem closes completely — the open bottom seals shut. Water is contained."
+      }
     },
     {
       "letter": "נ",
       "name": "Nun",
       "sbl": "n",
       "sound": "n",
-      "note": "becomes ן at the end of a word"
+      "mnemonic": {
+        "keyword": "Fish",
+        "tip": "Nun looks like a fish diving — it means 'fish' in Aramaic. The small hook is its tail.",
+        "wordExample": { "hebrew": "נר", "meaning": "lamp" }
+      },
+      "sofit": {
+        "glyph": "ן",
+        "quizLabel": "Nun (Sofit)",
+        "explanation": "Nun dives deep at the end of a word — its tail stretches far below the line, like a fish plunging."
+      }
     },
     {
       "letter": "ס",
       "name": "Samech",
       "sbl": "s",
-      "sound": "s"
+      "sound": "s",
+      "mnemonic": {
+        "keyword": "Support",
+        "tip": "Samech is a complete closed circle — a symbol of support and wholeness.",
+        "wordExample": { "hebrew": "ספר", "meaning": "book" }
+      }
     },
     {
       "letter": "ע",
       "name": "Ayin",
       "sbl": "ʿ",
-      "sound": "guttural / silent"
+      "sound": "guttural / silent",
+      "mnemonic": {
+        "keyword": "Eye",
+        "tip": "Ayin means 'eye' — it's guttural and often silent in modern Hebrew, like Aleph.",
+        "wordExample": { "hebrew": "עין", "meaning": "eye" }
+      }
     },
     {
       "letter": "פ",
       "name": "Pe",
       "sbl": "p/f",
       "sound": "p or f",
-      "note": "becomes ף at the end of a word"
+      "mnemonic": {
+        "keyword": "Mouth",
+        "tip": "Pe looks like a mouth with a tooth inside — it means 'mouth' (peh).",
+        "wordExample": { "hebrew": "פה", "meaning": "mouth" }
+      },
+      "sofit": {
+        "glyph": "ף",
+        "quizLabel": "Pe (Sofit)",
+        "explanation": "Pe's mouth closes and drops below the line at the end of a word — the letter leans forward with a long tail."
+      }
     },
     {
       "letter": "צ",
       "name": "Tsade",
       "sbl": "ṣ",
       "sound": "ts",
-      "note": "becomes ץ at the end of a word"
+      "mnemonic": {
+        "keyword": "Righteous",
+        "tip": "Tsade looks like a fishhook — it begins the word for 'righteous' (tzaddik).",
+        "wordExample": { "hebrew": "צדיק", "meaning": "righteous" }
+      },
+      "sofit": {
+        "glyph": "ץ",
+        "quizLabel": "Tsade (Sofit)",
+        "explanation": "Tsade's hook straightens and plunges at the end of a word — the tail extends sharply below the line."
+      }
     },
     {
       "letter": "ק",
       "name": "Qof",
       "sbl": "q",
-      "sound": "q"
+      "sound": "q",
+      "mnemonic": {
+        "keyword": "Back of Head",
+        "tip": "Qof's tail hangs below the line — imagine the back of a head with a long neck looking right.",
+        "wordExample": { "hebrew": "קול", "meaning": "voice" }
+      }
     },
     {
       "letter": "ר",
       "name": "Resh",
       "sbl": "r",
-      "sound": "r"
+      "sound": "r",
+      "mnemonic": {
+        "keyword": "Head",
+        "tip": "Resh curves like a bowed head — it means 'head' (rosh).",
+        "wordExample": { "hebrew": "ראש", "meaning": "head" }
+      }
     },
     {
       "letter": "ש",
       "name": "Shin",
       "sbl": "š/ś",
       "sound": "sh or s",
-      "note": "dot above right = sh (Shin), dot above left = s (Sin)"
+      "mnemonic": {
+        "keyword": "Tooth",
+        "tip": "Shin's three prongs look like teeth — it means 'tooth'. Dot on right = Sh, dot on left = S.",
+        "wordExample": { "hebrew": "שלום", "meaning": "peace" }
+      }
     },
     {
       "letter": "ת",
       "name": "Tav",
       "sbl": "t",
-      "sound": "t"
+      "sound": "t",
+      "mnemonic": {
+        "keyword": "Mark",
+        "tip": "Tav is the last letter — it means 'mark' or 'sign'. The final mark, like a signature.",
+        "wordExample": { "hebrew": "תורה", "meaning": "Torah" }
+      }
     }
   ]
 }

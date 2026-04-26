@@ -5,9 +5,22 @@ import StreakBar from './shared/StreakBar.jsx'
 import { playCorrect } from './shared/sounds.js'
 
 const LETTERS = lettersData.letters
+
+// Build 5 sofit variants as separate quiz entries
+const SOFIT_ITEMS = LETTERS
+  .filter((l) => l.sofit)
+  .map((l) => ({
+    letter: l.sofit.glyph,
+    name:   l.sofit.quizLabel,   // e.g. "Mem (Sofit)"
+    sbl:    l.sbl,
+    isSofit: true,
+  }))
+
+// Full pool: 22 standard + 5 sofit = 27 items
+const ALL_ITEMS = [...LETTERS, ...SOFIT_ITEMS]
+
 const TARGET_STREAK = 22
 
-/** Fisher-Yates shuffle */
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -18,31 +31,34 @@ function shuffle(arr) {
 }
 
 function buildQueue() {
-  return shuffle(LETTERS)
+  return shuffle(ALL_ITEMS)
 }
 
-/** Build 4 name choices from shuffled queue current */
+/** Build 4 name choices from the full 27-item pool */
 function buildChoices(correct) {
-  const pool = LETTERS
+  const pool = ALL_ITEMS
     .map((l) => l.name)
     .filter((n) => n !== correct.name)
     .sort(() => Math.random() - 0.5)
     .slice(0, 3)
-  return [...pool, correct.name].sort(() => Math.random() - 0.5).map((n) => ({ id: n, label: n }))
+  return [...pool, correct.name]
+    .sort(() => Math.random() - 0.5)
+    .map((n) => ({ id: n, label: n }))
 }
 
 /**
  * Level 3 — Random shuffle, 22-streak required
+ * Pool is 27 items: 22 standard letters + 5 sofit variants.
  * Wrong answer resets streak AND reshuffles queue.
  */
 export default function Level3({ onComplete, onBack }) {
-  const queueRef = useRef(buildQueue())
+  const queueRef   = useRef(buildQueue())
   const [queueIndex, setQueueIndex] = useState(0)
-  const [choices, setChoices] = useState(() => buildChoices(queueRef.current[0]))
-  const [feedback, setFeedback] = useState(null)
-  const [selected, setSelected] = useState(null)
-  const [streak, setStreak] = useState(0)
-  const [done, setDone] = useState(false)
+  const [choices, setChoices]       = useState(() => buildChoices(queueRef.current[0]))
+  const [feedback, setFeedback]     = useState(null)
+  const [selected, setSelected]     = useState(null)
+  const [streak, setStreak]         = useState(0)
+  const [done, setDone]             = useState(false)
 
   const current = queueRef.current[queueIndex]
 
@@ -52,8 +68,8 @@ export default function Level3({ onComplete, onBack }) {
       return
     }
     const nextIdx = queueIndex + 1
-    // If we've exhausted the queue, reshuffle (shouldn't normally happen at 22-streak)
-    if (nextIdx >= LETTERS.length) {
+    if (nextIdx >= ALL_ITEMS.length) {
+      // Exhausted queue — reshuffle
       queueRef.current = buildQueue()
       setQueueIndex(0)
       setChoices(buildChoices(queueRef.current[0]))
@@ -75,7 +91,6 @@ export default function Level3({ onComplete, onBack }) {
     } else {
       setFeedback('wrong')
       setTimeout(() => {
-        // Reset streak and reshuffle queue
         queueRef.current = buildQueue()
         setQueueIndex(0)
         setChoices(buildChoices(queueRef.current[0]))
@@ -93,7 +108,7 @@ export default function Level3({ onComplete, onBack }) {
           <div className="level-complete-icon" aria-hidden="true">🔥</div>
           <h2 className="level-complete-title">Level 3 Complete!</h2>
           <p className="level-complete-desc">
-            Perfect 22-letter streak — you know every letter cold!
+            Perfect 22-streak through all 27 forms — standard and sofit!
           </p>
           <button className="level-complete-btn" onClick={onComplete}>
             Continue →
@@ -112,7 +127,7 @@ export default function Level3({ onComplete, onBack }) {
         </button>
         <div className="level-header-title">
           <span className="level-tag">Level 3</span>
-          <span className="level-desc">22-Streak Challenge</span>
+          <span className="level-desc">22-Streak · 27 Forms</span>
         </div>
         <div className="level-progress-text streak-count-display">{streak}/{TARGET_STREAK}</div>
       </div>
