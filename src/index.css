@@ -2109,6 +2109,31 @@ html, body {
   margin-top: 4px;
 }
 
+.forgot-password-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+  text-align: right;
+  align-self: flex-end;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+
+.forgot-password-link:hover:not(:disabled) {
+  color: var(--text-secondary);
+}
+
+.forgot-password-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .auth-error {
   background: rgba(255, 95, 64, 0.1);
   color: var(--coral);

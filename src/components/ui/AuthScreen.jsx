@@ -3,6 +3,9 @@ import { supabase } from '../../lib/supabase'
 
 export default function AuthScreen({ onAuthSuccess }) {
   const [isSignUp, setIsSignUp] = useState(false)
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -122,11 +125,104 @@ export default function AuthScreen({ onAuthSuccess }) {
     }
   }
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin,
+      })
+      if (error) throw error
+      setResetEmail(email)
+      setResetSent(true)
+      setEmail('')
+    } catch (err) {
+      setError(err.message || 'Failed to send reset email. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="auth-screen">
       <div className="auth-container">
         
-        {showConfirmation ? (
+        {/* ── Forgot password: email sent confirmation ── */}
+        {isForgotPassword && resetSent ? (
+          <div className="confirmation-message">
+            <h2 className="auth-title">Check Your Email</h2>
+            <p className="auth-subtitle">
+              We've sent a password reset link to <strong>{resetEmail}</strong>
+            </p>
+            <p>
+              Click the link in the email to choose a new password.
+              The link expires in 1 hour.
+            </p>
+            <div className="confirmation-hints">
+              <p className="confirmation-hint">
+                <small><strong>Didn't receive the email?</strong></small>
+              </p>
+              <ul className="confirmation-hint-list">
+                <li><small>Check your spam or junk folder</small></li>
+                <li><small>Make sure you entered the correct email address</small></li>
+                <li><small>Wait a few minutes — emails can sometimes be delayed</small></li>
+              </ul>
+            </div>
+            <button
+              type="button"
+              className="auth-button"
+              onClick={() => {
+                setIsForgotPassword(false)
+                setResetSent(false)
+              }}
+            >
+              Back to Sign In
+            </button>
+          </div>
+
+        ) : isForgotPassword ? (
+          /* ── Forgot password: email input form ── */
+          <>
+            <h2 className="auth-title">Reset Password</h2>
+            <p className="auth-subtitle">
+              Enter your email and we'll send you a link to reset your password.
+            </p>
+            <form onSubmit={handleForgotPassword} className="auth-form">
+              <div className="form-group">
+                <label htmlFor="reset-email">Email</label>
+                <input
+                  id="reset-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              {error && <div className="auth-error">{error}</div>}
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Reset Link'}
+              </button>
+            </form>
+            <div className="auth-toggle">
+              <p>
+                Remember your password?
+                <button
+                  type="button"
+                  className="toggle-button"
+                  onClick={() => { setIsForgotPassword(false); setError('') }}
+                  disabled={loading}
+                >
+                  Back to Sign In
+                </button>
+              </p>
+            </div>
+          </>
+
+        ) : showConfirmation ? (
+          /* ── Sign-up email confirmation ── */
           <div className="confirmation-message">
             <h2 className="auth-title">Check Your Email</h2>
             <p className="auth-subtitle">
@@ -205,6 +301,16 @@ export default function AuthScreen({ onAuthSuccess }) {
                 />
                 {isSignUp && (
                   <small className="password-hint">At least 6 characters</small>
+                )}
+                {!isSignUp && (
+                  <button
+                    type="button"
+                    className="forgot-password-link"
+                    onClick={() => { setIsForgotPassword(true); setError('') }}
+                    disabled={loading}
+                  >
+                    Forgot password?
+                  </button>
                 )}
               </div>
 
