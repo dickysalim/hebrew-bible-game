@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ProfileSettings from './ProfileSettings'
 
 // Chapter data — mirrors the verse files available in /data/verses/
 const CHAPTERS = [
@@ -26,6 +27,7 @@ const CHAPTERS = [
 
 export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut }) {
   const [showChapterSelect, setShowChapterSelect] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
 
   const handleChapterClick = (chapter) => {
     if (!chapter.available) return
@@ -147,6 +149,25 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               </div>
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
+
+            {/* Profile Settings */}
+            {session && (
+              <button
+                id="btn-profile-settings"
+                className="menu-option"
+                onClick={() => setShowProfile(true)}
+                aria-label="Profile Settings"
+              >
+                <div className="menu-option-icon" aria-hidden="true">
+                  <span className="menu-option-hebrew" lang="he">⚙</span>
+                </div>
+                <div className="menu-option-text">
+                  <span className="menu-option-title">Profile Settings</span>
+                  <span className="menu-option-desc">Change email or password</span>
+                </div>
+                <span className="menu-option-chevron" aria-hidden="true">›</span>
+              </button>
+            )}
           </nav>
         )}
 
@@ -155,7 +176,14 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           <span className="menu-footer-note">Masoretic Text (BHS) · ESV Translation</span>
           {session && (
             <div className="menu-account">
-              <span className="menu-user">{session.user.email}</span>
+              <button
+                className="menu-user menu-user--btn"
+                onClick={() => setShowProfile(true)}
+                aria-label="Open profile settings"
+                title="Profile Settings"
+              >
+                {session.user.email}
+              </button>
               <button className="menu-signout-btn" onClick={onSignOut}>
                 Sign Out
               </button>
@@ -163,6 +191,14 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           )}
         </footer>
       </div>
+
+      {/* Profile Settings modal */}
+      {showProfile && session && (
+        <ProfileSettings
+          session={session}
+          onClose={() => setShowProfile(false)}
+        />
+      )}
     </div>
   )
 }

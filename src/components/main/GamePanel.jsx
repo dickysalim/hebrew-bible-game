@@ -500,6 +500,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         chaptersMap = savedLocal.chapters || {}
       }
       const targetChProgress = chaptersMap[jumpToStageIndex] || {}
+      // Restore persisted display settings so chapter-select doesn't reset them
+      const jumpSettings = (userId && cacheStatus === 'ready' && cachedProgress?.settings)
+        ? cachedProgress.settings
+        : {}
       return {
         ...initialState,
         stageIndex: jumpToStageIndex,
@@ -512,6 +516,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         celebratedVerses: targetChProgress.celebratedVerses ?? [],
         discoveredRoots: persistedDiscoveredRoots,
         chapters: chaptersMap,
+        showSBLWord:   jumpSettings.showSBLWord   ?? true,
+        showSBLLetter: jumpSettings.showSBLLetter ?? true,
       }
     }
     if (userId) {
