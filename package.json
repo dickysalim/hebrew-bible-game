@@ -14,12 +14,16 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
     "@supabase/supabase-js": "^2.103.3",
+    "axios": "^1.15.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
+    "havarotjs": "^0.25.4",
+    "hebrew-transliteration": "^2.9.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.14.2"
+    "react-router-dom": "^7.14.2",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
