@@ -348,54 +348,50 @@ ${isRevisit
 Write in plain prose. No markdown, no bullet points, no headers. Preserve line breaks where they aid rhythm.`
 }
 
-export async function onRequestPost(context) {
-  try {
-    const { currentWord, messages } = await context.request.json()
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url)
 
-    if (!currentWord) {
-      return new Response(
-        JSON.stringify({ error: 'currentWord is required' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      )
+    // Handle Haber API route
+    if (url.pathname === '/api/haber' && request.method === 'POST') {
+      try {
+        const { currentWord, messages } = await request.json()
+
+        if (!currentWord) {
+          return new Response(
+            JSON.stringify({ error: 'currentWord is required' }),
+            { status: 400, headers: { 'Content-Type': 'application/json' } }
+          )
+        }
+
+        const anthropic = new Anthropic({ apiKey: env.CLAUDE_HABER_KEY })
+        const systemPrompt = buildSystemPrompt(currentWord)
+
+        const apiMessages = (!messages || messages.length === 0)
+          ? [{ role: 'user', content: '.' }]
+          : messages
+
+        const response = await anthropic.messages.create({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 600,
+          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+          messages: apiMessages.slice(-8),
+        })
+
+        return new Response(
+          JSON.stringify({ message: response.content[0]?.text ?? '' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+
+      } catch (error) {
+        return new Response(
+          JSON.stringify({ error: 'Haber is unavailable right now.' }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        )
+      }
     }
 
-    const anthropic = new Anthropic({
-      apiKey: context.env.CLAUDE_HABER_KEY
-    })
-
-    const systemPrompt = buildSystemPrompt(currentWord)
-
-    const apiMessages = (!messages || messages.length === 0)
-      ? [{ role: 'user', content: '.' }]
-      : messages
-
-    const trimmedMessages = apiMessages.slice(-8)
-
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 600,
-      system: [
-        {
-          type: 'text',
-          text: systemPrompt,
-          cache_control: { type: 'ephemeral' }
-        }
-      ],
-      messages: trimmedMessages,
-    })
-
-    const message = response.content[0]?.text ?? ''
-
-    return new Response(
-      JSON.stringify({ message }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    )
-
-  } catch (error) {
-    console.error('Claude API error:', error.message)
-    return new Response(
-      JSON.stringify({ error: 'Haber is unavailable right now.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    )
+    // All other requests — return 404
+    return new Response('Not found', { status: 404 })
   }
 }
