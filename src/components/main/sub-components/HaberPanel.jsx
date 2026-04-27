@@ -195,7 +195,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
     setHaberLoading(true)
     setHaberError(null)
     try {
-      const response = await fetch('http://localhost:3001/api/haber', {
+      const response = await fetch('/api/haber', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, currentWord: wordCtx, messages: msgs })
