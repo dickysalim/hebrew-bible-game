@@ -19,7 +19,7 @@ import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import ESVStrip, { getEsvText } from './sub-components/ESVStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
-import WordDefinition from './sub-components/WordDefinition'
+import WordDefTabs from './sub-components/WordDefTabs'
 import HaberPanel from './sub-components/HaberPanel'
 
 const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
@@ -878,9 +878,9 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           </div>
         )}
 
-        {/* Left column: Word Definition */}
+        {/* Left column: Word Definition Tabs */}
         <div className="word-definition-column">
-          <WordDefinition
+          <WordDefTabs
             word={wordData}
             wordId={wordId}
             sbl={sbl}

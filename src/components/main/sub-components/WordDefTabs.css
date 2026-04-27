@@ -1,0 +1,368 @@
+/* ─── WordDefTabs — outer container ──────────────────────────────────────── */
+
+.wdt {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ─── Tab bar ──────────────────────────────────────────────────────────────── */
+
+.wdt__tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-surface);
+}
+
+.wdt__tab {
+  flex: 1;
+  padding: 7px 6px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  margin-bottom: -1px; /* overlap the border-bottom of .wdt__tabs */
+}
+
+.wdt__tab:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--bg-card) 60%, transparent);
+}
+
+.wdt__tab--active {
+  color: var(--gold-bright, var(--text-primary));
+  border-bottom-color: var(--gold-bright, var(--coral));
+  background: transparent;
+}
+
+/* ─── Tab content area ─────────────────────────────────────────────────────── */
+
+.wdt__content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Generic panel wrapper for Root and Concordance */
+.wdt__tab-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  min-height: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* Scrollbar style — consistent with WordDefinition */
+.wdt__tab-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.wdt__tab-panel::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+  border-radius: 3px;
+}
+.wdt__tab-panel::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 3px;
+}
+.wdt__tab-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── WordRootTab styles ───────────────────────────────────────────────────── */
+
+.wdt-root-empty,
+.wdt-conc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.wdt-root-empty__icon,
+.wdt-conc-empty__icon {
+  font-size: 28px;
+  opacity: 0.5;
+}
+
+.wdt-root-empty p,
+.wdt-conc-empty p {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  max-width: 200px;
+  line-height: 1.5;
+}
+
+/* Root identity block */
+.wdt-root__identity {
+  margin-bottom: 12px;
+}
+
+.wdt-root__hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 32px;
+  color: var(--coral);
+  direction: rtl;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.wdt-root__sbl {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.wdt-root__gloss {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.wdt-root__strongs {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  font-family: var(--font-body);
+}
+
+.wdt-root__divider {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 0;
+}
+
+.wdt-root__section-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+
+.wdt-root__section-label--words {
+  margin-top: 16px;
+}
+
+.wdt-root__prose {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.wdt-root__empty-words {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.wdt-root__table-wrap {
+  overflow-x: auto;
+  margin-top: 6px;
+}
+
+.wdt-root__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.wdt-root__table th {
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.wdt-root__table td {
+  padding: 5px 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.wdt-root__table tr:last-child td {
+  border-bottom: none;
+}
+
+.wdt-root__table-heb {
+  font-family: var(--font-hebrew);
+  font-size: 16px;
+  color: var(--text-primary) !important;
+  direction: rtl;
+}
+
+.wdt-root__table-sbl {
+  font-family: var(--font-serif);
+  font-size: 11px;
+}
+
+.wdt-root__table-pos {
+  font-size: 10px;
+  color: var(--text-muted) !important;
+  white-space: nowrap;
+}
+
+/* ─── WordConcordanceTab styles ────────────────────────────────────────────── */
+
+.wdt-conc {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.wdt-conc__status {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  padding: 2px 0 10px;
+  line-height: 1.4;
+}
+
+.wdt-conc__status--complete {
+  color: var(--green);
+}
+
+.wdt-conc__status-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wdt-conc__divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 12px;
+}
+
+.wdt-conc__verse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wdt-conc__verse-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wdt-conc__verse-ref {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.wdt-conc__line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.wdt-conc__line--hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 15px;
+  direction: rtl;
+  color: var(--text-primary);
+  justify-content: flex-end;
+}
+
+.wdt-conc__line--sbl {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.wdt-conc__line--esv {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.wdt-conc__word-token {
+  display: inline-block;
+}
+
+.wdt-conc__word-token--match {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.wdt-conc__word-token--match-sbl {
+  color: var(--gold-bright, var(--coral));
+}
+
+.wdt-conc__esv-highlight {
+  background: color-mix(in srgb, var(--gold-mid, var(--coral)) 25%, transparent);
+  color: var(--text-primary);
+  border-radius: 2px;
+  padding: 0 2px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Locked row */
+.wdt-conc__verse-entry--locked {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--bg-surface) 80%, transparent);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wdt-conc__lock-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.wdt-conc__lock-ref {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-style: italic;
+}
