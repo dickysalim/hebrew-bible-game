@@ -48,9 +48,9 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
         {/* Title block */}
         <header className="menu-header">
           <div className="menu-hebrew-title" lang="he" dir="rtl">מדרש</div>
-          <h1 className="menu-title">Hebrew Bible Game</h1>
+          <h1 className="menu-title">Midrash</h1>
           <p className="menu-subtitle">
-            Learn to read the Masoretic Text, word by word
+            Explore, Question, and Interpret the Bible in The Original Language
           </p>
         </header>
 
