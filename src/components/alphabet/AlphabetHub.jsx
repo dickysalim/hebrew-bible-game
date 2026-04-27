@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import Level1 from './Level1.jsx'
 import Level2 from './Level2.jsx'
@@ -8,7 +8,9 @@ import Level5 from './Level5.jsx'
 import Level6 from './Level6.jsx'
 import Level7 from './Level7.jsx'
 
-const STORAGE_KEY = 'alphabet_progress'
+import { useProgressCache } from '../../contexts/ProgressCacheContext'
+
+const STORAGE_KEY = 'alphabet_progress' // kept for migration fallback
 
 const LEVEL_META = [
   {
@@ -64,23 +66,20 @@ const LEVEL_META = [
 
 const ALL_LEVEL_IDS = LEVEL_META.map((m) => m.id)   // [1,2,3,4,5,6,7]
 
-function loadProgress() {
+function defaultAlphabetProgress() {
+  return Object.fromEntries(ALL_LEVEL_IDS.map((id) => [`level${id}`, false]))
+}
+
+// Read legacy localStorage (migration path)
+function loadLocalAlphabetProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      // Ensure all 7 keys exist (backwards compat with old 5-level save)
-      const defaults = Object.fromEntries(ALL_LEVEL_IDS.map((id) => [`level${id}`, false]))
-      return { ...defaults, ...parsed }
+      return { ...defaultAlphabetProgress(), ...parsed }
     }
   } catch {}
-  return Object.fromEntries(ALL_LEVEL_IDS.map((id) => [`level${id}`, false]))
-}
-
-function saveProgress(progress) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
-  } catch {}
+  return defaultAlphabetProgress()
 }
 
 // ─── Hub grid (shown at /alphabet) ──────────────────────────────────────────
@@ -150,7 +149,7 @@ function HubGrid({ progress, onBack, onLevelSelect }) {
           })}
         </div>
 
-        <p className="hub-footer-note">Progress is saved automatically in your browser</p>
+        <p className="hub-footer-note">Progress is saved to your account</p>
       </div>
     </div>
   )
@@ -175,7 +174,30 @@ function LevelRoute({ id, onComplete, onBack }) {
 
 // ─── Root export ─────────────────────────────────────────────────────────────
 export default function AlphabetHub({ onBack }) {
-  const [progress, setProgress] = useState(loadProgress)
+  const { cachedProgress, updateAlphabetProgress } = useProgressCache()
+
+  // Initialize from Supabase cache, fall back to legacy localStorage
+  const [progress, setProgress] = useState(() => {
+    const ap = cachedProgress?.alphabetProgress
+    if (ap && Object.keys(ap).length > 0) {
+      return { ...defaultAlphabetProgress(), ...ap }
+    }
+    return loadLocalAlphabetProgress()
+  })
+
+  // Sync once when cache becomes ready (handles direct-URL refresh case)
+  const hasSyncedRef = useRef(false)
+  useEffect(() => {
+    if (hasSyncedRef.current) return
+    const ap = cachedProgress?.alphabetProgress
+    if (ap !== undefined) {
+      hasSyncedRef.current = true
+      if (Object.keys(ap).length > 0) {
+        setProgress({ ...defaultAlphabetProgress(), ...ap })
+      }
+    }
+  }, [cachedProgress])
+
   const navigate = useNavigate()
 
   const handleLevelComplete = useCallback(
@@ -183,10 +205,10 @@ export default function AlphabetHub({ onBack }) {
       const key = `level${levelId}`
       const updated = { ...progress, [key]: true }
       setProgress(updated)
-      saveProgress(updated)
+      updateAlphabetProgress(updated) // persists to Supabase
       navigate('/alphabet', { replace: true })
     },
-    [progress, navigate]
+    [progress, navigate, updateAlphabetProgress]
   )
 
   return (

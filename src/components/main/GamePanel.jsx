@@ -435,6 +435,9 @@ function buildInitialStateFromCache(cp) {
     celebratedVerses: chapterProgress.celebratedVerses || cp.celebratedVerses || [],
     discoveredRoots: discoveredRootsMap,
     chapters:        chaptersMap,
+    // Restore persisted display settings
+    showSBLWord:   cp.settings?.showSBLWord   ?? true,
+    showSBLLetter: cp.settings?.showSBLLetter ?? true,
   }
 }
 
@@ -702,7 +705,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // ProgressCacheContext debounces the actual Supabase write.
   useEffect(() => {
     if (!userId || !readyToSaveRef.current) return
-    updateCache(state, contextDiscoveredRoots, discoveredWordsByRoot)
+    updateCache(
+      state,
+      contextDiscoveredRoots,
+      discoveredWordsByRoot,
+      { showSBLWord: state.showSBLWord, showSBLLetter: state.showSBLLetter }
+    )
   }, [
     userId,
     state.stageIndex,
@@ -713,6 +721,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     state.activeWordIdx,
     state.carouselIdxMap,
     state.celebratedVerses,
+    state.showSBLWord,
+    state.showSBLLetter,
     contextDiscoveredRoots,
     discoveredWordsByRoot,
   ]) // eslint-disable-line react-hooks/exhaustive-deps

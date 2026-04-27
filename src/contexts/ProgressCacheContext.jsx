@@ -1,60 +1,39 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
-import { loadProgress, saveProgress as saveProgressToSupabase } from '../lib/progress'
+import { loadProgress, saveProgress as saveProgressToSupabase, savePartialProgress } from '../lib/progress'
 import { formatProgressFromSupabase, formatProgressForSupabase } from '../lib/progress'
 
-// User-scoped localStorage key — auto-invalidated when account changes
 const cacheKey = (userId) => `hebrew-bible-game-progress-${userId}`
-
-// Max age before re-validating against Supabase (24 hours)
 const MAX_AGE_MS = 24 * 60 * 60 * 1000
-
-// Debounce delay for Supabase writes (ms) — avoids hammering on rapid state changes
 const SAVE_DEBOUNCE_MS = 1500
 
-// Load from user-scoped localStorage — returns null if missing or stale
 function loadFromLocalCache(userId) {
   try {
     const raw = localStorage.getItem(cacheKey(userId))
     if (!raw) return null
     const parsed = JSON.parse(raw)
     const age = Date.now() - (parsed._cachedAt ?? 0)
-    if (age > MAX_AGE_MS) return null // stale — will re-fetch from Supabase
+    if (age > MAX_AGE_MS) return null
     return parsed.data ?? null
   } catch {
     return null
   }
 }
 
-// Write to user-scoped localStorage with a timestamp
 function writeToLocalCache(userId, data) {
   try {
-    localStorage.setItem(
-      cacheKey(userId),
-      JSON.stringify({ _cachedAt: Date.now(), data })
-    )
-  } catch {
-    // localStorage may be full — ignore silently
-  }
+    localStorage.setItem(cacheKey(userId), JSON.stringify({ _cachedAt: Date.now(), data }))
+  } catch {}
 }
 
-// Remove a user's local cache entry (on sign-out or explicit clear)
 function removeLocalCache(userId) {
   try {
     if (userId) localStorage.removeItem(cacheKey(userId))
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
-/**
- * Migrate old flat Supabase cache → per-chapter (v2) structure.
- * If the cache already has a `chapters` map, returns as-is.
- */
 function ensurePerChapterCache(formatted) {
   if (!formatted) return null
-  // Already v2 — has a chapters map
   if (formatted.chapters) return formatted
-  // Flat v1 → wrap current stageIndex progress into chapters map
   const si = formatted.stageIndex || 1
   return {
     ...formatted,
@@ -70,44 +49,29 @@ function ensurePerChapterCache(formatted) {
         celebratedVerses: formatted.celebratedVerses || [],
       },
     },
+    // Carry forward new fields if present, otherwise defaults
+    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true },
+    alphabetProgress: formatted.alphabetProgress || {},
   }
 }
 
 const ProgressCacheContext = createContext(null)
 
-/**
- * ProgressCacheProvider
- *
- * Lifecycle:
- *  - On mount / userId change → try localStorage (if not stale) → else fetch Supabase
- *  - updateCache(progressObj) → writes memory + localStorage + debounced Supabase save
- *  - When userId changes (account switch) → evict old cache, load new user's data
- *  - No userId → cache stays idle (unauthenticated users use their own localStorage hook)
- */
 export function ProgressCacheProvider({ children, userId }) {
   const [cachedProgress, setCachedProgress] = useState(null)
-  // 'idle' | 'loading' | 'ready' | 'error'
   const [cacheStatus, setCacheStatus] = useState('idle')
-  // Track which userId the cache currently belongs to
   const cacheUserIdRef = useRef(null)
-
-  // Debounce timer ref for Supabase saves
   const saveTimerRef = useRef(null)
 
-  // Fetch progress for the current user (Supabase → memory → localStorage)
   useEffect(() => {
     if (!userId) {
-      // No session — clear any stale cache state
       setCachedProgress(null)
       setCacheStatus('idle')
       cacheUserIdRef.current = null
       return
     }
 
-    // If userId changed (account switch), evict the old cache first
     if (cacheUserIdRef.current && cacheUserIdRef.current !== userId) {
-      // Do NOT remove their localStorage — keep it for future fast re-login.
-      // Just clear the in-memory snapshot.
       setCachedProgress(null)
       setCacheStatus('idle')
     }
@@ -115,7 +79,6 @@ export function ProgressCacheProvider({ children, userId }) {
     cacheUserIdRef.current = userId
 
     const loadForUser = async () => {
-      // 1. Try local cache (fresh within 24h)
       const local = loadFromLocalCache(userId)
       if (local) {
         setCachedProgress(ensurePerChapterCache(local))
@@ -123,7 +86,6 @@ export function ProgressCacheProvider({ children, userId }) {
         return
       }
 
-      // 2. Fetch from Supabase
       setCacheStatus('loading')
       try {
         const supabaseProgress = await loadProgress(userId)
@@ -131,13 +93,11 @@ export function ProgressCacheProvider({ children, userId }) {
           ? ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
           : null
 
-        // Store in memory + local cache
         setCachedProgress(formatted)
         if (formatted) writeToLocalCache(userId, formatted)
         setCacheStatus('ready')
       } catch (err) {
         console.error('[ProgressCache] Failed to load from Supabase:', err)
-        // Fall back to empty progress so the game isn't blocked
         setCachedProgress(null)
         setCacheStatus('error')
       }
@@ -147,22 +107,19 @@ export function ProgressCacheProvider({ children, userId }) {
   }, [userId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
-   * updateCache — called by GamePanel whenever game state changes.
-   * Updates in-memory cache and localStorage immediately, then debounces the
-   * Supabase write so rapid typing doesn't send a request per keypress.
+   * updateCache — called by GamePanel on every state change.
+   * Now also persists settings (showSBLWord / showSBLLetter).
    *
-   * Now stores per-chapter state in a `chapters` map keyed by stageIndex.
-   *
-   * @param {object} rawGameState — raw reducer state
-   * @param {array}  discoveredRoots — from RootDiscoveryContext
-   * @param {object} discoveredWordsByRoot — from RootDiscoveryContext
+   * @param {object} rawGameState
+   * @param {array}  discoveredRoots
+   * @param {object} discoveredWordsByRoot
+   * @param {object} settings — { showSBLWord, showSBLLetter }
    */
-  const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot) => {
+  const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot, settings = {}) => {
     if (!userId) return
 
     const si = rawGameState.stageIndex || 1
 
-    // Build per-chapter entry for the CURRENT stageIndex
     const chapterEntry = {
       typedCounts: rawGameState.typedCounts || {},
       wordEncounters: rawGameState.wordEncounters || {},
@@ -173,43 +130,42 @@ export function ProgressCacheProvider({ children, userId }) {
       celebratedVerses: rawGameState.celebratedVerses || [],
     }
 
-    // Merge with existing cache — keep other chapters' data intact
     setCachedProgress(prev => {
       const prevChapters = prev?.chapters || {}
       const updated = {
         discoveredRoots: discoveredRoots || [],
         discoveredWordsByRoot: discoveredWordsByRoot || {},
         stageIndex: si,
-        chapters: {
-          ...prevChapters,
-          [si]: chapterEntry,
+        chapters: { ...prevChapters, [si]: chapterEntry },
+        settings: {
+          showSBLWord: settings.showSBLWord ?? prev?.settings?.showSBLWord ?? true,
+          showSBLLetter: settings.showSBLLetter ?? prev?.settings?.showSBLLetter ?? true,
         },
+        // Preserve existing alphabet progress
+        alphabetProgress: prev?.alphabetProgress || {},
       }
       writeToLocalCache(userId, updated)
       return updated
     })
 
-    // Debounce the Supabase write
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        // Read the latest cache to make sure we send ALL chapters
         const latestRaw = localStorage.getItem(cacheKey(userId))
-        let latestChapters = {}
+        let latestData = {}
         if (latestRaw) {
-          try {
-            const parsed = JSON.parse(latestRaw)
-            latestChapters = parsed?.data?.chapters || {}
-          } catch { /* ignore */ }
+          try { latestData = JSON.parse(latestRaw)?.data || {} } catch {}
         }
-        // Ensure current chapter is included
+        let latestChapters = latestData.chapters || {}
         latestChapters[si] = chapterEntry
 
         const progressForSupabase = formatProgressForSupabase(
           rawGameState,
           discoveredRoots,
           discoveredWordsByRoot,
-          latestChapters
+          latestChapters,
+          latestData.settings || {},
+          latestData.alphabetProgress || {}
         )
         await saveProgressToSupabase(userId, progressForSupabase)
       } catch (err) {
@@ -219,9 +175,28 @@ export function ProgressCacheProvider({ children, userId }) {
   }, [userId])
 
   /**
-   * clearCache — wipes in-memory state and the user's localStorage entry.
-   * Call on sign-out or explicit progress reset.
+   * updateAlphabetProgress — called by AlphabetHub when a level is completed.
+   * Does a targeted upsert of only the alphabet_progress column.
    */
+  const updateAlphabetProgress = useCallback((alphabetProgress) => {
+    if (!userId) return
+
+    setCachedProgress(prev => {
+      const updated = { ...(prev || {}), alphabetProgress }
+      writeToLocalCache(userId, updated)
+      return updated
+    })
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        await savePartialProgress(userId, { alphabet_progress: alphabetProgress })
+      } catch (err) {
+        console.error('[ProgressCache] Failed to save alphabet progress:', err)
+      }
+    }, SAVE_DEBOUNCE_MS)
+  }, [userId])
+
   const clearCache = useCallback(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     removeLocalCache(userId)
@@ -229,15 +204,14 @@ export function ProgressCacheProvider({ children, userId }) {
     setCacheStatus('idle')
   }, [userId])
 
-  // Cleanup timer on unmount
   useEffect(() => {
-    return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    }
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
   }, [])
 
   return (
-    <ProgressCacheContext.Provider value={{ cachedProgress, cacheStatus, updateCache, clearCache }}>
+    <ProgressCacheContext.Provider
+      value={{ cachedProgress, cacheStatus, updateCache, updateAlphabetProgress, clearCache }}
+    >
       {children}
     </ProgressCacheContext.Provider>
   )

@@ -31,7 +31,7 @@ function GameLayout({ session, jumpToStageIndex, onBackToMenu }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  if (cacheStatus === 'loading') {
+  if (cacheStatus === 'idle' || cacheStatus === 'loading') {
     return (
       <div className="app-container">
         <div className="loading-screen">
