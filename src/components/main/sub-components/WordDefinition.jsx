@@ -1,10 +1,19 @@
 import './WordDefinition.css'
 
 export default function WordDefinition({
-  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber
+  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber,
+  noWrapper = false,
 }) {
 
   if (!word || !isWordCompleted) {
+    if (noWrapper) {
+      return (
+        <div className="empty-message wd-empty-inner">
+          <span className="empty-icon">✍️</span>
+          <p>Type the word to reveal its meaning</p>
+        </div>
+      )
+    }
     return (
       <div className="word-definition empty">
         <div className="empty-message">
@@ -81,12 +90,8 @@ export default function WordDefinition({
     )
   }
 
-  return (
-    <div className={`word-definition${encounterCount === 1 ? ' is-new' : ''}`}>
-      {encounterCount === 1 && (
-        <div className="new-badge">New</div>
-      )}
-
+  const innerContent = (
+    <>
       <div className="wd-word-scroll">
         <div className="word-definition-header">
           <div className="word-headline-column">
@@ -128,6 +133,17 @@ export default function WordDefinition({
       <button className="haber-open-btn" onClick={onOpenHaber}>
         Ask Haber
       </button>
+    </>
+  )
+
+  if (noWrapper) return innerContent
+
+  return (
+    <div className={`word-definition${encounterCount === 1 ? ' is-new' : ''}`}>
+      {encounterCount === 1 && (
+        <div className="new-badge">New</div>
+      )}
+      {innerContent}
     </div>
   )
 }

@@ -7,23 +7,29 @@ import './WordDefTabs.css'
 const TABS = ['Word', 'Root', 'Concordance']
 
 /**
- * WordDefTabs — tabbed wrapper for the game's left-panel word information area.
+ * WordDefTabs — the outer .word-definition card with a tab bar inside it.
  *
  * Tabs:
- *   Word        — existing WordDefinition content (gloss, segments, explanation)
+ *   Word        — existing WordDefinition inner content
  *   Root        — mini root card (identity + BDB + discovered words table)
- *   Concordance — mini concordance (discovered verses only, no explanation)
+ *   Concordance — mini concordance (discovered verses only)
  *
- * Resets to the "Word" tab whenever a new word becomes active.
+ * Props:
+ *   isWordNew   boolean — true only on first discovery, while still on that word;
+ *               cleared by GamePanel when the user moves to a different word
  */
 export default function WordDefTabs({
-  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber
+  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber,
+  isWordNew = false,
 }) {
   const [activeTab, setActiveTab] = useState('Word')
 
   return (
-    <div className="wdt">
-      {/* Tab bar */}
+    <div className={`word-definition${isWordNew ? ' is-new' : ''}`}>
+      {/* "New" badge — inside the card, above tabs */}
+      {isWordNew && <div className="new-badge">New</div>}
+
+      {/* Tab bar — lives inside the card */}
       <div className="wdt__tabs" role="tablist" aria-label="Word information tabs">
         {TABS.map(tab => (
           <button
@@ -48,6 +54,7 @@ export default function WordDefTabs({
             encounterCount={encounterCount}
             isWordCompleted={isWordCompleted}
             onOpenHaber={onOpenHaber}
+            noWrapper
           />
         )}
         {activeTab === 'Root' && (
@@ -64,3 +71,4 @@ export default function WordDefTabs({
     </div>
   )
 }
+

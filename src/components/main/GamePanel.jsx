@@ -594,6 +594,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const verseCompleteRef = useRef(null)
   const typingSoundsRef  = useRef(null)
   const rootFoundRef     = useRef(null)
+  // Track which words have already had their "New" badge shown and then navigated away from.
+  // This is a ref (not state) so it doesn't trigger re-renders on mutation.
+  const shownNewWordIdsRef = useRef(new Set())
+  const prevWordIdRef      = useRef(null)
 
   useEffect(() => {
     wordCompleteRef.current = new Audio(wordCompleteAudio)
@@ -809,6 +813,15 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
   const sbl = activeWord?.sbl || ''
 
+  // "New" badge — true only on first discovery AND while still on that word.
+  // When the user navigates away (wordId changes), the previous word is dismissed
+  // so returning to it no longer shows the badge.
+  if (wordId !== prevWordIdRef.current) {
+    if (prevWordIdRef.current) shownNewWordIdsRef.current.add(prevWordIdRef.current)
+    prevWordIdRef.current = wordId
+  }
+  const isWordNew = wordDone && !!wordId && encounterCount === 1 && !shownNewWordIdsRef.current.has(wordId)
+
   // Context object passed to Haber for the current word
   const currentWordContext = wordDone && wordData && verse ? {
     id: wordId,
@@ -887,6 +900,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             encounterCount={encounterCount}
             isWordCompleted={wordDone}
             onOpenHaber={() => setHaberOpen(true)}
+            isWordNew={isWordNew}
           />
         </div>
 
