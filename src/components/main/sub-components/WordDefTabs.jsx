@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import WordDefinition from './WordDefinition'
 import WordRootTab from './WordRootTab'
 import WordConcordanceTab from './WordConcordanceTab'
@@ -23,6 +23,11 @@ export default function WordDefTabs({
   isWordNew = false,
 }) {
   const [activeTab, setActiveTab] = useState('Word')
+
+  // Reset to the Word tab whenever the selected word changes
+  useEffect(() => {
+    setActiveTab('Word')
+  }, [wordId])
 
   return (
     <div className={`word-definition${isWordNew ? ' is-new' : ''}`}>
