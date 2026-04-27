@@ -4693,7 +4693,7 @@ html, body {
   white-space: nowrap;
   cursor: pointer;
   text-decoration: underline dotted var(--text-muted);
-  underline-offset: 2px;
+  text-underline-offset: 2px;
   transition: color 0.15s;
 }
 
