@@ -5,6 +5,8 @@ import Level2 from './Level2.jsx'
 import Level3 from './Level3.jsx'
 import Level4 from './Level4.jsx'
 import Level5 from './Level5.jsx'
+import Level6 from './Level6.jsx'
+import Level7 from './Level7.jsx'
 
 const STORAGE_KEY = 'alphabet_progress'
 
@@ -32,26 +34,47 @@ const LEVEL_META = [
   },
   {
     id: 4,
+    title: 'Name → Hebrew',
+    desc: 'See the English name — pick the Hebrew letter from 4 options',
+    mechanic: 'Random shuffle · Streak resets on wrong',
+    icon: '🔤',
+  },
+  {
+    id: 5,
+    title: 'Sound → Hebrew',
+    desc: 'See the SBL sound — pick the Hebrew letter from 4 options',
+    mechanic: 'Random shuffle · Streak resets on wrong',
+    icon: '🔉',
+  },
+  {
+    id: 6,
     title: 'Type the Symbol',
     desc: 'See the name — type the Hebrew key. 27 in a row',
     mechanic: 'Random shuffle · Space to advance · Try again on wrong',
     icon: '🎹',
   },
   {
-    id: 5,
+    id: 7,
     title: 'Sound to Symbol',
     desc: 'See the SBL sound — type the Hebrew key. 27 in a row',
     mechanic: 'Random shuffle · Space to advance · Try again on wrong',
-    icon: '🔉',
+    icon: '👑',
   },
 ]
+
+const ALL_LEVEL_IDS = LEVEL_META.map((m) => m.id)   // [1,2,3,4,5,6,7]
 
 function loadProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Ensure all 7 keys exist (backwards compat with old 5-level save)
+      const defaults = Object.fromEntries(ALL_LEVEL_IDS.map((id) => [`level${id}`, false]))
+      return { ...defaults, ...parsed }
+    }
   } catch {}
-  return { level1: false, level2: false, level3: false, level4: false, level5: false }
+  return Object.fromEntries(ALL_LEVEL_IDS.map((id) => [`level${id}`, false]))
 }
 
 function saveProgress(progress) {
@@ -63,7 +86,8 @@ function saveProgress(progress) {
 // ─── Hub grid (shown at /alphabet) ──────────────────────────────────────────
 function HubGrid({ progress, onBack, onLevelSelect }) {
   const isUnlocked = (id) => (id === 1 ? true : !!progress[`level${id - 1}`])
-  const completedCount = [1, 2, 3, 4, 5].filter((n) => progress[`level${n}`]).length
+  const completedCount = ALL_LEVEL_IDS.filter((n) => progress[`level${n}`]).length
+  const total = ALL_LEVEL_IDS.length
 
   return (
     <div className="alphabet-hub-screen">
@@ -83,9 +107,9 @@ function HubGrid({ progress, onBack, onLevelSelect }) {
             <div className="hub-hebrew-title" lang="he" dir="rtl">אלף-בית</div>
             <h1 className="hub-title">Hebrew Alphabet</h1>
             <p className="hub-subtitle">
-              {completedCount === 5
+              {completedCount === total
                 ? 'All levels complete — well done!'
-                : `${completedCount} of 5 levels complete`}
+                : `${completedCount} of ${total} levels complete`}
             </p>
           </div>
         </div>
@@ -133,7 +157,15 @@ function HubGrid({ progress, onBack, onLevelSelect }) {
 }
 
 // ─── Level wrapper — picks the right component by id ────────────────────────
-const LEVEL_COMPONENTS = { 1: Level1, 2: Level2, 3: Level3, 4: Level4, 5: Level5 }
+const LEVEL_COMPONENTS = {
+  1: Level1,
+  2: Level2,
+  3: Level3,
+  4: Level4,
+  5: Level5,
+  6: Level6,
+  7: Level7,
+}
 
 function LevelRoute({ id, onComplete, onBack }) {
   const LevelComponent = LEVEL_COMPONENTS[id]
@@ -171,7 +203,7 @@ export default function AlphabetHub({ onBack }) {
         }
       />
       {/* Individual levels — back button = browser back = /alphabet */}
-      {[1, 2, 3, 4, 5].map((id) => (
+      {ALL_LEVEL_IDS.map((id) => (
         <Route
           key={id}
           path={`level/${id}`}

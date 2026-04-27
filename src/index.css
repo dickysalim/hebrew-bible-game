@@ -3194,6 +3194,49 @@ html, body {
   .quiz-btn--wrong   { background: rgba(255, 95, 64, 0.15) !important; }
 }
 
+/* ─── HEBREW GLYPH CHOICE BUTTONS (Level 4 & 5) ─────────── */
+.quiz-choices--hebrew {
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quiz-btn--hebrew {
+  font-family: var(--font-hebrew);
+  font-size: clamp(32px, 7vw, 52px);
+  font-weight: 700;
+  padding: 18px 8px;
+  line-height: 1.1;
+  direction: rtl;
+  letter-spacing: 0;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Name prompt inside quiz-letter-display (Level 4) */
+.quiz-glyph--name {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 5.5vw, 40px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  direction: ltr;
+  text-shadow: none;
+}
+
+/* SBL prompt inside quiz-letter-display (Level 5) */
+.quiz-glyph--sbl {
+  font-family: var(--font-serif);
+  font-size: clamp(30px, 6vw, 46px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  direction: ltr;
+  text-shadow: none;
+  letter-spacing: 2px;
+}
+
 /* ─── STREAK BAR ─────────────────────────────────────────── */
 .streak-bar-wrap {
   padding: 10px 24px 8px;
