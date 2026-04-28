@@ -16,9 +16,20 @@ function loadFromLocalCache(userId) {
   }
 }
 
-function writeToLocalCache(userId, data) {
+function loadLocalCacheTimestamp(userId) {
   try {
-    localStorage.setItem(cacheKey(userId), JSON.stringify({ data }))
+    const raw = localStorage.getItem(cacheKey(userId))
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return parsed.updatedAt ?? null
+  } catch {
+    return null
+  }
+}
+
+function writeToLocalCache(userId, data, updatedAt = null) {
+  try {
+    localStorage.setItem(cacheKey(userId), JSON.stringify({ data, updatedAt }))
   } catch {}
 }
 
@@ -82,30 +93,48 @@ export function ProgressCacheProvider({ children, userId }) {
     const loadForUser = async () => {
       const local = loadFromLocalCache(userId)
       if (local) {
+        // Fast path: show local cache immediately so the UI is responsive
         setCachedProgress(ensurePerChapterCache(local))
         setCacheStatus('ready')
-        return
+      } else {
+        setCacheStatus('loading')
       }
 
-      setCacheStatus('loading')
+      // Always background-refresh from Supabase to pick up progress from other devices.
+      // If Supabase has a newer updated_at than what we cached, we update the UI.
       try {
         const supabaseProgress = await loadProgress(userId)
-        const formatted = supabaseProgress
-          ? ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
-          : null
+        if (!supabaseProgress) {
+          if (!local) setCacheStatus('ready')
+          return
+        }
 
-        setCachedProgress(formatted)
-        if (formatted) writeToLocalCache(userId, formatted)
-        setCacheStatus('ready')
+        const supabaseUpdatedAt = supabaseProgress.updated_at ?? null
+        const localUpdatedAt = loadLocalCacheTimestamp(userId)
+
+        const supabaseIsNewer =
+          !localUpdatedAt ||
+          !supabaseUpdatedAt ||
+          new Date(supabaseUpdatedAt) > new Date(localUpdatedAt)
+
+        if (!local || supabaseIsNewer) {
+          const formatted = ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
+          setCachedProgress(formatted)
+          writeToLocalCache(userId, formatted, supabaseUpdatedAt)
+          setCacheStatus('ready')
+        }
       } catch (err) {
         console.error('[ProgressCache] Failed to load from Supabase:', err)
-        setCachedProgress(null)
-        setCacheStatus('error')
+        if (!local) {
+          setCachedProgress(null)
+          setCacheStatus('error')
+        }
       }
     }
 
     loadForUser()
   }, [userId]) // eslint-disable-line react-hooks/exhaustive-deps
+
 
   /**
    * updateCache — called by GamePanel on every state change.
@@ -145,20 +174,22 @@ export function ProgressCacheProvider({ children, userId }) {
         // Preserve existing alphabet progress
         alphabetProgress: prev?.alphabetProgress || {},
       }
-      writeToLocalCache(userId, updated)
+      // Store a local timestamp so background Supabase refresh can compare freshness
+      writeToLocalCache(userId, updated, new Date().toISOString())
       return updated
     })
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        const latestRaw = sessionStorage.getItem(cacheKey(userId))
+        // ✅ Read from localStorage (not sessionStorage) — this is where writeToLocalCache writes
+        const latestRaw = localStorage.getItem(cacheKey(userId))
         let latestData = {}
         if (latestRaw) {
           try { latestData = JSON.parse(latestRaw)?.data || {} } catch {}
         }
-        let latestChapters = latestData.chapters || {}
-        latestChapters[si] = chapterEntry
+        // Merge the freshest chapter entry into all known chapters
+        const latestChapters = { ...(latestData.chapters || {}), [si]: chapterEntry }
 
         const progressForSupabase = formatProgressForSupabase(
           rawGameState,
@@ -168,7 +199,18 @@ export function ProgressCacheProvider({ children, userId }) {
           latestData.settings || {},
           latestData.alphabetProgress || {}
         )
-        await saveProgressToSupabase(userId, progressForSupabase)
+        const saved = await saveProgressToSupabase(userId, progressForSupabase)
+        if (saved) {
+          // Update local cache timestamp to match what Supabase now has
+          const localRaw = localStorage.getItem(cacheKey(userId))
+          if (localRaw) {
+            try {
+              const localParsed = JSON.parse(localRaw)
+              const now = new Date().toISOString()
+              localStorage.setItem(cacheKey(userId), JSON.stringify({ ...localParsed, updatedAt: now }))
+            } catch {}
+          }
+        }
       } catch (err) {
         console.error('[ProgressCache] Failed to save to Supabase:', err)
       }
@@ -184,7 +226,7 @@ export function ProgressCacheProvider({ children, userId }) {
 
     setCachedProgress(prev => {
       const updated = { ...(prev || {}), alphabetProgress }
-      writeToLocalCache(userId, updated)
+      writeToLocalCache(userId, updated, new Date().toISOString())
       return updated
     })
 

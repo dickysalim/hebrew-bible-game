@@ -13,13 +13,13 @@ export default function InsightCarousel({ insights, idx, onPrev, onNext, isNewCo
     return () => clearTimeout(timer)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-slide timer: 6.5 seconds
+  // Auto-slide timer: 8 seconds
   useEffect(() => {
     if (insights.length <= 1) return
 
     intervalRef.current = setInterval(() => {
       onNext()
-    }, 6500)
+    }, 8000)
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
