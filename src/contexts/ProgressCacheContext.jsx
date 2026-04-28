@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
-import { loadProgress, saveProgress as saveProgressToSupabase, savePartialProgress } from '../lib/progress'
+import { loadProgress, saveProgress as saveProgressToSupabase, savePartialProgress, deleteProgress } from '../lib/progress'
 import { formatProgressFromSupabase, formatProgressForSupabase } from '../lib/progress'
 
 const cacheKey = (userId) => `hebrew-bible-game-progress-${userId}`
@@ -205,13 +205,22 @@ export function ProgressCacheProvider({ children, userId }) {
     setCacheStatus('idle')
   }, [userId])
 
+  /** Hard reset — deletes Supabase row + clears session cache. Dev-only. */
+  const resetProgress = useCallback(async () => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    removeLocalCache(userId)
+    setCachedProgress(null)
+    setCacheStatus('idle')
+    await deleteProgress(userId)
+  }, [userId])
+
   useEffect(() => {
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
   }, [])
 
   return (
     <ProgressCacheContext.Provider
-      value={{ cachedProgress, cacheStatus, updateCache, updateAlphabetProgress, clearCache }}
+      value={{ cachedProgress, cacheStatus, updateCache, updateAlphabetProgress, clearCache, resetProgress }}
     >
       {children}
     </ProgressCacheContext.Provider>

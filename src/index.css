@@ -2765,6 +2765,97 @@ html, body {
   }
 }
 
+/* ─── Reset Progress (dev only) ──────────────────────────── */
+
+.menu-reset-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.menu-reset-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: rgba(217, 79, 42, 0.08);
+  border: 1px solid rgba(217, 79, 42, 0.25);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--coral);
+  font-family: var(--font-body);
+  line-height: 1.45;
+  animation: menuFadeIn 0.18s ease both;
+}
+
+.menu-reset-confirm-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.menu-reset-confirm strong {
+  font-weight: 700;
+}
+
+/* Base danger style — muted so it doesn't alarm normal users */
+.menu-option--danger {
+  border: 1px dashed rgba(217, 79, 42, 0.3);
+  background: transparent;
+}
+
+.menu-option--danger .menu-option-title {
+  color: rgba(217, 79, 42, 0.75);
+}
+
+.menu-option--danger .menu-option-desc,
+.menu-option--danger .menu-option-chevron {
+  color: rgba(217, 79, 42, 0.5);
+}
+
+.menu-option--danger .menu-option-icon {
+  background: rgba(217, 79, 42, 0.06);
+  border-color: rgba(217, 79, 42, 0.2);
+}
+
+.menu-option--danger .menu-option-hebrew {
+  color: rgba(217, 79, 42, 0.6);
+}
+
+.menu-option--danger:hover:not(:disabled) {
+  background: rgba(217, 79, 42, 0.06);
+  border-color: rgba(217, 79, 42, 0.5);
+}
+
+/* Confirm state — louder, animated */
+@keyframes dangerPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 79, 42, 0); }
+  50%       { box-shadow: 0 0 0 4px rgba(217, 79, 42, 0.18); }
+}
+
+.menu-option--danger-confirm {
+  border-style: solid;
+  border-color: rgba(217, 79, 42, 0.6);
+  background: rgba(217, 79, 42, 0.07);
+  animation: dangerPulse 1.6s ease-in-out infinite;
+}
+
+.menu-option--danger-confirm .menu-option-title {
+  color: var(--coral);
+  font-weight: 600;
+}
+
+.menu-option--danger-confirm .menu-option-desc {
+  color: rgba(217, 79, 42, 0.8);
+}
+
+.menu-option--danger-confirm .menu-option-chevron {
+  color: var(--coral);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+
 /* ═══════════════════════════════════════════════════════════
    ALPHABET MODULE
    ═══════════════════════════════════════════════════════════ */

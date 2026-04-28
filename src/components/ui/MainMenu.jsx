@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ProfileSettings from './ProfileSettings'
+
+const DEV_EMAIL = 'dickysal1506@gmail.com'
 
 // Chapter data — mirrors the verse files available in /data/verses/
 const CHAPTERS = [
@@ -25,13 +27,39 @@ const CHAPTERS = [
   },
 ]
 
-export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut }) {
+export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut, onResetProgress }) {
   const [showChapterSelect, setShowChapterSelect] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const confirmTimerRef = useRef(null)
+
+  const isDev = session?.user?.email === DEV_EMAIL
+
+  // Auto-cancel confirm state after 5s for safety
+  useEffect(() => {
+    if (confirmReset) {
+      confirmTimerRef.current = setTimeout(() => setConfirmReset(false), 5000)
+    }
+    return () => clearTimeout(confirmTimerRef.current)
+  }, [confirmReset])
 
   const handleChapterClick = (chapter) => {
     if (!chapter.available) return
     onSelectChapter(chapter)
+  }
+
+  const handleResetClick = () => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      return
+    }
+    // Second click — execute reset
+    setResetting(true)
+    onResetProgress().then(() => {
+      // Hard reload so all in-memory game state is cleared
+      window.location.reload()
+    })
   }
 
   return (
@@ -167,6 +195,42 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
                 </div>
                 <span className="menu-option-chevron" aria-hidden="true">›</span>
               </button>
+            )}
+
+            {/* Reset Progress — dev account only */}
+            {isDev && (
+              <div className="menu-reset-wrap">
+                {confirmReset && (
+                  <div className="menu-reset-confirm" role="alert">
+                    <span className="menu-reset-confirm-icon" aria-hidden="true">⚠️</span>
+                    <span>This will wipe <strong>all</strong> progress from the database. Are you sure?</span>
+                  </div>
+                )}
+                <button
+                  id="btn-reset-progress"
+                  className={`menu-option menu-option--danger${confirmReset ? ' menu-option--danger-confirm' : ''}`}
+                  onClick={handleResetClick}
+                  disabled={resetting}
+                  aria-label="Reset all progress"
+                >
+                  <div className="menu-option-icon" aria-hidden="true">
+                    <span className="menu-option-hebrew" lang="he">✕</span>
+                  </div>
+                  <div className="menu-option-text">
+                    <span className="menu-option-title">
+                      {resetting ? 'Resetting…' : confirmReset ? 'Tap again to confirm reset' : 'Reset Progress'}
+                    </span>
+                    <span className="menu-option-desc">
+                      {confirmReset ? 'All data will be permanently deleted' : 'Dev only · Wipe all saved progress'}
+                    </span>
+                  </div>
+                  {!resetting && (
+                    <span className="menu-option-chevron" aria-hidden="true">
+                      {confirmReset ? '!' : '›'}
+                    </span>
+                  )}
+                </button>
+              </div>
             )}
           </nav>
         )}

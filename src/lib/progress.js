@@ -164,3 +164,24 @@ export function formatProgressFromSupabase(supabaseProgress) {
 
   return result
 }
+
+/**
+ * Delete all progress for a user. Dev-only hard reset.
+ */
+export async function deleteProgress(userId) {
+  if (!userId) return false
+  try {
+    const { error } = await supabase
+      .from('user_progress')
+      .delete()
+      .eq('user_id', userId)
+    if (error) {
+      console.error('Error deleting progress:', error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('Exception deleting progress:', err)
+    return false
+  }
+}

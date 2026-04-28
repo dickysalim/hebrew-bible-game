@@ -96,6 +96,23 @@ function SetNewPasswordScreen({ onDone }) {
   )
 }
 
+// ─── Main Menu wrapper — reads resetProgress from context ────────────────────
+function MainMenuWrapper({ session, onEnterMidrash, onSelectChapter, onLearnAlphabet, onSignOut }) {
+  const { resetProgress } = useProgressCache()
+  return (
+    <div className="app-container">
+      <MainMenu
+        session={session}
+        onEnterMidrash={onEnterMidrash}
+        onSelectChapter={onSelectChapter}
+        onLearnAlphabet={onLearnAlphabet}
+        onSignOut={onSignOut}
+        onResetProgress={resetProgress}
+      />
+    </div>
+  )
+}
+
 // ─── Game layout — tabs are internal state, URL is just /game ────────────────
 function GameLayout({ session, jumpToStageIndex, onBackToMenu }) {
   const { newRoots } = useRootDiscovery()
@@ -225,15 +242,13 @@ export default function App() {
           <Route
             path="/"
             element={
-              <div className="app-container">
-                <MainMenu
-                  session={session}
-                  onEnterMidrash={handleEnterMidrash}
-                  onSelectChapter={handleSelectChapter}
-                  onLearnAlphabet={() => navigate('/alphabet')}
-                  onSignOut={() => supabase.auth.signOut()}
-                />
-              </div>
+              <MainMenuWrapper
+                session={session}
+                onEnterMidrash={handleEnterMidrash}
+                onSelectChapter={handleSelectChapter}
+                onLearnAlphabet={() => navigate('/alphabet')}
+                onSignOut={() => supabase.auth.signOut()}
+              />
             }
           />
 
