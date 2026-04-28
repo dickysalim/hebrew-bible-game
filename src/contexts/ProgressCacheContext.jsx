@@ -5,9 +5,9 @@ import { formatProgressFromSupabase, formatProgressForSupabase } from '../lib/pr
 const cacheKey = (userId) => `hebrew-bible-game-progress-${userId}`
 const SAVE_DEBOUNCE_MS = 1500
 
-function loadFromLocalCache(userId) {
+function loadFromSessionCache(userId) {
   try {
-    const raw = localStorage.getItem(cacheKey(userId))
+    const raw = sessionStorage.getItem(cacheKey(userId))
     if (!raw) return null
     const parsed = JSON.parse(raw)
     return parsed.data ?? null
@@ -16,9 +16,9 @@ function loadFromLocalCache(userId) {
   }
 }
 
-function loadLocalCacheTimestamp(userId) {
+function loadSessionCacheTimestamp(userId) {
   try {
-    const raw = localStorage.getItem(cacheKey(userId))
+    const raw = sessionStorage.getItem(cacheKey(userId))
     if (!raw) return null
     const parsed = JSON.parse(raw)
     return parsed.updatedAt ?? null
@@ -27,15 +27,15 @@ function loadLocalCacheTimestamp(userId) {
   }
 }
 
-function writeToLocalCache(userId, data, updatedAt = null) {
+function writeToSessionCache(userId, data, updatedAt = null) {
   try {
-    localStorage.setItem(cacheKey(userId), JSON.stringify({ data, updatedAt }))
+    sessionStorage.setItem(cacheKey(userId), JSON.stringify({ data, updatedAt }))
   } catch {}
 }
 
-function removeLocalCache(userId) {
+function removeSessionCache(userId) {
   try {
-    if (userId) localStorage.removeItem(cacheKey(userId))
+    if (userId) sessionStorage.removeItem(cacheKey(userId))
   } catch {}
 }
 
@@ -86,49 +86,34 @@ export function ProgressCacheProvider({ children, userId }) {
 
     cacheUserIdRef.current = userId
 
-    // Note: we use localStorage (not sessionStorage) so the cache persists
-    // across tabs and browser restarts. Supabase is still the source of truth;
-    // localStorage is just a fast-path to avoid redundant API calls on reload.
+    // sessionStorage is the fast-path cache for this browser session only.
+    // It's cleared when the tab/browser closes, so every new session always
+    // fetches the latest progress from Supabase — ensuring cross-device sync.
 
     const loadForUser = async () => {
-      const local = loadFromLocalCache(userId)
-      if (local) {
-        // Fast path: show local cache immediately so the UI is responsive
-        setCachedProgress(ensurePerChapterCache(local))
+      const sessionCached = loadFromSessionCache(userId)
+      if (sessionCached) {
+        // Fast path: already fetched from Supabase this session
+        setCachedProgress(ensurePerChapterCache(sessionCached))
         setCacheStatus('ready')
-      } else {
-        setCacheStatus('loading')
+        return
       }
 
-      // Always background-refresh from Supabase to pick up progress from other devices.
-      // If Supabase has a newer updated_at than what we cached, we update the UI.
+      // No session cache — always fetch from Supabase
+      setCacheStatus('loading')
       try {
         const supabaseProgress = await loadProgress(userId)
-        if (!supabaseProgress) {
-          if (!local) setCacheStatus('ready')
-          return
-        }
+        const formatted = supabaseProgress
+          ? ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
+          : null
 
-        const supabaseUpdatedAt = supabaseProgress.updated_at ?? null
-        const localUpdatedAt = loadLocalCacheTimestamp(userId)
-
-        const supabaseIsNewer =
-          !localUpdatedAt ||
-          !supabaseUpdatedAt ||
-          new Date(supabaseUpdatedAt) > new Date(localUpdatedAt)
-
-        if (!local || supabaseIsNewer) {
-          const formatted = ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
-          setCachedProgress(formatted)
-          writeToLocalCache(userId, formatted, supabaseUpdatedAt)
-          setCacheStatus('ready')
-        }
+        setCachedProgress(formatted)
+        if (formatted) writeToSessionCache(userId, formatted, supabaseProgress?.updated_at ?? null)
+        setCacheStatus('ready')
       } catch (err) {
         console.error('[ProgressCache] Failed to load from Supabase:', err)
-        if (!local) {
-          setCachedProgress(null)
-          setCacheStatus('error')
-        }
+        setCachedProgress(null)
+        setCacheStatus('error')
       }
     }
 
@@ -174,16 +159,15 @@ export function ProgressCacheProvider({ children, userId }) {
         // Preserve existing alphabet progress
         alphabetProgress: prev?.alphabetProgress || {},
       }
-      // Store a local timestamp so background Supabase refresh can compare freshness
-      writeToLocalCache(userId, updated, new Date().toISOString())
+      writeToSessionCache(userId, updated, new Date().toISOString())
       return updated
     })
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        // ✅ Read from localStorage (not sessionStorage) — this is where writeToLocalCache writes
-        const latestRaw = localStorage.getItem(cacheKey(userId))
+        // Read from sessionStorage — this is where writeToSessionCache writes
+        const latestRaw = sessionStorage.getItem(cacheKey(userId))
         let latestData = {}
         if (latestRaw) {
           try { latestData = JSON.parse(latestRaw)?.data || {} } catch {}
@@ -199,18 +183,7 @@ export function ProgressCacheProvider({ children, userId }) {
           latestData.settings || {},
           latestData.alphabetProgress || {}
         )
-        const saved = await saveProgressToSupabase(userId, progressForSupabase)
-        if (saved) {
-          // Update local cache timestamp to match what Supabase now has
-          const localRaw = localStorage.getItem(cacheKey(userId))
-          if (localRaw) {
-            try {
-              const localParsed = JSON.parse(localRaw)
-              const now = new Date().toISOString()
-              localStorage.setItem(cacheKey(userId), JSON.stringify({ ...localParsed, updatedAt: now }))
-            } catch {}
-          }
-        }
+        await saveProgressToSupabase(userId, progressForSupabase)
       } catch (err) {
         console.error('[ProgressCache] Failed to save to Supabase:', err)
       }
@@ -226,7 +199,7 @@ export function ProgressCacheProvider({ children, userId }) {
 
     setCachedProgress(prev => {
       const updated = { ...(prev || {}), alphabetProgress }
-      writeToLocalCache(userId, updated, new Date().toISOString())
+      writeToSessionCache(userId, updated, new Date().toISOString())
       return updated
     })
 
@@ -242,7 +215,7 @@ export function ProgressCacheProvider({ children, userId }) {
 
   const clearCache = useCallback(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    removeLocalCache(userId)
+    removeSessionCache(userId)
     setCachedProgress(null)
     setCacheStatus('idle')
   }, [userId])
@@ -250,7 +223,7 @@ export function ProgressCacheProvider({ children, userId }) {
   /** Hard reset — deletes Supabase row + clears session cache. Dev-only. */
   const resetProgress = useCallback(async () => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    removeLocalCache(userId)
+    removeSessionCache(userId)
     setCachedProgress(null)
     setCacheStatus('idle')
     await deleteProgress(userId)
