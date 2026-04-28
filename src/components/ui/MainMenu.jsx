@@ -56,10 +56,18 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
     }
     // Second click — execute reset
     setResetting(true)
-    onResetProgress().then(() => {
-      // Hard reload so all in-memory game state is cleared
-      window.location.reload()
-    })
+    console.log('[handleResetClick] Starting reset...')
+    Promise.resolve()
+      .then(() => onResetProgress())
+      .then(() => {
+        console.log('[handleResetClick] ✅ Reset done — reloading')
+        window.location.reload()
+      })
+      .catch((err) => {
+        console.error('[handleResetClick] ❌ Reset failed:', err?.message || err)
+        setResetting(false)
+        setConfirmReset(false)
+      })
   }
 
   return (
