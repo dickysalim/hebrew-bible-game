@@ -2,18 +2,43 @@ import { useMemo } from 'react'
 import genesis1 from '../../../data/verses/genesis-1.json'
 import genesis2 from '../../../data/verses/genesis-2.json'
 import { loadProgressFromStorage } from '../../../utils/useProgressPersistence'
+import { useProgressCache } from '../../../contexts/ProgressCacheContext'
 import { getEsvText } from './ESVStrip'
 
+// stageIndex for each chapter source
 const VERSE_SOURCES = [
-  { book: 'Genesis', chapter: 1, verses: genesis1.verses, progressKey: 'genesis-1' },
-  { book: 'Genesis', chapter: 2, verses: genesis2.verses, progressKey: 'genesis-2' },
+  { book: 'Genesis', chapter: 1, verses: genesis1.verses, stageIndex: 1 },
+  { book: 'Genesis', chapter: 2, verses: genesis2.verses, stageIndex: 2 },
 ]
 
-function isVerseCompleted(verseIdx, progressKey, celebratedVerses) {
-  if (progressKey === 'genesis-1') {
-    return Array.isArray(celebratedVerses) && celebratedVerses.includes(verseIdx)
+/**
+ * Build a map of { [stageIndex]: celebratedVerses[] } from a chapters object.
+ */
+function buildCelebratedMap(chapters = {}) {
+  const map = {}
+  for (const [si, ch] of Object.entries(chapters)) {
+    map[Number(si)] = Array.isArray(ch.celebratedVerses) ? ch.celebratedVerses : []
   }
-  return false
+  return map
+}
+
+/**
+ * Read the chapters map from the correct source:
+ * - authenticated users: in-memory cachedProgress (sessionStorage/Supabase)
+ * - anonymous users: localStorage via loadProgressFromStorage
+ */
+function useCelebratedMap() {
+  const { cachedProgress } = useProgressCache()
+  if (cachedProgress?.chapters) {
+    return buildCelebratedMap(cachedProgress.chapters)
+  }
+  const { chapters = {} } = loadProgressFromStorage()
+  return buildCelebratedMap(chapters)
+}
+
+function isVerseCompleted(verseIdx, stageIndex, celebratedMap) {
+  const list = celebratedMap[stageIndex]
+  return Array.isArray(list) && list.includes(verseIdx)
 }
 
 /**
@@ -26,12 +51,15 @@ function isVerseCompleted(verseIdx, progressKey, celebratedVerses) {
  *   wordId  string  — current word key to look up
  */
 export default function WordConcordanceTab({ wordId }) {
-  const { celebratedVerses = [] } = useMemo(() => loadProgressFromStorage(), [])
+  // Reads from cachedProgress (auth users) or localStorage (anonymous).
+  const celebratedMap = useCelebratedMap()
+  // Serialize for stable useMemo dependency (avoids recompute on every render)
+  const celebratedKey = JSON.stringify(celebratedMap)
 
   const concordance = useMemo(() => {
     if (!wordId) return []
     const results = []
-    for (const { book, chapter, verses, progressKey } of VERSE_SOURCES) {
+    for (const { book, chapter, verses, stageIndex } of VERSE_SOURCES) {
       for (let vi = 0; vi < verses.length; vi++) {
         const verse = verses[vi]
         const matchIndices = verse.words.reduce((acc, w, wi) => {
@@ -43,12 +71,13 @@ export default function WordConcordanceTab({ wordId }) {
           book, chapter,
           verseNum: verse.verse,
           verse, matchIndices,
-          completed: isVerseCompleted(vi, progressKey, celebratedVerses),
+          completed: isVerseCompleted(vi, stageIndex, celebratedMap),
         })
       }
     }
     return results
-  }, [wordId, celebratedVerses])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wordId, celebratedKey])
 
   const totalOccurrences = concordance.length
   const completedCount   = concordance.filter(c => c.completed).length
