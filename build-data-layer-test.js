@@ -1,13 +1,16 @@
 // build-data-layer.js
 // Processes every chapter of the Hebrew Bible and builds the game's data layer.
 // Usage:
-//   node build-data-layer.js
-//   node build-data-layer.js --start genesis-3
+//   node build-data-layer-test.js                             — full run
+//   node build-data-layer-test.js --start genesis-4          — resume from genesis-4
+//   node build-data-layer-test.js --start genesis-4 --end genesis-4  — only genesis-4
+// After every run, fill-gaps.mjs is called automatically as a safety net.
 
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { spawn } from 'child_process';
 import axios from 'axios';
 import { parseStringPromise } from 'xml2js';
 import { transliterate } from 'hebrew-transliteration';
@@ -452,23 +455,19 @@ Example format:
 // ---------------------------------------------------------------------------
 
 async function main() {
-  // Parse --start argument (supports both --start genesis-3 and --start=genesis-3)
+  // Parse --start / --end arguments (support both --flag value and --flag=value)
   const args = process.argv.slice(2);
   let startFrom = null;
+  let endAt = null;
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--start' && args[i + 1]) {
-      startFrom = args[i + 1];
-      break;
-    }
-    if (args[i].startsWith('--start=')) {
-      startFrom = args[i].split('=')[1];
-      break;
-    }
+    if (args[i] === '--start' && args[i + 1]) { startFrom = args[i + 1]; i++; continue; }
+    if (args[i].startsWith('--start=')) { startFrom = args[i].split('=')[1]; continue; }
+    if (args[i] === '--end' && args[i + 1]) { endAt = args[i + 1]; i++; continue; }
+    if (args[i].startsWith('--end=')) { endAt = args[i].split('=')[1]; continue; }
   }
 
-  if (startFrom) {
-    console.log(`Resuming from: ${startFrom}`);
-  }
+  if (startFrom) console.log(`Resuming from: ${startFrom}`);
+  if (endAt)     console.log(`Stopping after: ${endAt}`);
 
   // Load existing words and roots into memory
   const wordsPath = './src/data/words.json';
@@ -501,6 +500,21 @@ async function main() {
       } else {
         console.log(`SKIP ${chapterKey} (before start)`);
         continue;
+      }
+    }
+
+    // Handle --end stop
+    if (endAt && chapterKey === endAt) {
+      // Process this chapter, then stop after
+      // (the break runs at the bottom of this iteration)
+    } else if (endAt && !skipping) {
+      // Already passed endAt — stop
+      const allChapters = ALL_CHAPTERS.map(c => `${c.book}-${c.chapter}`);
+      const endIdx = allChapters.indexOf(endAt);
+      const curIdx = allChapters.indexOf(chapterKey);
+      if (curIdx > endIdx) {
+        console.log(`\n✅ Reached --end ${endAt}. Stopping.`);
+        break;
       }
     }
 
@@ -632,6 +646,28 @@ async function main() {
   console.log(`Total unique words: ${Object.keys(wordsData.words).length}`);
   console.log(`Total unique roots: ${Object.keys(rootsData.roots).length}`);
   console.log('See ./src/data/verses/progress.log for full report');
+
+  // ── Safety net: auto-run fill-gaps.mjs to patch any missing words/roots ──
+  console.log('\n--- Running fill-gaps safety check ---');
+  await new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ['fill-gaps.mjs'], {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    });
+    child.on('close', (code) => {
+      if (code === 0) {
+        console.log('--- fill-gaps complete ✓ ---');
+        resolve();
+      } else {
+        console.warn(`--- fill-gaps exited with code ${code} ---`);
+        resolve(); // don't throw — main data is already written
+      }
+    });
+    child.on('error', (err) => {
+      console.warn('--- fill-gaps could not start:', err.message, '---');
+      resolve(); // non-fatal
+    });
+  });
 }
 
 main().catch(console.error);
