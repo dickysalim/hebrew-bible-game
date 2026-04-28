@@ -25,6 +25,7 @@ export async function saveProgress(userId, progress) {
 
   const progressData = {
     user_id: userId,
+    stage_index: progress.stageIndex || 1,
     discovered_roots: progress.discoveredRoots || [],
     completed_verses: progress.completedVerses || [],
     word_encounters: progress.wordEncounters || {},

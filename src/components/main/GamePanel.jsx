@@ -581,10 +581,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     }
   }, [state.chapterEndSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // True when the reducer was initialised from the cache (or there is no userId).
-  // Used to gate Supabase saves so we don't write back an empty state on first render.
+  // True when the cache has resolved (ready or error) — gates Supabase saves so we
+  // don't write an empty state before the initial load completes.
+  // cacheStatus === 'ready' covers both "has data" and "new user with no data".
   const readyToSaveRef = useRef(
-    !userId || (cacheStatus === 'ready' && !!cachedProgress) || !userId
+    !userId || cacheStatus === 'ready'
   )
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
@@ -705,10 +706,13 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // Sync RootDiscoveryContext from cache on mount (lexicon badge needs the root list).
   // The reducer already has the correct state — this only updates the context.
   useEffect(() => {
-    if (!userId || !cachedProgress) return
+    if (!userId) return
+    // Always mark ready to save once the context has mounted — cacheStatus is
+    // already 'ready' here even for brand-new users who have no saved data.
+    readyToSaveRef.current = true
+    if (!cachedProgress) return
     if (cachedProgress.discoveredRoots) updateDiscoveredRoots(cachedProgress.discoveredRoots)
     if (cachedProgress.discoveredWordsByRoot) updateDiscoveredWordsByRoot(cachedProgress.discoveredWordsByRoot)
-    readyToSaveRef.current = true
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save progress via cache whenever relevant state changes (authenticated users only).

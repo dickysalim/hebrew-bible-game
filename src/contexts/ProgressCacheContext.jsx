@@ -7,7 +7,7 @@ const SAVE_DEBOUNCE_MS = 1500
 
 function loadFromLocalCache(userId) {
   try {
-    const raw = sessionStorage.getItem(cacheKey(userId))
+    const raw = localStorage.getItem(cacheKey(userId))
     if (!raw) return null
     const parsed = JSON.parse(raw)
     return parsed.data ?? null
@@ -18,13 +18,13 @@ function loadFromLocalCache(userId) {
 
 function writeToLocalCache(userId, data) {
   try {
-    sessionStorage.setItem(cacheKey(userId), JSON.stringify({ data }))
+    localStorage.setItem(cacheKey(userId), JSON.stringify({ data }))
   } catch {}
 }
 
 function removeLocalCache(userId) {
   try {
-    if (userId) sessionStorage.removeItem(cacheKey(userId))
+    if (userId) localStorage.removeItem(cacheKey(userId))
   } catch {}
 }
 
@@ -75,9 +75,9 @@ export function ProgressCacheProvider({ children, userId }) {
 
     cacheUserIdRef.current = userId
 
-    // Clean up any stale localStorage entry left from the old caching strategy.
-    // Progress is now session-only (sessionStorage), so localStorage data is obsolete.
-    try { localStorage.removeItem(cacheKey(userId)) } catch {}
+    // Note: we use localStorage (not sessionStorage) so the cache persists
+    // across tabs and browser restarts. Supabase is still the source of truth;
+    // localStorage is just a fast-path to avoid redundant API calls on reload.
 
     const loadForUser = async () => {
       const local = loadFromLocalCache(userId)
