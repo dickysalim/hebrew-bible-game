@@ -172,6 +172,17 @@ export default function Level1({ onComplete, onBack }) {
           </div>
         )}
 
+        {/* Silent-letter hint for Aleph & Ayin */}
+        {(current.sbl === 'ʾ' || current.sbl === 'ʿ') && (
+          <div className="l1-silent-hint" role="note">
+            <span className="l1-silent-hint-icon">🤫</span>
+            <div>
+              <strong>Silent Letter!</strong>
+              <span> {current.name} is a guttural letter — it carries vowel sounds but makes no consonant sound of its own. Pick the symbol that shows silence.</span>
+            </div>
+          </div>
+        )}
+
         {/* Quiz prompt */}
         <p className="l1-quiz-prompt">
           What sound does <strong>{current.name}</strong> make?

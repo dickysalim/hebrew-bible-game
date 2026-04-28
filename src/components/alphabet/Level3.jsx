@@ -197,13 +197,6 @@ export default function Level3({ onComplete, onBack }) {
       <StreakBar current={streak} total={TARGET_STREAK} label="Streak" />
 
       <div className="level-body">
-        {/* Sofit badge — shown above card when displaying a sofit glyph */}
-        {current.isSofit && (
-          <div className="l3-sofit-badge" aria-label="This is an end-of-word (sofit) form">
-            ✦ Sofit — end-of-word form
-          </div>
-        )}
-
         <QuizCard
           letter={current.letter}
           name={null}
