@@ -34,6 +34,14 @@
   background: color-mix(in srgb, var(--bg-card) 60%, transparent);
 }
 
+.wdt__tab:focus {
+  outline: none;
+}
+
+.wdt__tab:focus-visible {
+  outline: none;
+}
+
 .wdt__tab--active {
   color: var(--gold-bright, var(--text-primary));
   border-bottom-color: var(--gold-bright, var(--coral));
