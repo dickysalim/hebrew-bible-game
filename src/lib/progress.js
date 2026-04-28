@@ -51,16 +51,22 @@ export async function saveProgress(userId, progress) {
   }
 
   try {
+    console.log('[saveProgress] Payload columns:', Object.keys(progressData))
+    console.log('[saveProgress] Payload:', JSON.stringify(progressData, null, 2))
     const { error } = await supabase
       .from('user_progress')
       .upsert(progressData, { onConflict: 'user_id' })
     if (error) {
-      console.error('Error saving progress to Supabase:', error)
+      console.error('[saveProgress] ERROR code:', error.code)
+      console.error('[saveProgress] ERROR message:', error.message)
+      console.error('[saveProgress] ERROR hint:', error.hint)
+      console.error('[saveProgress] ERROR details:', error.details)
       return false
     }
+    console.log('[saveProgress] ✅ Saved successfully')
     return true
   } catch (error) {
-    console.error('Exception saving progress to Supabase:', error)
+    console.error('[saveProgress] Exception:', error?.message || error)
     return false
   }
 }
