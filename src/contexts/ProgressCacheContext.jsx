@@ -3,16 +3,13 @@ import { loadProgress, saveProgress as saveProgressToSupabase, savePartialProgre
 import { formatProgressFromSupabase, formatProgressForSupabase } from '../lib/progress'
 
 const cacheKey = (userId) => `hebrew-bible-game-progress-${userId}`
-const MAX_AGE_MS = 24 * 60 * 60 * 1000
 const SAVE_DEBOUNCE_MS = 1500
 
 function loadFromLocalCache(userId) {
   try {
-    const raw = localStorage.getItem(cacheKey(userId))
+    const raw = sessionStorage.getItem(cacheKey(userId))
     if (!raw) return null
     const parsed = JSON.parse(raw)
-    const age = Date.now() - (parsed._cachedAt ?? 0)
-    if (age > MAX_AGE_MS) return null
     return parsed.data ?? null
   } catch {
     return null
@@ -21,13 +18,13 @@ function loadFromLocalCache(userId) {
 
 function writeToLocalCache(userId, data) {
   try {
-    localStorage.setItem(cacheKey(userId), JSON.stringify({ _cachedAt: Date.now(), data }))
+    sessionStorage.setItem(cacheKey(userId), JSON.stringify({ data }))
   } catch {}
 }
 
 function removeLocalCache(userId) {
   try {
-    if (userId) localStorage.removeItem(cacheKey(userId))
+    if (userId) sessionStorage.removeItem(cacheKey(userId))
   } catch {}
 }
 
@@ -77,6 +74,10 @@ export function ProgressCacheProvider({ children, userId }) {
     }
 
     cacheUserIdRef.current = userId
+
+    // Clean up any stale localStorage entry left from the old caching strategy.
+    // Progress is now session-only (sessionStorage), so localStorage data is obsolete.
+    try { localStorage.removeItem(cacheKey(userId)) } catch {}
 
     const loadForUser = async () => {
       const local = loadFromLocalCache(userId)
@@ -151,7 +152,7 @@ export function ProgressCacheProvider({ children, userId }) {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        const latestRaw = localStorage.getItem(cacheKey(userId))
+        const latestRaw = sessionStorage.getItem(cacheKey(userId))
         let latestData = {}
         if (latestRaw) {
           try { latestData = JSON.parse(latestRaw)?.data || {} } catch {}
