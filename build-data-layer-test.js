@@ -304,14 +304,22 @@ Rules:
 
   const raw = await callDeepSeek(prompt, 150);
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    return [String(parsed)];
   } catch {
     // Try to extract the array from potentially messy output
     const match = raw.match(/\[[\s\S]*\]/);
     if (match) {
-      try { return JSON.parse(match[0]); } catch { /* fall through */ }
+      try {
+        const parsed = JSON.parse(match[0]);
+        if (Array.isArray(parsed)) return parsed;
+      } catch { /* fall through */ }
     }
-    // Last resort: wrap raw text in array
+    // If the raw text itself looks like ["..."], extract the inner string
+    const strArrayMatch = raw.trim().match(/^\["([\s\S]+)"\]$/);
+    if (strArrayMatch) return [strArrayMatch[1].replace(/\\"/g, '"').trim()];
+    // Final fallback: clean markdown fences and wrap
     return [raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '').trim()];
   }
 }
