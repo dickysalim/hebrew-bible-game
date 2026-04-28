@@ -23,7 +23,7 @@ const __dirname  = path.dirname(__filename);
 // ---------------------------------------------------------------------------
 
 const CHAPTERS = [
-  { book: 'genesis', chapters: 3 },
+  { book: 'genesis', chapters: 50 },
 ];
 
 
