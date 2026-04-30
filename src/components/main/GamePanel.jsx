@@ -385,7 +385,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           </div>
 
           <div className="bottom-strip">
-            {verseDone && (
+            {verseDone && !isMobile && (
               <InsightCarousel
                 key={currentVerse}
                 insights={verse.insights}
@@ -396,10 +396,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               />
             )}
 
-            <ESVStrip
-              esv={verse.esv}
-              activeWordIndex={activeWordIdx}
-            />
+            {!isMobile && (
+              <ESVStrip
+                esv={verse.esv}
+                activeWordIndex={activeWordIdx}
+              />
+            )}
 
             {/* Desktop QWERTY keyboard — hidden on mobile */}
             <KeyboardGuide
@@ -421,9 +423,23 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         </div>
       </div>
 
-      {/* Mobile: Definition pill button + virtual Hebrew keyboard pinned to bottom */}
+      {/* Mobile: ESV + carousel sticky above keyboard, then def pill, then keyboard */}
       {isMobile && (
         <div className="mobile-bottom">
+          {verseDone && (
+            <InsightCarousel
+              key={currentVerse}
+              insights={verse.insights}
+              idx={carouselIdx}
+              onPrev={handleCarouselPrev}
+              onNext={handleCarouselNext}
+              isNewCompletion={!alreadyCelebrated}
+            />
+          )}
+          <ESVStrip
+            esv={verse.esv}
+            activeWordIndex={activeWordIdx}
+          />
           <button
             className="mobile-def-pill"
             onClick={() => setWordDefSheetOpen(true)}

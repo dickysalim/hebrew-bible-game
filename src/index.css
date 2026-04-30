@@ -4841,20 +4841,20 @@ html, body {
 
 @media (max-width: 640px) {
 
-  /* ── App shell: make room for bottom tab bar ── */
+  /* ── App shell ── */
   .app-container {
     flex-direction: column;
   }
 
-  /* ── Tab bar: fixed to bottom, thumb-friendly ── */
+  /* ── Tab bar: fixed to TOP on mobile ── */
   .tab-bar {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    top: auto;
-    border-bottom: none;
-    border-top: 1px solid var(--border);
+    bottom: auto;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
     padding: 0;
     z-index: 100;
     height: 56px;
@@ -4890,24 +4890,20 @@ html, body {
   }
 
   .tab-button {
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    padding: 6px 4px 4px;
+    padding: 0 4px;
     min-width: 44px;
     height: 100%;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .tab-icon {
-    display: block;
-    font-size: 20px;
-    line-height: 1;
+    display: none;
   }
 
   .tab-label {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1;
   }
 
@@ -4917,9 +4913,10 @@ html, body {
     border-radius: 1px 1px 0 0;
   }
 
-  /* ── Content area: add bottom padding for tab bar ── */
+  /* ── Content area: top padding for tab bar ── */
   .tab-content {
-    padding-bottom: 56px;
+    padding-top: 56px;
+    padding-bottom: 0;
   }
 
   /* ── Game panel: single-column stacked layout ── */
@@ -4927,12 +4924,12 @@ html, body {
     padding: 8px 12px 0;
     gap: 6px;
     overflow: hidden;
-    /* Leave space for mobile bottom bar (keyboard + def pill) at bottom */
-    padding-bottom: 230px;
+    /* Space for fixed bar: ESV strip + def pill + keyboard above tab bar */
+    padding-bottom: 310px;
   }
 
   .game-panel--mobile {
-    padding-bottom: 230px;
+    padding-bottom: 310px;
   }
 
   /* Switch to single-column */
@@ -5027,7 +5024,7 @@ html, body {
     display: none;
   }
 
-  /* ── Mobile bottom bar: def pill + virtual keyboard ── */
+  /* ── Mobile bottom bar: ESV strip + carousel + def pill + keyboard ── */
   .mobile-bottom {
     position: fixed;
     bottom: 56px; /* above tab bar */
@@ -5036,7 +5033,7 @@ html, body {
     z-index: 90;
     background: var(--bg-card);
     border-top: 1px solid var(--border);
-    padding: 6px 8px 8px;
+    padding: 4px 8px 4px;
     display: flex;
     flex-direction: column;
     gap: 4px;
