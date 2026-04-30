@@ -370,15 +370,35 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
       <div className="main-content-grid">
         {/* Haber sidebar overlay */}
-        {haberOpen && currentWordContext && (
-          <div className="haber-sidebar">
-            <HaberPanel
-              currentWordContext={currentWordContext}
-              haberSessions={haberSessions}
-              setHaberSessions={setHaberSessions}
-              onClose={() => setHaberOpen(false)}
-            />
+        {isMobile ? (
+          <div
+            className={`haber-overlay${haberOpen ? ' haber-overlay--open' : ''}`}
+            onPointerDown={(e) => { if (e.target === e.currentTarget) setHaberOpen(false) }}
+            aria-hidden={!haberOpen}
+          >
+            <div className="haber-sidebar">
+              <div className="wds-handle" onPointerDown={() => setHaberOpen(false)} aria-label="Close Haber" />
+              {haberOpen && currentWordContext && (
+                <HaberPanel
+                  currentWordContext={currentWordContext}
+                  haberSessions={haberSessions}
+                  setHaberSessions={setHaberSessions}
+                  onClose={() => setHaberOpen(false)}
+                />
+              )}
+            </div>
           </div>
+        ) : (
+          haberOpen && currentWordContext && (
+            <div className="haber-sidebar">
+              <HaberPanel
+                currentWordContext={currentWordContext}
+                haberSessions={haberSessions}
+                setHaberSessions={setHaberSessions}
+                onClose={() => setHaberOpen(false)}
+              />
+            </div>
+          )
         )}
 
         {/* Left column: Word Definition Tabs — hidden on mobile (WordDefSheet used instead) */}
