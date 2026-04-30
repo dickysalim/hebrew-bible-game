@@ -5011,7 +5011,7 @@ html, body {
 
   /* Shrink Hebrew verse to fit ~2 lines on mobile */
   .word-char {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .word-letter-col {
@@ -5028,12 +5028,12 @@ html, body {
   }
 
   .word-sbl-ch {
-    font-size: 9px;
-    min-height: 11px;
+    font-size: 10px;
+    min-height: 12px;
   }
 
   .word-full-sbl {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   /* Hide desktop QWERTY keyboard on mobile */
