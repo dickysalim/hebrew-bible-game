@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { LETTER_SBL } from '../../../utils/hebrewData'
 
-// Israeli-standard Hebrew phone layout
-// Row 1 & 2: regular letters; Row 3: sofit forms + ס ע
+// Matches standard Gboard / iOS Hebrew phone keyboard layout
 const ROWS = [
-  ['פ', 'ם', 'נ', 'מ', 'ל', 'כ', 'י', 'ט', 'ח', 'ז'],
-  ['ו', 'ה', 'ד', 'ג', 'ב', 'א', 'ת', 'ש', 'ר', 'ק'],
-  ['ס', 'ע', 'ץ', 'צ', 'ף', 'ן', 'ך'],
+  ['ק', 'ר', 'א', 'ט', 'ו', 'נ', 'מ', 'פ'],
+  ['ש', 'ד', 'ג', 'כ', 'ע', 'י', 'ח', 'ל', 'ך', 'ף'],
+  ['ז', 'ס', 'ה', 'ב', 'ן', 'ם', 'צ', 'ת', 'ץ'],
 ]
 
 export default function MobileHebrewKeyboard({

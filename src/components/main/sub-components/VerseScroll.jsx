@@ -60,6 +60,18 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   }, [currentVerse])
 
   // ── Word-row centering ────────────────────────────────────────────────────
+  // Tracks the scroll-track's measured height so the centering re-runs
+  // whenever it changes (e.g. when the mobile keyboard panel is added).
+  const [trackHeight, setTrackHeight] = useState(0)
+  useEffect(() => {
+    if (!trackRef.current) return
+    const obs = new ResizeObserver(([entry]) => {
+      setTrackHeight(Math.round(entry.contentRect.height))
+    })
+    obs.observe(trackRef.current)
+    return () => obs.disconnect()
+  }, [])
+
   // useLayoutEffect so the transform is applied before paint (no visible jump)
   useLayoutEffect(() => {
     if (!trackRef.current || !wrapRef.current) return
@@ -96,7 +108,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
         if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
       })
     }
-  }, [activeWordIdx, displayedVerse, typedCounts])
+  }, [activeWordIdx, displayedVerse, typedCounts, trackHeight])
 
   const verse = verses[displayedVerse]
   const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []

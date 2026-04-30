@@ -195,6 +195,28 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
+
+  // Measure the fixed keyboard panel so game-panel padding-bottom matches exactly,
+  // giving scroll-track the correct height for vertical centering.
+  // Uses a callback ref so the ResizeObserver attaches as soon as the DOM node mounts
+  // (the previous useRef + useEffect pattern had a timing issue where the ref was still
+  // null when the effect ran after isMobile flipped to true).
+  const [mobileBottomH, setMobileBottomH] = useState(0)
+  const mobileObsRef = useRef(null)
+  const mobileBottomRef = useCallback((node) => {
+    // Disconnect previous observer
+    if (mobileObsRef.current) {
+      mobileObsRef.current.disconnect()
+      mobileObsRef.current = null
+    }
+    if (node) {
+      const obs = new ResizeObserver(([entry]) => setMobileBottomH(entry.contentRect.height))
+      obs.observe(node)
+      mobileObsRef.current = obs
+    } else {
+      setMobileBottomH(0)
+    }
+  }, [])
   // Track which words have already had their "New" badge shown and then navigated away from.
   // This is a ref (not state) so it doesn't trigger re-renders on mutation.
   const shownNewWordIdsRef = useRef(new Set())
@@ -336,7 +358,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   }
 
   return (
-    <div className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}`}>
+    <div
+      className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}`}
+      style={isMobile && mobileBottomH > 0 ? { paddingBottom: `${mobileBottomH}px` } : undefined}
+    >
 
       <div className="verse-header">
         <span className="verse-ref">{bookLabel} {chapterNum}:{verse.verse}</span>
@@ -425,7 +450,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
       {/* Mobile: ESV + carousel floating above keyboard, keyboard with pill row — all fixed to bottom */}
       {isMobile && (
-        <div className="mobile-bottom-fixed">
+        <div className="mobile-bottom-fixed" ref={mobileBottomRef}>
           <div className="mobile-floating-strip">
             {verseDone && (
               <InsightCarousel
