@@ -96,7 +96,9 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
         const wordHeight = wordEl.offsetHeight
 
         // Desired: centre of word row == centre of track
-        const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2))
+        // On mobile, nudge 20px upward so the word doesn't feel too low
+        const mobileOffset = window.matchMedia('(max-width: 640px)').matches ? 45 : 0
+        const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2) - mobileOffset)
         wrapRef.current.style.transform = `translateY(${ty}px)`
       }
     }
