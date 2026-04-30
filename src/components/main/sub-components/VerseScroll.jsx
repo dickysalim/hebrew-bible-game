@@ -116,7 +116,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
 
   // ── Mobile pull-to-navigate ───────────────────────────────────────────────
-  const SWIPE_THRESHOLD = 80
+  const SWIPE_THRESHOLD = 110
   const touchStartRef   = useRef(null)
   const [swipeHint, setSwipeHint] = useState(null) // null | 'prev' | 'next'
 
