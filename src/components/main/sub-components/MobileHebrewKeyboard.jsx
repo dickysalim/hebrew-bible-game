@@ -1,11 +1,15 @@
 import { useEffect, useRef } from 'react'
-import { LETTER_SBL } from '../../../utils/hebrewData'
+import { KEYS } from '../../../utils/hebrewData'
 
-// Matches standard Gboard / iOS Hebrew phone keyboard layout
+// Mirrors the desktop KEYS layout exactly — same rows, same order, same sofit forms.
+// Derived from KEYS (which drives the desktop keyboard) so both stay in sync.
 const ROWS = [
-  ['ק', 'ר', 'א', 'ט', 'ו', 'נ', 'מ', 'פ'],
-  ['ש', 'ד', 'ג', 'כ', 'ע', 'י', 'ח', 'ל', 'ך', 'ף'],
-  ['ז', 'ס', 'ה', 'ב', 'ן', 'ם', 'צ', 'ת', 'ץ'],
+  // Row 1: e r t y u i o p → ק ר א ט ו ן ם פ  (q, w have no Hebrew mapping)
+  KEYS.filter(k => ['e','r','t','y','u','i','o','p'].includes(k.latin) && k.heb).map(k => k.heb),
+  // Row 2: a s d f g h j k l ; → ש ד ג כ ע י ח ל ך ף
+  KEYS.filter(k => ['a','s','d','f','g','h','j','k','l',';'].includes(k.latin) && k.heb).map(k => k.heb),
+  // Row 3: z x c v b n m , . → ז ס ב ה נ מ צ ת ץ
+  KEYS.filter(k => ['z','x','c','v','b','n','m',',','.'].includes(k.latin) && k.heb).map(k => k.heb),
 ]
 
 export default function MobileHebrewKeyboard({
@@ -14,8 +18,6 @@ export default function MobileHebrewKeyboard({
   showActiveKey,
   onKey,
   onSpace,
-  showSBLLetter,
-  showSBLWord,
 }) {
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -72,9 +74,6 @@ export default function MobileHebrewKeyboard({
         aria-label={heb}
       >
         <span className="mkb-heb">{heb}</span>
-        {showSBLLetter && LETTER_SBL[heb] && (
-          <span className="mkb-sbl">{LETTER_SBL[heb]}</span>
-        )}
       </button>
     )
   }

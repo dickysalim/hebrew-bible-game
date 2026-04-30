@@ -115,49 +115,89 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const verse = verses[displayedVerse]
   const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
 
-  // ── Mobile swipe-to-navigate ──────────────────────────────────────────────
-  const touchStartRef = useRef(null)
+  // ── Mobile pull-to-navigate ───────────────────────────────────────────────
+  const SWIPE_THRESHOLD = 80
+  const touchStartRef   = useRef(null)
+  const [swipeHint, setSwipeHint] = useState(null) // null | 'prev' | 'next'
 
   const handleTouchStart = (e) => {
     const t = e.touches[0]
     touchStartRef.current = { x: t.clientX, y: t.clientY }
+    setSwipeHint(null)
+  }
+
+  const handleTouchMove = (e) => {
+    if (!touchStartRef.current) return
+    const t   = e.touches[0]
+    const dx  = t.clientX - touchStartRef.current.x
+    const dy  = t.clientY - touchStartRef.current.y
+
+    // Abort if swipe is more horizontal than vertical
+    if (Math.abs(dx) > Math.abs(dy)) {
+      setSwipeHint(null)
+      return
+    }
+
+    if (Math.abs(dy) >= SWIPE_THRESHOLD) {
+      setSwipeHint(dy < 0 ? 'next' : 'prev')
+    } else {
+      setSwipeHint(null)
+    }
   }
 
   const handleTouchEnd = (e) => {
-    if (!touchStartRef.current || !dispatch) return
-    const t = e.changedTouches[0]
+    if (!touchStartRef.current || !dispatch) {
+      setSwipeHint(null)
+      return
+    }
+    const t  = e.changedTouches[0]
     const dx = t.clientX - touchStartRef.current.x
     const dy = t.clientY - touchStartRef.current.y
     touchStartRef.current = null
+    setSwipeHint(null)
 
-    // Require mostly-vertical swipe (dy dominant) and at least 50px
-    if (Math.abs(dy) < 50 || Math.abs(dx) > Math.abs(dy)) return
-
-    // Swipe up (dy < 0) → next verse (dir: 1)
-    // Swipe down (dy > 0) → prev verse (dir: -1)
+    // Must be vertical-dominant and past threshold
+    if (Math.abs(dy) < SWIPE_THRESHOLD || Math.abs(dx) > Math.abs(dy)) return
     dispatch({ type: 'MOVE_VERSE', dir: dy < 0 ? 1 : -1 })
   }
 
+  const handleTouchCancel = () => {
+    touchStartRef.current = null
+    setSwipeHint(null)
+  }
+
   return (
-    <div
-      className="scroll-track"
-      ref={trackRef}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className={`active-verse-container ${animState}`}>
-        <ActiveVerseWords
-          verse={verse}
-          vi={displayedVerse}
-          activeWordIdx={activeWordIdx}
-          typedCounts={typedCounts}
-          currentVerseFlags={currentVerseFlags}
-          dispatch={dispatch}
-          wrapRef={wrapRef}
-          wordRefs={wordRefs}
-          showSBLWord={showSBLWord}
-          showSBLLetter={showSBLLetter}
-        />
+    <div className="swipe-nav-wrap">
+      {/* Pull-to-navigate hint — only visible when threshold is crossed */}
+      <div className={`swipe-hint swipe-hint--prev${swipeHint === 'prev' ? ' swipe-hint--visible' : ''}`}>
+        ↑ Previous Verse
+      </div>
+      <div className={`swipe-hint swipe-hint--next${swipeHint === 'next' ? ' swipe-hint--visible' : ''}`}>
+        Next Verse ↓
+      </div>
+
+      <div
+        className="scroll-track"
+        ref={trackRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
+      >
+        <div className={`active-verse-container ${animState}`}>
+          <ActiveVerseWords
+            verse={verse}
+            vi={displayedVerse}
+            activeWordIdx={activeWordIdx}
+            typedCounts={typedCounts}
+            currentVerseFlags={currentVerseFlags}
+            dispatch={dispatch}
+            wrapRef={wrapRef}
+            wordRefs={wordRefs}
+            showSBLWord={showSBLWord}
+            showSBLLetter={showSBLLetter}
+          />
+        </div>
       </div>
     </div>
   )
