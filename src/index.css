@@ -4827,3 +4827,471 @@ html, body {
   background: var(--border);
   margin: 2px 0;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE LAYOUT  ≤ 640px
+   All rules below are additive — desktop layout is untouched.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Tab icon — hidden on desktop */
+.tab-icon { display: none; }
+
+/* Mobile-only back button — hidden on desktop */
+.tab-back-btn--mobile { display: none; }
+
+@media (max-width: 640px) {
+
+  /* ── App shell: make room for bottom tab bar ── */
+  .app-container {
+    flex-direction: column;
+  }
+
+  /* ── Tab bar: fixed to bottom, thumb-friendly ── */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    border-bottom: none;
+    border-top: 1px solid var(--border);
+    padding: 0;
+    z-index: 100;
+    height: 56px;
+    justify-content: space-between;
+  }
+
+  /* Hide the desktop back button on mobile (replaced by --mobile variant) */
+  .tab-back-btn:not(.tab-back-btn--mobile) {
+    display: none;
+  }
+
+  /* Show the mobile ✕ back button inside tab bar */
+  .tab-back-btn--mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 100%;
+    border: none;
+    background: none;
+    font-size: 18px;
+    color: var(--text-muted);
+    padding: 0 12px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .tab-list {
+    flex: 1;
+    margin-left: 0;
+    justify-content: space-around;
+    height: 100%;
+  }
+
+  .tab-button {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px 4px;
+    min-width: 44px;
+    height: 100%;
+    font-size: 10px;
+  }
+
+  .tab-icon {
+    display: block;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .tab-label {
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .tab-indicator {
+    bottom: 0;
+    height: 2px;
+    border-radius: 1px 1px 0 0;
+  }
+
+  /* ── Content area: add bottom padding for tab bar ── */
+  .tab-content {
+    padding-bottom: 56px;
+  }
+
+  /* ── Game panel: single-column stacked layout ── */
+  .game-panel {
+    padding: 8px 12px 0;
+    gap: 6px;
+    overflow: hidden;
+    /* Leave space for mobile bottom bar (keyboard + def pill) at bottom */
+    padding-bottom: 230px;
+  }
+
+  .game-panel--mobile {
+    padding-bottom: 230px;
+  }
+
+  /* Switch to single-column */
+  .main-content-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  /* Hide the desktop word-definition left column — replaced by WordDefSheet */
+  .word-definition-column {
+    display: none;
+  }
+
+  /* Right column takes full width */
+  .game-content-column {
+    gap: 6px;
+  }
+
+  /* Shrink verse header */
+  .verse-header {
+    height: 20px;
+  }
+  .verse-ref {
+    font-size: 12px;
+  }
+  .progress-pill {
+    font-size: 10px;
+    padding: 1px 8px;
+  }
+
+  /* Shrink Hebrew word chars slightly */
+  .word-char {
+    font-size: 28px;
+  }
+
+  /* Hide desktop QWERTY keyboard on mobile */
+  .keyboard-guide {
+    display: none;
+  }
+
+  /* ESV strip — compact */
+  .esv-strip {
+    padding: 4px 10px;
+  }
+  .esv-text {
+    font-size: 12px;
+    height: 36px;
+  }
+
+  /* Insight carousel — compact strip on mobile (full-screen via class below) */
+  .insight-carousel {
+    padding: 6px 10px 5px;
+  }
+  .ic-text {
+    font-size: 12px;
+    height: 36px;
+  }
+
+  /* Full-screen InsightCarousel on verse completion */
+  .insight-carousel.celebrate {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    animation: slideUpBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  .insight-carousel.celebrate .ic-text {
+    font-size: 18px;
+    height: auto;
+    text-align: center;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+  .insight-carousel.celebrate .ic-label {
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+  .insight-carousel.celebrate .ic-body {
+    gap: 16px;
+  }
+  .insight-carousel.celebrate .ic-nav {
+    font-size: 28px;
+  }
+
+  /* Footer note — hide on mobile to save space */
+  .footer-note {
+    display: none;
+  }
+
+  /* ── Mobile bottom bar: def pill + virtual keyboard ── */
+  .mobile-bottom {
+    position: fixed;
+    bottom: 56px; /* above tab bar */
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 6px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-def-pill {
+    align-self: center;
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 1px solid var(--purple-mid);
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 18px;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  /* ── Mobile Hebrew virtual keyboard ── */
+  .mobile-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+    position: relative;
+  }
+
+  .mkb-row {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+  }
+
+  .mkb-key {
+    width: 32px;
+    height: 42px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
+    padding: 0;
+  }
+
+  .mkb-key:active {
+    background: var(--bg-card);
+    transform: scale(0.94);
+  }
+
+  .mkb-key.mkb-target {
+    background: var(--purple-light);
+    border-color: var(--purple-mid);
+  }
+
+  .mkb-key.mkb-wrong {
+    background: #FEE2E2;
+    border-color: #EF4444;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .mkb-key.mkb-wrong {
+      background: #450A0A;
+      border-color: #F87171;
+    }
+  }
+
+  .mkb-key.mkb-wrong .mkb-heb {
+    color: #EF4444;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .mkb-key.mkb-wrong .mkb-heb {
+      color: #F87171;
+    }
+  }
+
+  .mkb-heb {
+    font-size: 20px;
+    font-family: var(--font-hebrew);
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .mkb-sbl {
+    font-size: 8px;
+    font-family: var(--font-serif);
+    color: var(--text-secondary);
+    line-height: 1;
+  }
+
+  /* Idle pulse animation for target key — mirrors kb-pulse */
+  @keyframes mkb-pulse {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(212,165,32,0.6); }
+    30%  { transform: scale(1.2);  box-shadow: 0 0 0 6px rgba(212,165,32,0.3); }
+    60%  { transform: scale(1);    box-shadow: 0 0 0 10px rgba(212,165,32,0); }
+    80%  { transform: scale(1.1);  box-shadow: 0 0 0 0 rgba(212,165,32,0.2); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(212,165,32,0); }
+  }
+
+  .mkb-pulse {
+    animation: mkb-pulse 0.7s ease-in-out 3;
+    background: var(--purple-light) !important;
+    border-color: var(--purple-mid) !important;
+    z-index: 10;
+  }
+
+  /* Action row: space/next-word button */
+  .mkb-action-row {
+    width: 100%;
+    padding: 0 4px;
+  }
+
+  .mkb-space-btn {
+    width: 100%;
+    height: 38px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    border-radius: 5px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mkb-space-btn:active {
+    background: var(--purple-light);
+    color: var(--purple);
+  }
+
+  /* Gear settings button */
+  .mkb-gear-wrap {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    z-index: 10;
+  }
+
+  .mkb-gear-btn {
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .mkb-gear-popover {
+    position: absolute;
+    top: 32px;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 130px;
+    box-shadow: var(--shadow-elevated);
+    z-index: 200;
+  }
+
+  .mkb-sbl-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .mkb-sbl-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--purple-mid);
+    cursor: pointer;
+  }
+
+  /* ── Word definition bottom sheet ── */
+  .wds-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .wds-overlay--open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .wds-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-radius: 16px 16px 0 0;
+    max-height: 75vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-bottom: env(safe-area-inset-bottom, 8px);
+  }
+
+  .wds-sheet--open {
+    transform: translateY(0);
+  }
+
+  .wds-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border-mid);
+    border-radius: 2px;
+    margin: 10px auto 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .wds-content {
+    padding: 0 12px 16px;
+    overflow-y: auto;
+  }
+
+  /* ── Haber sidebar on mobile: full-screen ── */
+  .haber-sidebar {
+    position: fixed;
+    inset: 0;
+    z-index: 160;
+  }
+
+} /* end @media (max-width: 640px) */
+
+/* Viewport meta-tag safety: prevent 300ms tap delay on all browsers */
+@media (max-width: 640px) {
+  html {
+    touch-action: manipulation;
+  }
+}

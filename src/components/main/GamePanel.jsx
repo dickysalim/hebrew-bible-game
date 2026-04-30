@@ -3,6 +3,7 @@ import wordsData from '../../data/words.json'
 import rootsData from '../../data/roots.json'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useGameKeyboard } from '../../hooks/useGameKeyboard'
+import { useMobileKeyboard } from '../../hooks/useMobileKeyboard'
 import { useAudioEffects } from '../../hooks/useAudioEffects'
 import { useSyncProgress } from '../../hooks/useSyncProgress'
 import { useProgressPersistence, loadProgressFromStorage, getChapterProgress } from '../../utils/useProgressPersistence'
@@ -17,6 +18,8 @@ import ESVStrip, { getEsvText } from './sub-components/ESVStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefTabs from './sub-components/WordDefTabs'
 import HaberPanel from './sub-components/HaberPanel'
+import MobileHebrewKeyboard from './sub-components/MobileHebrewKeyboard'
+import WordDefSheet from './sub-components/WordDefSheet'
 
 const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
 
@@ -182,6 +185,16 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
   const [haberOpen, setHaberOpen] = useState(false)
+  const [wordDefSheetOpen, setWordDefSheetOpen] = useState(false)
+
+  // Detect mobile viewport — updates on resize
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    const handler = (e) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
   // Track which words have already had their "New" badge shown and then navigated away from.
   // This is a ref (not state) so it doesn't trigger re-renders on mutation.
   const shownNewWordIdsRef = useRef(new Set())
@@ -233,8 +246,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     }
   }, [cacheStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Keyboard handler
+  // Keyboard handler (desktop physical keyboard)
   useGameKeyboard(dispatch, resetProgress, resetDiscoveredRoots, clearCache, setIsTyping)
+
+  // Mobile virtual keyboard handlers
+  const { handleKey: handleMobileKey, handleSpace: handleMobileSpace } = useMobileKeyboard(dispatch)
 
   // Reset cursor visibility on mouse move
   useEffect(() => {
@@ -320,7 +336,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   }
 
   return (
-    <div className={`game-panel${isTyping ? ' cursor-none' : ''}`}>
+    <div className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}`}>
 
       <div className="verse-header">
         <span className="verse-ref">{bookLabel} {chapterNum}:{verse.verse}</span>
@@ -340,7 +356,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           </div>
         )}
 
-        {/* Left column: Word Definition Tabs */}
+        {/* Left column: Word Definition Tabs — hidden on mobile (WordDefSheet used instead) */}
         <div className="word-definition-column">
           <WordDefTabs
             word={wordData}
@@ -385,6 +401,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               activeWordIndex={activeWordIdx}
             />
 
+            {/* Desktop QWERTY keyboard — hidden on mobile */}
             <KeyboardGuide
               rows={KEYBOARD_ROWS}
               keys={KEYS}
@@ -403,6 +420,44 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           </div>
         </div>
       </div>
+
+      {/* Mobile: Definition pill button + virtual Hebrew keyboard pinned to bottom */}
+      {isMobile && (
+        <div className="mobile-bottom">
+          <button
+            className="mobile-def-pill"
+            onClick={() => setWordDefSheetOpen(true)}
+          >
+            Definition
+          </button>
+          <MobileHebrewKeyboard
+            targetHeb={targetLetter}
+            wrongHebKeys={wrongHebKeys}
+            showActiveKey={activeWord && !wordDone && errorCount >= 3}
+            onKey={handleMobileKey}
+            onSpace={handleMobileSpace}
+            showSBLLetter={state.showSBLLetter}
+            showSBLWord={state.showSBLWord}
+            onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+            onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
+          />
+        </div>
+      )}
+
+      {/* Mobile: Word definition bottom sheet */}
+      {isMobile && (
+        <WordDefSheet
+          open={wordDefSheetOpen}
+          onClose={() => setWordDefSheetOpen(false)}
+          word={wordData}
+          wordId={wordId}
+          sbl={sbl}
+          encounterCount={encounterCount}
+          isWordCompleted={wordDone}
+          onOpenHaber={() => { setWordDefSheetOpen(false); setHaberOpen(true) }}
+          isWordNew={isWordNew}
+        />
+      )}
 
     </div>
   )

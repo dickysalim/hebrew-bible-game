@@ -1,16 +1,16 @@
 import React from 'react';
 
-const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => {
-  const tabs = [
-    { id: 'main', label: 'Reading' },
-    { id: 'full_chapter', label: 'Chapter' },
-    { id: 'lexicon', label: 'Lexicon' },
-    { id: 'progress', label: 'Progress' },
-  ];
+const TABS = [
+  { id: 'main',         label: 'Reading',  icon: '📖' },
+  { id: 'full_chapter', label: 'Chapter',  icon: '📜' },
+  { id: 'lexicon',      label: 'Lexicon',  icon: '🔤' },
+  { id: 'progress',     label: 'Progress', icon: '📊' },
+];
 
+const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => {
   return (
     <div className="tab-bar">
-      {/* Back to menu always on the LEFT — universal UX pattern */}
+      {/* Back to menu — left on desktop, hidden on mobile (uses hamburger in verse header) */}
       {onBackToMenu && (
         <button
           className="tab-back-btn"
@@ -23,7 +23,7 @@ const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => 
       )}
 
       <div className="tab-list">
-        {tabs.map((tab) => (
+        {TABS.map((tab) => (
           <button
             key={tab.id}
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
@@ -36,6 +36,7 @@ const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => 
                 : tab.label
             }
           >
+            <span className="tab-icon" aria-hidden="true">{tab.icon}</span>
             <span className="tab-label">{tab.label}</span>
             {tab.id === 'lexicon' && newRootsCount > 0 && (
               <div className="tab-badge" key={newRootsCount}>
@@ -46,6 +47,17 @@ const TabBar = ({ activeTab, onTabChange, newRootsCount = 0, onBackToMenu }) => 
           </button>
         ))}
       </div>
+
+      {/* Mobile-only back button inside tab bar (right side) */}
+      {onBackToMenu && (
+        <button
+          className="tab-back-btn tab-back-btn--mobile"
+          onClick={onBackToMenu}
+          aria-label="Back to main menu"
+        >
+          ✕
+        </button>
+      )}
     </div>
   );
 };
