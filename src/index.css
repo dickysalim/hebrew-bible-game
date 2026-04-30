@@ -4924,12 +4924,12 @@ html, body {
     padding: 8px 12px 0;
     gap: 6px;
     overflow: hidden;
-    /* Space for fixed bar: ESV strip + def pill + keyboard above tab bar */
-    padding-bottom: 310px;
+    /* Space for fixed keyboard panel above tab bar */
+    padding-bottom: 200px;
   }
 
   .game-panel--mobile {
-    padding-bottom: 310px;
+    padding-bottom: 200px;
   }
 
   /* Switch to single-column */
@@ -5024,32 +5024,87 @@ html, body {
     display: none;
   }
 
-  /* ── Mobile bottom bar: ESV strip + carousel + def pill + keyboard ── */
-  .mobile-bottom {
+  /* ── Mobile bottom fixed container: floating strip + keyboard panel ── */
+  .mobile-bottom-fixed {
     position: fixed;
-    bottom: 56px; /* above tab bar */
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: 90;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ESV + carousel float above keyboard with no panel background */
+  .mobile-floating-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0 8px 4px;
+  }
+
+  /* Keyboard panel with background */
+  .mobile-keyboard-panel {
     background: var(--bg-card);
     border-top: 1px solid var(--border);
     padding: 4px 8px 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
   }
 
-  .mobile-def-pill {
-    align-self: center;
-    background: var(--purple-light);
-    color: var(--purple);
-    border: 1px solid var(--purple-mid);
+  /* Pills row above keyboard keys */
+  .mobile-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    padding-bottom: 5px;
+  }
+
+  .mobile-pill {
     border-radius: var(--radius-pill);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    padding: 4px 18px;
+    padding: 3px 14px;
     cursor: pointer;
     font-family: var(--font-body);
+    border: 1px solid transparent;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-pill--def {
+    background: var(--purple-light);
+    color: var(--purple);
+    border-color: var(--purple-mid);
+  }
+
+  .mobile-pill--haber {
+    background: #FEF3C7;
+    color: #92400E;
+    border-color: #FCD34D;
+  }
+  @media (prefers-color-scheme: dark) {
+    .mobile-pill--haber {
+      background: #1C1500;
+      color: #FCD34D;
+      border-color: #78350F;
+    }
+  }
+
+  .mobile-pill--haber:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .mobile-pill--toggle {
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    border-color: var(--border-mid);
+  }
+
+  .mobile-pill--toggle.mobile-pill--active {
+    background: var(--purple-light);
+    color: var(--purple);
+    border-color: var(--purple-mid);
   }
 
   /* ── Mobile Hebrew virtual keyboard ── */
@@ -5058,7 +5113,6 @@ html, body {
     flex-direction: column;
     gap: 3px;
     align-items: center;
-    position: relative;
   }
 
   .mkb-row {
@@ -5171,61 +5225,6 @@ html, body {
   .mkb-space-btn:active {
     background: var(--purple-light);
     color: var(--purple);
-  }
-
-  /* Gear settings button */
-  .mkb-gear-wrap {
-    position: absolute;
-    top: 0;
-    right: 4px;
-    z-index: 10;
-  }
-
-  .mkb-gear-btn {
-    width: 28px;
-    height: 28px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .mkb-gear-popover {
-    position: absolute;
-    top: 32px;
-    right: 0;
-    background: var(--bg-card);
-    border: 1px solid var(--border-mid);
-    border-radius: var(--radius);
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 130px;
-    box-shadow: var(--shadow-elevated);
-    z-index: 200;
-  }
-
-  .mkb-sbl-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--text-primary);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .mkb-sbl-toggle input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--purple-mid);
-    cursor: pointer;
   }
 
   /* ── Word definition bottom sheet ── */

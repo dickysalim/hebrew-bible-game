@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { LETTER_SBL } from '../../../utils/hebrewData'
 
 // Israeli-standard Hebrew phone layout
@@ -17,12 +17,9 @@ export default function MobileHebrewKeyboard({
   onSpace,
   showSBLLetter,
   showSBLWord,
-  onToggleSBLLetter,
-  onToggleSBLWord,
 }) {
   const keyRefs = useRef({})
   const timerRef = useRef(null)
-  const [gearOpen, setGearOpen] = useState(false)
 
   // Idle 5s pulse on target key — mirrors KeyboardGuide behaviour
   useEffect(() => {
@@ -85,29 +82,6 @@ export default function MobileHebrewKeyboard({
 
   return (
     <div className="mobile-keyboard">
-      <div className="mkb-gear-wrap">
-        <button
-          className="mkb-gear-btn"
-          onClick={() => setGearOpen(o => !o)}
-          aria-label="Keyboard settings"
-          aria-expanded={gearOpen}
-        >
-          ⚙
-        </button>
-        {gearOpen && (
-          <div className="mkb-gear-popover">
-            <label className="mkb-sbl-toggle">
-              <input type="checkbox" checked={showSBLLetter} onChange={onToggleSBLLetter} />
-              <span>SBL Letter</span>
-            </label>
-            <label className="mkb-sbl-toggle">
-              <input type="checkbox" checked={showSBLWord} onChange={onToggleSBLWord} />
-              <span>SBL Word</span>
-            </label>
-          </div>
-        )}
-      </div>
-
       {ROWS.map((row, ri) => (
         <div key={ri} className="mkb-row">
           {row.map(heb => renderKey(heb))}

@@ -423,40 +423,64 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         </div>
       </div>
 
-      {/* Mobile: ESV + carousel sticky above keyboard, then def pill, then keyboard */}
+      {/* Mobile: ESV + carousel floating above keyboard, keyboard with pill row — all fixed to bottom */}
       {isMobile && (
-        <div className="mobile-bottom">
-          {verseDone && (
-            <InsightCarousel
-              key={currentVerse}
-              insights={verse.insights}
-              idx={carouselIdx}
-              onPrev={handleCarouselPrev}
-              onNext={handleCarouselNext}
-              isNewCompletion={!alreadyCelebrated}
+        <div className="mobile-bottom-fixed">
+          <div className="mobile-floating-strip">
+            {verseDone && (
+              <InsightCarousel
+                key={currentVerse}
+                insights={verse.insights}
+                idx={carouselIdx}
+                onPrev={handleCarouselPrev}
+                onNext={handleCarouselNext}
+                isNewCompletion={!alreadyCelebrated}
+              />
+            )}
+            <ESVStrip
+              esv={verse.esv}
+              activeWordIndex={activeWordIdx}
             />
-          )}
-          <ESVStrip
-            esv={verse.esv}
-            activeWordIndex={activeWordIdx}
-          />
-          <button
-            className="mobile-def-pill"
-            onClick={() => setWordDefSheetOpen(true)}
-          >
-            Definition
-          </button>
-          <MobileHebrewKeyboard
-            targetHeb={targetLetter}
-            wrongHebKeys={wrongHebKeys}
-            showActiveKey={activeWord && !wordDone && errorCount >= 3}
-            onKey={handleMobileKey}
-            onSpace={handleMobileSpace}
-            showSBLLetter={state.showSBLLetter}
-            showSBLWord={state.showSBLWord}
-            onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
-            onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
-          />
+          </div>
+
+          <div className="mobile-keyboard-panel">
+            <div className="mobile-pill-row">
+              <button
+                className="mobile-pill mobile-pill--def"
+                onClick={() => setWordDefSheetOpen(true)}
+              >
+                Definition
+              </button>
+              <button
+                className="mobile-pill mobile-pill--haber"
+                onClick={() => setHaberOpen(true)}
+                disabled={!currentWordContext}
+              >
+                Ask Haber
+              </button>
+              <button
+                className={`mobile-pill mobile-pill--toggle${state.showSBLLetter ? ' mobile-pill--active' : ''}`}
+                onClick={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+              >
+                SBL Letter
+              </button>
+              <button
+                className={`mobile-pill mobile-pill--toggle${state.showSBLWord ? ' mobile-pill--active' : ''}`}
+                onClick={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
+              >
+                SBL Word
+              </button>
+            </div>
+            <MobileHebrewKeyboard
+              targetHeb={targetLetter}
+              wrongHebKeys={wrongHebKeys}
+              showActiveKey={activeWord && !wordDone && errorCount >= 3}
+              onKey={handleMobileKey}
+              onSpace={handleMobileSpace}
+              showSBLLetter={state.showSBLLetter}
+              showSBLWord={state.showSBLWord}
+            />
+          </div>
         </div>
       )}
 
