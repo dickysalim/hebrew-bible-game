@@ -115,8 +115,36 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const verse = verses[displayedVerse]
   const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
 
+  // ── Mobile swipe-to-navigate ──────────────────────────────────────────────
+  const touchStartRef = useRef(null)
+
+  const handleTouchStart = (e) => {
+    const t = e.touches[0]
+    touchStartRef.current = { x: t.clientX, y: t.clientY }
+  }
+
+  const handleTouchEnd = (e) => {
+    if (!touchStartRef.current || !dispatch) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - touchStartRef.current.x
+    const dy = t.clientY - touchStartRef.current.y
+    touchStartRef.current = null
+
+    // Require mostly-vertical swipe (dy dominant) and at least 50px
+    if (Math.abs(dy) < 50 || Math.abs(dx) > Math.abs(dy)) return
+
+    // Swipe up (dy < 0) → next verse (dir: 1)
+    // Swipe down (dy > 0) → prev verse (dir: -1)
+    dispatch({ type: 'MOVE_VERSE', dir: dy < 0 ? 1 : -1 })
+  }
+
   return (
-    <div className="scroll-track" ref={trackRef}>
+    <div
+      className="scroll-track"
+      ref={trackRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className={`active-verse-container ${animState}`}>
         <ActiveVerseWords
           verse={verse}
