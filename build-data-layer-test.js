@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import axios from 'axios';
 import { parseStringPromise } from 'xml2js';
-import { transliterate } from 'hebrew-transliteration';
+import { stripNikud, generateSBL, callDeepSeek, generateESVSegments } from './build-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -99,7 +99,7 @@ const BOOK_NUMBERS = {
 // Section 4 — Directory setup
 // ---------------------------------------------------------------------------
 
-const DIRS = ['./cache', './cache/oshb', './src/data/verses'];
+const DIRS = ['./cache', './cache/oshb', './test-data/verses'];
 for (const dir of DIRS) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
@@ -152,25 +152,6 @@ async function getWEB() {
 // Section 6 — Hebrew text processing
 // ---------------------------------------------------------------------------
 
-function stripNikud(str) {
-  return str
-    .replace(/[\u0591-\u05C7]/g, '')
-    .replace(/[\u05F3\u05F4]/g, '')
-    .trim();
-}
-
-function generateSBL(hebrewWithNikud) {
-  try {
-    // Strip OSHB morpheme-boundary slashes before transliterating
-    const cleaned = hebrewWithNikud.replace(/\//g, '');
-    return transliterate(cleaned)
-      .replace(/\/+/g, '')   // remove any remaining slashes in output
-      .trim();
-  } catch {
-    return stripNikud(hebrewWithNikud);
-  }
-}
-
 function parseSegments(hebrewConsonants, morph) {
   const letters = hebrewConsonants.split('');
   if (!morph || letters.length === 0) {
@@ -188,38 +169,6 @@ function parseSegments(hebrewConsonants, morph) {
   }
 
   return segments;
-}
-
-// ---------------------------------------------------------------------------
-// Section 7 — DeepSeek API helper
-// ---------------------------------------------------------------------------
-
-async function callDeepSeek(prompt, maxTokens = 400) {
-  await new Promise(r => setTimeout(r, 300));
-  let attempts = 0;
-  while (attempts < 3) {
-    try {
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.DEEPSEEK_DATALAYER_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          max_tokens: maxTokens,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-      const data = await response.json();
-      return data.choices[0].message.content.trim();
-    } catch (err) {
-      attempts++;
-      console.log(`  DeepSeek call failed (attempt ${attempts}): ${err.message}`);
-      if (attempts < 3) await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  throw new Error('DeepSeek API failed after 3 attempts');
 }
 
 // ---------------------------------------------------------------------------
@@ -399,20 +348,6 @@ function getWEBVerse(webData, book, chapter, verse) {
   return verseEntry ? verseEntry.text : '';
 }
 
-// ---------------------------------------------------------------------------
-// Section 13 — Generate ESV word-level segment mapping
-// ---------------------------------------------------------------------------
-
-async function generateESVSegments(words, englishText) {
-  if (!englishText || words.length === 0) return [{ t: englishText || '', w: null }];
-
-  const wordList = words.map((w, i) => `${i}: ${w.id} (${w.sbl})`).join('\n');
-
-  const prompt = `You are building a Hebrew Bible study app. Segment an English verse translation and map each segment to its Hebrew source word.
-
-Hebrew words for this verse (0-indexed):
-${wordList}
-
 English translation:
 "${englishText}"
 
@@ -470,8 +405,8 @@ async function main() {
   if (endAt)     console.log(`Stopping after: ${endAt}`);
 
   // Load existing words and roots into memory
-  const wordsPath = './src/data/words.json';
-  const rootsPath = './src/data/roots.json';
+  const wordsPath = './test-data/words.json';
+  const rootsPath = './test-data/roots.json';
 
   if (!fs.existsSync(wordsPath)) {
     throw new Error(`words.json not found at ${wordsPath} — run from project root`);
@@ -525,7 +460,7 @@ async function main() {
     }
 
     // Skip if output file already exists (resumable)
-    const outputPath = `./src/data/verses/${chapterKey}.json`;
+    const outputPath = `./test-data/verses/${chapterKey}.json`;
     if (fs.existsSync(outputPath)) {
       console.log(`SKIP ${chapterKey} — already exists`);
       continue;
@@ -629,7 +564,7 @@ async function main() {
 
       // Log progress
       const logLine = `${chapterKey} | ${builtVerses.length} verses | ${newWordsCount} new words | ${newRootsCount} new roots | words total: ${Object.keys(wordsData.words).length} | roots total: ${Object.keys(rootsData.roots).length} | DONE\n`;
-      fs.appendFileSync('./src/data/verses/progress.log', logLine, 'utf8');
+      fs.appendFileSync('./test-data/verses/progress.log', logLine, 'utf8');
       console.log(`\n✓ ${logLine.trim()}`);
 
       if (newWordsList.length > 0) console.log(`  New words: ${newWordsList.join(', ')}`);
@@ -637,7 +572,7 @@ async function main() {
 
     } catch (err) {
       const errorLine = `${chapterKey} | ERROR: ${err.message}\n`;
-      fs.appendFileSync('./src/data/verses/progress.log', errorLine, 'utf8');
+      fs.appendFileSync('./test-data/verses/progress.log', errorLine, 'utf8');
       console.error(`✗ ${errorLine.trim()}`);
     }
   }
@@ -645,7 +580,7 @@ async function main() {
   console.log('\n=== Hebrew Bible Data Layer Complete ===');
   console.log(`Total unique words: ${Object.keys(wordsData.words).length}`);
   console.log(`Total unique roots: ${Object.keys(rootsData.roots).length}`);
-  console.log('See ./src/data/verses/progress.log for full report');
+  console.log('See ./test-data/verses/progress.log for full report');
 
   // ── Safety net: auto-run fill-gaps.mjs to patch any missing words/roots ──
   console.log('\n--- Running fill-gaps safety check ---');

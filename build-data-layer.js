@@ -10,7 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
 import { parseStringPromise } from 'xml2js';
-import { transliterate } from 'hebrew-transliteration';
+import { stripNikud, generateSBL, callDeepSeek, generateESVSegments } from './build-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -186,25 +186,6 @@ async function getWEB() {
 // Section 6 — Hebrew text processing
 // ---------------------------------------------------------------------------
 
-function stripNikud(str) {
-  return str
-    .replace(/[\u0591-\u05C7]/g, '')
-    .replace(/[\u05F3\u05F4]/g, '')
-    .trim();
-}
-
-function generateSBL(hebrewWithNikud) {
-  try {
-    // Strip OSHB morpheme-boundary slashes before transliterating
-    const cleaned = hebrewWithNikud.replace(/\//g, '');
-    return transliterate(cleaned)
-      .replace(/\/+/g, '')   // remove any remaining slashes in output
-      .trim();
-  } catch {
-    return stripNikud(hebrewWithNikud);
-  }
-}
-
 function parseSegments(hebrewConsonants, morph) {
   const letters = hebrewConsonants.split('');
   if (!morph || letters.length === 0) {
@@ -222,38 +203,6 @@ function parseSegments(hebrewConsonants, morph) {
   }
 
   return segments;
-}
-
-// ---------------------------------------------------------------------------
-// Section 7 — DeepSeek API helper
-// ---------------------------------------------------------------------------
-
-async function callDeepSeek(prompt, maxTokens = 400) {
-  await new Promise(r => setTimeout(r, 300));
-  let attempts = 0;
-  while (attempts < 3) {
-    try {
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.DEEPSEEK_DATALAYER_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          max_tokens: maxTokens,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-      const data = await response.json();
-      return data.choices[0].message.content.trim();
-    } catch (err) {
-      attempts++;
-      console.log(`  DeepSeek call failed (attempt ${attempts}): ${err.message}`);
-      if (attempts < 3) await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  throw new Error('DeepSeek API failed after 3 attempts');
 }
 
 // ---------------------------------------------------------------------------
@@ -341,14 +290,22 @@ Rules:
 
   const raw = await callDeepSeek(prompt, 150);
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    return [String(parsed)];
   } catch {
     // Try to extract the array from potentially messy output
     const match = raw.match(/\[[\s\S]*\]/);
     if (match) {
-      try { return JSON.parse(match[0]); } catch { /* fall through */ }
+      try {
+        const parsed = JSON.parse(match[0]);
+        if (Array.isArray(parsed)) return parsed;
+      } catch { /* fall through */ }
     }
-    // Last resort: wrap raw text in array
+    // If the raw text itself looks like ["..."], extract the inner string
+    const strArrayMatch = raw.trim().match(/^\["([\s\S]+)"\]$/);
+    if (strArrayMatch) return [strArrayMatch[1].replace(/\\"/g, '"').trim()];
+    // Final fallback: clean markdown fences and wrap
     return [raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '').trim()];
   }
 }
@@ -424,20 +381,6 @@ function getWEBVerse(webData, book, chapter, verse) {
   const verseEntry = chapterEntry.verses.find(v => v.verse === verse);
   return verseEntry ? verseEntry.text : '';
 }
-
-// ---------------------------------------------------------------------------
-// Section 13 — Generate ESV word-level segment mapping
-// ---------------------------------------------------------------------------
-
-async function generateESVSegments(words, englishText) {
-  if (!englishText || words.length === 0) return [{ t: englishText || '', w: null }];
-
-  const wordList = words.map((w, i) => `${i}: ${w.id} (${w.sbl})`).join('\n');
-
-  const prompt = `You are building a Hebrew Bible study app. Segment an English verse translation and map each segment to its Hebrew source word.
-
-Hebrew words for this verse (0-indexed):
-${wordList}
 
 English translation:
 "${englishText}"
