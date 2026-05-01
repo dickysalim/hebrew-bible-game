@@ -2,14 +2,124 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import Anthropic from '@anthropic-ai/sdk'
+import { createRequire } from 'module'
+import { readdirSync } from 'fs'
+import { resolve, join } from 'path'
+
+const require = createRequire(import.meta.url)
+const Database = require('better-sqlite3')
 
 const app = express()
 const PORT = 3001
+
+// ---------------------------------------------------------------------------
+// Local D1 SQLite — Wrangler stores the local DB here after `wrangler dev --local`
+// or after running `npx wrangler d1 execute hebrew-lexicon --local --file=schema.sql`
+// ---------------------------------------------------------------------------
+function openLocalDB() {
+  const d1Dir = resolve('.wrangler/state/v3/d1/miniflare-D1DatabaseObject')
+  try {
+    const files = readdirSync(d1Dir).filter(f => f.endsWith('.sqlite') && !f.includes('metadata'))
+    if (!files.length) throw new Error('No D1 SQLite file found')
+    const dbPath = join(d1Dir, files[0])
+    return new Database(dbPath, { readonly: true })
+  } catch {
+    return null
+  }
+}
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_HABER_KEY })
 
 app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json())
+
+// ---------------------------------------------------------------------------
+// GET /api/word/:hebrew  — single word lookup
+// ---------------------------------------------------------------------------
+app.get('/api/word/:hebrew', (req, res) => {
+  const db = openLocalDB()
+  if (!db) return res.status(503).json({ error: 'Local D1 not available. Run: npx wrangler d1 execute hebrew-lexicon --local --file=schema.sql' })
+
+  const hebrew = decodeURIComponent(req.params.hebrew)
+  const row = db.prepare('SELECT * FROM words WHERE hebrew = ?').get(hebrew)
+  db.close()
+
+  if (!row) return res.status(404).json({ error: 'Word not found' })
+  if (row.segments) { try { row.segments = JSON.parse(row.segments) } catch {} }
+  res.json(row)
+})
+
+// ---------------------------------------------------------------------------
+// GET /api/root/:strongs  — single root lookup
+// ---------------------------------------------------------------------------
+app.get('/api/root/:strongs', (req, res) => {
+  const db = openLocalDB()
+  if (!db) return res.status(503).json({ error: 'Local D1 not available.' })
+
+  const strongs = decodeURIComponent(req.params.strongs)
+  const row = db.prepare('SELECT * FROM roots WHERE strongs = ?').get(strongs)
+  db.close()
+
+  if (!row) return res.status(404).json({ error: 'Root not found' })
+  res.json(row)
+})
+
+// ---------------------------------------------------------------------------
+// GET /api/lexicon/roots  — all roots (cache warm-up)
+// ---------------------------------------------------------------------------
+app.get('/api/lexicon/roots', (req, res) => {
+  const db = openLocalDB()
+  if (!db) return res.status(503).json({ error: 'Local D1 not available.' })
+
+  const rows = db.prepare('SELECT * FROM roots ORDER BY strongs').all()
+  db.close()
+  res.json({ roots: rows })
+})
+
+// ---------------------------------------------------------------------------
+// GET /api/lexicon  — paginated word search
+// ---------------------------------------------------------------------------
+app.get('/api/lexicon', (req, res) => {
+  const db = openLocalDB()
+  if (!db) return res.status(503).json({ error: 'Local D1 not available.' })
+
+  const q     = req.query.q || ''
+  const pos   = req.query.pos || ''
+  const page  = Math.max(1, parseInt(req.query.page || '1', 10))
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit || '20', 10)))
+  const offset = (page - 1) * limit
+
+  let query  = 'SELECT hebrew, word_sbl, gloss, root, pos FROM words WHERE 1=1'
+  let countQ = 'SELECT COUNT(*) as total FROM words WHERE 1=1'
+  const params = []
+
+  if (q) {
+    query  += ' AND (gloss LIKE ? OR explanation LIKE ? OR hebrew = ?)'
+    countQ += ' AND (gloss LIKE ? OR explanation LIKE ? OR hebrew = ?)'
+    const like = `%${q}%`
+    params.push(like, like, q)
+  }
+  if (pos) {
+    query  += ' AND pos = ?'
+    countQ += ' AND pos = ?'
+    params.push(pos)
+  }
+
+  query += ' ORDER BY hebrew LIMIT ? OFFSET ?'
+  const rows  = db.prepare(query).all(...params, limit, offset)
+  const count = db.prepare(countQ).get(...params)
+  db.close()
+
+  res.json({
+    words: rows,
+    total: count?.total ?? 0,
+    page,
+    limit,
+    pages: Math.ceil((count?.total ?? 0) / limit),
+  })
+})
+
+
 
 function buildSystemPrompt(word) {
   const isRevisit = word.isRevisit

@@ -11,5 +11,12 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hebrew-lexicon",
+      "database_id": "3cee7ffc-7014-4b94-8399-30cc6ab61631"
+    }
+  ]
 }

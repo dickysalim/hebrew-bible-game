@@ -1,23 +1,14 @@
 import { useMemo } from 'react'
 import { useRootDiscovery } from '../../../contexts/RootDiscoveryContext'
-import rootsData from '../../../data/roots.json'
-import wordsData from '../../../data/words.json'
+import { getWord, getRoot, getAllWords } from '../../../lib/lexiconCache'
 
 /**
  * WordRootTab — mini root detail panel shown in the game's word definition area.
- *
- * Shows:
- *  - Root Hebrew, SBL, gloss, Strong's number
- *  - BDB definition
- *  - Table of discovered words that use this root (no Concordance button)
- *
- * Props:
- *   wordId  string  — current word key (used to find its root)
  */
 export default function WordRootTab({ wordId }) {
-  const wordData = wordId ? wordsData.words[wordId] : null
+  const wordData = wordId ? getWord(wordId) : null
   const rootId   = wordData?.root ?? null
-  const rootData = rootId ? rootsData.roots[rootId] : null
+  const rootData = rootId ? getRoot(rootId) : null
 
   const { discoveredWordsByRoot } = useRootDiscovery()
 
@@ -27,7 +18,7 @@ export default function WordRootTab({ wordId }) {
 
   const wordRows = useMemo(() => {
     if (!rootId) return []
-    return Object.entries(wordsData.words)
+    return Object.entries(getAllWords())
       .filter(([key, data]) => data.root === rootId && discoveredWordKeys.has(key))
       .map(([key, data]) => ({
         hebrew: key,

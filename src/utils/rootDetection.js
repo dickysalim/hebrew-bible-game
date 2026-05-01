@@ -3,8 +3,7 @@
  * Detects when users type the last letter of a root within a word
  */
 
-import wordsData from '../data/words.json';
-import rootsData from '../data/roots.json';
+import { getWord, getRoot, getAllWords } from '../lib/lexiconCache';
 
 /**
  * Get root information for a given word
@@ -12,12 +11,12 @@ import rootsData from '../data/roots.json';
  * @returns {Object|null} Root info or null if no root
  */
 export function getWordRootInfo(wordId) {
-  const word = wordsData.words[wordId];
+  const word = getWord(wordId);
   if (!word || !word.root) return null;
-  
-  const root = rootsData.roots[word.root];
+
+  const root = getRoot(word.root);
   if (!root) return null;
-  
+
   return {
     rootId: word.root,
     rootLetters: word.root.split(''),
@@ -101,13 +100,13 @@ export function checkRootCompletion(wordId, typedCount, discoveredRoots = {}) {
  */
 export function getWordsByRoot(rootId) {
   const words = [];
-  
-  for (const [wordId, wordData] of Object.entries(wordsData.words)) {
+
+  for (const [wordId, wordData] of Object.entries(getAllWords())) {
     if (wordData.root === rootId) {
       words.push(wordId);
     }
   }
-  
+
   return words;
 }
 
@@ -130,12 +129,12 @@ export function filterDiscoveredWords(wordIds, wordEncounters = {}) {
  * @returns {Object} Word data for table display
  */
 export function getWordDisplayData(wordId) {
-  const word = wordsData.words[wordId];
+  const word = getWord(wordId);
   if (!word) return null;
-  
+
   return {
     hebrew: wordId,
-    sbl: word.sbl || '',
+    sbl: word.word_sbl || '',
     gloss: word.gloss || '',
     root: word.root || null,
     pos: word.pos || '',
@@ -148,9 +147,9 @@ export function getWordDisplayData(wordId) {
  * @returns {Object} Root data for display
  */
 export function getRootDisplayData(rootId) {
-  const root = rootsData.roots[rootId];
+  const root = getRoot(rootId);
   if (!root) return null;
-  
+
   return {
     hebrew: rootId,
     sbl: root.sbl || '',

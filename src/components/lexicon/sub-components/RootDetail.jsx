@@ -1,41 +1,17 @@
 import { useRootDiscovery } from '../../../contexts/RootDiscoveryContext'
-import wordsData from '../../../data/words.json'
+import { getAllWords } from '../../../lib/lexiconCache'
 
-/**
- * RootDetail — full-screen detail view for a Hebrew root.
- *
- * Layout (flat, no separate boxed panels):
- *  ← Lexicon           [back button]
- *  ─────────────────────────────────
- *  [ROOT HEBREW]       right-aligned
- *  [sbl]               right-aligned, directly under Hebrew
- *  [gloss]
- *  [H####]
- *  ────────────────────── divider ──
- *  BDB DEFINITION      section label
- *  <bdb text>
- *
- *  EXPLANATION
- *  <para> <para>
- *
- *  WORDS YOU'VE DISCOVERED
- *  | Hebrew | SBL Word | Pos | Gloss |
- *
- * Props:
- *   root    { id, sbl, gloss, strongs, bdb, explanation }
- *   onBack  () => void
- */
 export default function RootDetail({ root, onBack, onCheckConcordance }) {
   if (!root) return null
 
   const { discoveredWordsByRoot } = useRootDiscovery()
 
-  // Words from words.json that belong to this root AND the user has discovered
+  // Words from D1 cache that belong to this root AND the user has discovered
   const discoveredWordKeys = new Set(
     (discoveredWordsByRoot[root.id] || []).map(w => w.word ?? w)
   )
 
-  const wordRows = Object.entries(wordsData.words)
+  const wordRows = Object.entries(getAllWords())
     .filter(([wordKey, data]) =>
       data.root === root.id && discoveredWordKeys.has(wordKey)
     )

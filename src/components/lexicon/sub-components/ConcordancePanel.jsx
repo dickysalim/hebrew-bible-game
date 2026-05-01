@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 import genesis1 from '../../../data/verses/genesis-1.json'
 import genesis2 from '../../../data/verses/genesis-2.json'
-import wordsData from '../../../data/words.json'
-import rootsData from '../../../data/roots.json'
+import { getWord, getRoot } from '../../../lib/lexiconCache'
 import { loadProgressFromStorage } from '../../../utils/useProgressPersistence'
 import { useProgressCache } from '../../../contexts/ProgressCacheContext'
 import { getEsvText } from '../../main/sub-components/ESVStrip'
@@ -48,9 +47,9 @@ function isVerseCompleted(verseIdx, stageIndex, celebratedMap) {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ConcordancePanel({ wordKey, onBack }) {
-  const wordData = wordsData.words[wordKey]
+  const wordData = getWord(wordKey)
   const rootId   = wordData?.root ?? null
-  const rootData = rootId ? rootsData.roots[rootId] : null
+  const rootData = rootId ? getRoot(rootId) : null
 
   // Reads from cachedProgress (auth users) or localStorage (anonymous).
   const celebratedMap = useCelebratedMap()

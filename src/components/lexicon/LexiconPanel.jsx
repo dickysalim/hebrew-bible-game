@@ -1,15 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
-import rootsData from '../../data/roots.json'
-import wordsData from '../../data/words.json'
+import { getAllRoots, getAllWords, getTotalRootsCount } from '../../lib/lexiconCache'
 import RootCard from './sub-components/RootCard'
 import RootDetail from './sub-components/RootDetail'
 import ConcordancePanel from './sub-components/ConcordancePanel'
 import SearchBar from './sub-components/SearchBar'
 import { createSearchIndex, searchRoots } from '../../utils/searchUtils'
 
-// Total roots available in the data file
-const TOTAL_ROOTS = Object.keys(rootsData.roots).length
+// Total roots available in D1
+const TOTAL_ROOTS = getTotalRootsCount()
 
 export default function LexiconPanel() {
   const { discoveredRoots, newRoots, markRootsAsViewed } = useRootDiscovery()
@@ -32,7 +31,7 @@ export default function LexiconPanel() {
 
   // Create search index from discovered roots
   const searchIndex = useMemo(() => {
-    return createSearchIndex(discoveredRoots, rootsData, wordsData)
+    return createSearchIndex(discoveredRoots, { roots: getAllRoots() }, { words: getAllWords() })
   }, [discoveredRoots])
 
   // Search roots based on query
@@ -79,7 +78,7 @@ export default function LexiconPanel() {
 
   // ── Detail view ──────────────────────────────────────────────────
   if (view === 'detail' && selectedRoot) {
-    const fullRoot = { ...selectedRoot, ...rootsData.roots[selectedRoot.id] }
+    const fullRoot = { ...selectedRoot, ...getAllRoots()[selectedRoot.id] }
     return (
       <RootDetail
         root={fullRoot}

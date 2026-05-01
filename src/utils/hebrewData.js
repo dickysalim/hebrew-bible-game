@@ -1,5 +1,5 @@
 import lettersFile from '../data/letters.json'
-import wordsFile from '../data/words.json'
+import { getWord } from '../lib/lexiconCache'
 
 // ─── Letter SBL sound map ─────────────────────────────────────────────────────
 // Maps each Hebrew letter (including final forms) to its SBL transliteration
@@ -14,7 +14,7 @@ LETTER_SBL['ף'] = LETTER_SBL['פ']
 // ─── Letter type array ────────────────────────────────────────────────────────
 // Returns ['prefix'|'root'|'suffix', ...] per letter position for a given word id
 export function getLetterTypes(wordId) {
-  const data = wordsFile.words[wordId]
+  const data = getWord(wordId)
   if (!data) return wordId.split('').map(() => 'root')
   const types = []
   data.segments.forEach(seg => seg.letters.forEach(() => types.push(seg.type)))

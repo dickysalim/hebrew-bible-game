@@ -352,11 +352,140 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url)
 
+    // Haber AI companion
     if (url.pathname === '/api/haber' && request.method === 'POST') {
       return handleHaber(request, env)
     }
 
+    // Lexicon: single word lookup — GET /api/word/:hebrew
+    if (url.pathname.startsWith('/api/word/') && request.method === 'GET') {
+      return handleWord(url, env)
+    }
+
+    // Lexicon: single root lookup — GET /api/root/:strongs
+    if (url.pathname.startsWith('/api/root/') && request.method === 'GET') {
+      return handleRoot(url, env)
+    }
+
+    // Lexicon: browse + search — GET /api/lexicon?q=&pos=&page=
+    if (url.pathname === '/api/lexicon' && request.method === 'GET') {
+      return handleLexicon(url, env)
+    }
+
+    // Lexicon: all roots (for cache warm-up) — GET /api/lexicon/roots
+    if (url.pathname === '/api/lexicon/roots' && request.method === 'GET') {
+      return handleAllRoots(env)
+    }
+
     return new Response('Not found', { status: 404 })
+  }
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/word/:hebrew
+// Returns a single word entry by its Hebrew consonants (URL-encoded).
+// Example: GET /api/word/%D7%91%D7%A8%D7%90%D7%A9%D7%99%D7%AA
+// ---------------------------------------------------------------------------
+async function handleWord(url, env) {
+  const hebrew = decodeURIComponent(url.pathname.replace('/api/word/', ''))
+  if (!hebrew) return Response.json({ error: 'Hebrew word is required' }, { status: 400 })
+
+  const result = await env.DB.prepare(
+    'SELECT * FROM words WHERE hebrew = ?'
+  ).bind(hebrew).first()
+
+  if (!result) return Response.json({ error: 'Word not found' }, { status: 404 })
+
+  // Parse segments JSON blob back into object
+  if (result.segments) {
+    try { result.segments = JSON.parse(result.segments) } catch { /* leave as string */ }
+  }
+
+  return Response.json(result, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/root/:strongs
+// Returns a single root entry by Strong's number.
+// Example: GET /api/root/7225
+// ---------------------------------------------------------------------------
+async function handleRoot(url, env) {
+  const strongs = decodeURIComponent(url.pathname.replace('/api/root/', ''))
+  if (!strongs) return Response.json({ error: 'Strong\'s number is required' }, { status: 400 })
+
+  const result = await env.DB.prepare(
+    'SELECT * FROM roots WHERE strongs = ?'
+  ).bind(strongs).first()
+
+  if (!result) return Response.json({ error: 'Root not found' }, { status: 404 })
+
+  return Response.json(result, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/lexicon?q=create&pos=verb&page=1&limit=20
+// Paginated lexicon browser. Searches gloss + explanation.
+// ---------------------------------------------------------------------------
+async function handleLexicon(url, env) {
+  const q     = url.searchParams.get('q') || ''
+  const pos   = url.searchParams.get('pos') || ''
+  const page  = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10))
+  const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit') || '20', 10)))
+  const offset = (page - 1) * limit
+
+  let query  = 'SELECT hebrew, word_sbl, gloss, root, pos FROM words WHERE 1=1'
+  let countQ = 'SELECT COUNT(*) as total FROM words WHERE 1=1'
+  const params = []
+
+  if (q) {
+    query  += ' AND (gloss LIKE ? OR explanation LIKE ? OR hebrew = ?)'
+    countQ += ' AND (gloss LIKE ? OR explanation LIKE ? OR hebrew = ?)'
+    const like = `%${q}%`
+    params.push(like, like, q)
+  }
+
+  if (pos) {
+    query  += ' AND pos = ?'
+    countQ += ' AND pos = ?'
+    params.push(pos)
+  }
+
+  query += ' ORDER BY hebrew LIMIT ? OFFSET ?'
+
+  const [rows, countRow] = await Promise.all([
+    env.DB.prepare(query).bind(...params, limit, offset).all(),
+    env.DB.prepare(countQ).bind(...params).first(),
+  ])
+
+  return Response.json({
+    words:  rows.results,
+    total:  countRow?.total ?? 0,
+    page,
+    limit,
+    pages:  Math.ceil((countRow?.total ?? 0) / limit),
+  }, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/lexicon/roots
+// Returns ALL roots in one shot — used for the frontend cache warm-up.
+// At ~484 rows this is fast (<5ms) and avoids paginating roots.
+// ---------------------------------------------------------------------------
+async function handleAllRoots(env) {
+  const rows = await env.DB.prepare(
+    'SELECT * FROM roots ORDER BY strongs'
+  ).all()
+
+  return Response.json({ roots: rows.results }, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// CORS headers for local dev (Vite runs on :5173, worker on :8787)
+// ---------------------------------------------------------------------------
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
   }
 }
 

@@ -1,6 +1,5 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
-import wordsData from '../../data/words.json'
-import rootsData from '../../data/roots.json'
+import { getWord, getRoot } from '../../lib/lexiconCache'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useGameKeyboard } from '../../hooks/useGameKeyboard'
 import { useMobileKeyboard } from '../../hooks/useMobileKeyboard'
@@ -229,7 +228,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     if (state.activeRootFlags.length === 0) return
     const latestFlag = state.activeRootFlags[state.activeRootFlags.length - 1]
     const rootId = latestFlag.rootId
-    const rootData = rootsData.roots[rootId]
+    const rootData = getRoot(rootId)
     if (rootData) {
       addDiscoveredRoot({ id: rootId, ...rootData })
     }
@@ -242,7 +241,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     const encounterCount = state.wordEncounters[wordId] || 0
     // Only track the first encounter
     if (encounterCount !== 1) return
-    const wordData = wordsData.words[wordId]
+    const wordData = getWord(wordId)
     if (!wordData?.root) return
     addDiscoveredWordsForRoot(wordData.root, [{ word: wordId }])
   }, [state.completedWordSignal]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -302,8 +301,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // Stored in reducer state so it survives tab switches without replaying.
   const alreadyCelebrated = celebratedVerses.includes(currentVerse)
 
-  // Get word definition data from words.json
-  const wordData = wordId ? wordsData.words[wordId] : null
+  // Get word definition data from D1 cache
+  const wordData = wordId ? getWord(wordId) : null
   const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
   const sbl = activeWord?.sbl || ''
 
