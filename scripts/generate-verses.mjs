@@ -128,16 +128,10 @@ for (const file of TAHOT_FILES) {
     let gloss = (cols[3] || '').trim();
     gloss = gloss
       .replace(/<([^>]+)>/g, '[$1]')       // <obj.> → [obj.]
-      .replace(/\[obj\.\]/gi, '[obj]')       // normalize obj
-      .replace(/\//g, '-')                   // in/beginning → in-beginning
-      .replace(/\s*-\s*/g, '-')             // "in- beginning" → "in-beginning"
-      .replace(/\[([^\]]+)\]/g, (m, inner) => {
-        const skip = ['was', 'the', 'it', 'is', 'are', 'be', 'were', 'a', 'an'];
-        if (skip.includes(inner.trim().toLowerCase())) return '';
-        return `[${inner}]`;
-      })
+      .replace(/\[obj\.\]/gi, '[obj]')      // normalize obj
+      .replace(/\//g, ' ')                  // in/beginning → in beginning
       .replace(/\s+/g, ' ')
-      .replace(/^[-\s]+|[-\s]+$/g, '')
+      .replace(/^\s+|\s+$/g, '')
       .trim();
 
     tahotGloss[ref] = gloss;
@@ -244,8 +238,23 @@ for (const book of booksToProcess) {
             wordData.word_lemma_gloss?.split(',')[0],
             wordData.word_suffix_gloss?.split(',')[0],
           ].filter(Boolean);
-          gloss = parts.join('-');
+          gloss = parts.join(' ');
         }
+      }
+
+      // verb gender marker — 3rd person only
+      const verbMorph = attr(wNodes[w], 'morph') || '';
+      if (verbMorph.match(/^H[cC]?\/?(V)|^HV/) && !verbMorph.match(/^HAc|^HAa|^HAo/)) {
+        // strip implied subject pronoun from start
+        gloss = gloss
+          .replace(/\b(he|she|they|it)\s+/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        // add gender marker for 3rd person
+        if (verbMorph.match(/3ms|w3ms|qw3ms/)) gloss += '(m)';
+        else if (verbMorph.match(/3fs|w3fs|qw3fs/)) gloss += '(f)';
+        else if (verbMorph.match(/3mp|w3mp|qw3mp/)) gloss += '(m)';
+        else if (verbMorph.match(/3fp|w3fp|qw3fp/)) gloss += '(f)';
       }
 
       // get SBL from TAHOT

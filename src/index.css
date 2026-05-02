@@ -550,15 +550,15 @@ html, body {
 }
 .ic-dot.active { background: var(--blue); }
 
-/* ─── ESV STRIP ──────────────────────────────────────── */
-.esv-strip {
+/* ─── TAHOT STRIP ────────────────────────────────────── */
+.tahot-strip {
   flex-shrink: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 6px 14px;
 }
-.esv-label {
+.tahot-label {
   font-size: 9px;
   color: var(--text-muted);
   letter-spacing: 1.5px;
@@ -566,7 +566,7 @@ html, body {
   font-weight: 600;
   margin-bottom: 2px;
 }
-.esv-text {
+.tahot-text {
   font-family: var(--font-serif);
   font-size: 14px;
   color: var(--text-secondary);
@@ -574,10 +574,10 @@ html, body {
   height: 42px; /* fixed 2-line height: 14 × 1.5 × 2 */
   overflow: hidden;
 }
-.esv-highlight {
+.tahot-highlight {
   color: var(--text-primary);
-  font-weight: 600;
-  background: var(--purple-light);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--gold-mid, #d4a520) 20%, transparent);
   padding: 0 3px;
   border-radius: 3px;
 }
@@ -1138,7 +1138,56 @@ html, body {
   gap: 24px;
 }
 
-/* ── Header ── */
+/* WIP variant — centre-aligned placeholder */
+.lexicon-panel--wip {
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.lexicon-wip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  max-width: 320px;
+}
+
+.lexicon-wip__icon {
+  font-size: 48px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.lexicon-wip__title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.lexicon-wip__subtitle {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin: 0;
+}
+
+.lexicon-wip__desc {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+
 .lexicon-header {
   text-align: center;
 }
@@ -1992,7 +2041,7 @@ html, body {
 }
 
 /* ── ESV line ── */
-.concordance__line--esv {
+.concordance__line--tahot {
   font-family: var(--font-serif);
   font-size: 12px;
   color: var(--text-secondary);
@@ -2022,8 +2071,8 @@ html, body {
   font-weight: 600;
 }
 
-/* ESV inline highlight */
-.concordance__esv-highlight {
+/* TAHOT gloss inline highlight */
+.concordance__tahot-highlight {
   background: rgba(245, 158, 11, 0.2);
   color: #92400e;
   font-weight: 600;
@@ -5041,11 +5090,11 @@ html, body {
     display: none;
   }
 
-  /* ESV strip — compact */
-  .esv-strip {
+  /* TAHOT strip — compact */
+  .tahot-strip {
     padding: 4px 10px;
   }
-  .esv-text {
+  .tahot-text {
     font-size: 12px;
     height: 36px;
   }

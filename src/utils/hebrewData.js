@@ -15,12 +15,14 @@ LETTER_SBL['ף'] = LETTER_SBL['פ']
 // Returns ['prefix'|'root'|'suffix', ...] per letter position for a given word id
 export function getLetterTypes(wordId) {
   const data = getWord(wordId)
-  if (!data) return wordId.split('').map(() => 'root')
+  // Fall back to all-root if no data or no segments (D1 data may omit segments)
+  if (!data || !Array.isArray(data.segments)) return wordId.split('').map(() => 'root')
   const types = []
   data.segments.forEach(seg => seg.letters.forEach(() => types.push(seg.type)))
   while (types.length < wordId.length) types.push('root')
   return types.slice(0, wordId.length)
 }
+
 
 // ─── Israeli QWERTY keyboard layout ──────────────────────────────────────────
 export const KEYBOARD_ROWS = [

@@ -4,7 +4,7 @@ import genesis2 from '../../../data/verses/genesis-2.json'
 import { getWord, getRoot } from '../../../lib/lexiconCache'
 import { loadProgressFromStorage } from '../../../utils/useProgressPersistence'
 import { useProgressCache } from '../../../contexts/ProgressCacheContext'
-import { getEsvText } from '../../main/sub-components/ESVStrip'
+import { getGlossText } from '../../main/sub-components/TAHOTStrip'
 
 // stageIndex for each chapter source
 const VERSE_SOURCES = [
@@ -170,25 +170,17 @@ export default function ConcordancePanel({ wordKey, onBack }) {
   )
 }
 
-// ─── Verse Entry — compact, flowing design ───────────────────────────────────
+// ─── Verse Entry — compact, flowing design ────────────────────────────────────────────
 
 function VerseEntry({ entry, wordKey }) {
   const { book, chapter, verseNum, verse, matchIndices } = entry
-
-  // Build ESV segments with highlighting based on word index matching
-  const esvSegments = Array.isArray(verse.esv)
-    ? verse.esv.map(seg => ({
-        text: seg.t,
-        highlight: seg.w !== null && matchIndices.includes(seg.w),
-      }))
-    : [{ text: typeof verse.esv === 'string' ? verse.esv : getEsvText(verse.esv), highlight: false }]
 
   return (
     <div className="concordance__verse-entry">
       {/* Reference badge inline */}
       <span className="concordance__verse-ref">{book} {chapter}:{verseNum}</span>
 
-      {/* Hebrew + SBL on one flowing line each */}
+      {/* Hebrew on one flowing RTL line */}
       <div className="concordance__line concordance__line--hebrew" dir="rtl" lang="he">
         {verse.words.map((w, wi) => {
           const isMatch = matchIndices.includes(wi)
@@ -203,6 +195,7 @@ function VerseEntry({ entry, wordKey }) {
         })}
       </div>
 
+      {/* SBL transliteration line */}
       <div className="concordance__line concordance__line--sbl">
         {verse.words.map((w, wi) => {
           const isMatch = matchIndices.includes(wi)
@@ -217,12 +210,18 @@ function VerseEntry({ entry, wordKey }) {
         })}
       </div>
 
-      <div className="concordance__line concordance__line--esv">
-        {esvSegments.map((seg, i) =>
-          seg.highlight
-            ? <mark key={i} className="concordance__esv-highlight">{seg.text}</mark>
-            : <span key={i}>{seg.text}</span>
-        )}
+      {/* TAHOT gloss line (replaces ESV) */}
+      <div className="concordance__line concordance__line--tahot">
+        {verse.words.map((w, wi) => {
+          const isMatch = matchIndices.includes(wi)
+          const gloss = w.gloss || w.id
+          return isMatch
+            ? <mark key={wi} className="concordance__tahot-highlight">{gloss}</mark>
+            : <span key={wi}>{gloss}</span>
+        }).reduce((acc, el, i) => {
+          if (i === 0) return [el]
+          return [...acc, ' ', el]
+        }, [])}
       </div>
     </div>
   )

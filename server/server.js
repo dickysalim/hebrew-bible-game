@@ -461,7 +461,7 @@ Transliteration (SBL): ${word.sbl}
 Gloss: ${word.gloss}
 Root: ${word.root} (${word.rootSbl})
 Verse: Genesis ${word.chapter}:${word.verse}
-ESV: "${word.verseEsv}"
+Gloss sentence: "${word.verseGloss}"
 ${isRevisit
   ? '\nThis is a REVISIT. The user has studied this word before. Use the revisit opening template.'
   : '\nThis is a FIRST ENCOUNTER. Use the first encounter opening template.'}

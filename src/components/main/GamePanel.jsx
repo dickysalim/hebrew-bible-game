@@ -13,7 +13,7 @@ import { useProgressCache } from '../../contexts/ProgressCacheContext'
 import { formatProgressFromSupabase } from '../../lib/progress'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
-import ESVStrip, { getEsvText } from './sub-components/ESVStrip'
+import TAHOTStrip, { getGlossText } from './sub-components/TAHOTStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefTabs from './sub-components/WordDefTabs'
 import HaberPanel from './sub-components/HaberPanel'
@@ -324,7 +324,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     rootSbl: wordData.root_sbl || '',
     verse: verse.verse,
     chapter: chapterNum,
-    verseEsv: getEsvText(verse.esv),
+    verseGloss: getGlossText(verse.words),
   } : null
 
   useAudioEffects(state, verseDone, alreadyCelebrated, currentVerse, dispatch)
@@ -332,7 +332,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // Always track target letter for idle pulse hint (5s timer in KeyboardGuide)
   const targetLetter = (activeWord && !wordDone) ? wordId[typedCount] : null
 
-  // ESV highlight: pass the word index to ESVStrip for positional matching
+  // TAHOT gloss highlight: pass the word index to TAHOTStrip for positional highlighting
 
   // Stable callbacks so InsightCarousel's setInterval doesn't reset on every render
   const handleCarouselPrev = useCallback(
@@ -441,8 +441,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             )}
 
             {!isMobile && (
-              <ESVStrip
-                esv={verse.esv}
+              <TAHOTStrip
+                words={verse.words}
                 activeWordIndex={activeWordIdx}
               />
             )}
@@ -461,7 +461,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             />
 
             <div className="footer-note">
-              {bookLabel} {chapterNum}:{verse.verse} — Masoretic Text (BHS) — ESV
+              {bookLabel} {chapterNum}:{verse.verse} — Masoretic Text (BHS) — TAHOT Gloss
             </div>
           </div>
         </div>
@@ -481,8 +481,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 isNewCompletion={!alreadyCelebrated}
               />
             )}
-            <ESVStrip
-              esv={verse.esv}
+            <TAHOTStrip
+              words={verse.words}
               activeWordIndex={activeWordIdx}
             />
           </div>
