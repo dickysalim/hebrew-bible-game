@@ -1,5 +1,7 @@
 import { supabase } from './supabase'
 
+// ─── Verse Notes ─────────────────────────────────────────────────────────────
+
 /** Canonical cache key for a single verse note. */
 export const noteKey = (book, chapter, verse) =>
   `${String(book).toLowerCase()}-${chapter}-${verse}`
@@ -32,7 +34,7 @@ export async function loadNote(userId, book, chapter, verse) {
 }
 
 /**
- * Load ALL notes for a user in a single query.
+ * Load ALL verse notes for a user in a single query.
  * Returns a flat map: { "genesis-1-1": "<html>", "genesis-1-5": "<html>" }
  */
 export async function loadAllNotes(userId) {
@@ -58,8 +60,7 @@ export async function loadAllNotes(userId) {
 }
 
 /**
- * Upsert a note for a specific verse.
- * If content is empty (whitespace / empty tags only), deletes the row to keep the table clean.
+ * Upsert a verse note. Deletes the row if content is empty.
  */
 export async function saveNote(userId, book, chapter, verse, content) {
   if (!userId) return false
@@ -96,6 +97,78 @@ export async function saveNote(userId, book, chapter, verse, content) {
     return true
   } catch (err) {
     console.error('[saveNote] Exception:', err)
+    return false
+  }
+}
+
+// ─── Chapter Notes ────────────────────────────────────────────────────────────
+
+/** Canonical cache key for a chapter note. */
+export const chapterNoteKey = (book, chapter) =>
+  `${String(book).toLowerCase()}-${chapter}`
+
+/**
+ * Load ALL chapter notes for a user in a single query.
+ * Returns a flat map: { "genesis-1": "<html>", "genesis-2": "<html>" }
+ */
+export async function loadAllChapterNotes(userId) {
+  if (!userId) return {}
+  try {
+    const { data, error } = await supabase
+      .from('chapter_notes')
+      .select('book, chapter, content')
+      .eq('user_id', userId)
+    if (error) {
+      console.error('[loadAllChapterNotes] Error:', error)
+      return {}
+    }
+    const map = {}
+    for (const row of data ?? []) {
+      map[chapterNoteKey(row.book, row.chapter)] = row.content
+    }
+    return map
+  } catch (err) {
+    console.error('[loadAllChapterNotes] Exception:', err)
+    return {}
+  }
+}
+
+/**
+ * Upsert a chapter note. Deletes the row if content is empty.
+ */
+export async function saveChapterNote(userId, book, chapter, content) {
+  if (!userId) return false
+  try {
+    const isEmpty = !content || content.replace(/<[^>]*>/g, '').trim() === ''
+    if (isEmpty) {
+      await supabase
+        .from('chapter_notes')
+        .delete()
+        .eq('user_id', userId)
+        .eq('book', String(book).toLowerCase())
+        .eq('chapter', chapter)
+      return true
+    }
+
+    const { error } = await supabase
+      .from('chapter_notes')
+      .upsert(
+        {
+          user_id: userId,
+          book: String(book).toLowerCase(),
+          chapter,
+          content,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id,book,chapter' }
+      )
+    if (error) {
+      console.error('[saveChapterNote] Error:', error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('[saveChapterNote] Exception:', err)
     return false
   }
 }

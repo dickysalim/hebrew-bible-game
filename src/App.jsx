@@ -150,7 +150,7 @@ function GameLayout({ session, jumpToStageIndex, onBackToMenu }) {
   const renderTab = () => {
     switch (activeTab) {
       case 'main':         return <GamePanel userId={session?.user?.id} jumpToStageIndex={jumpToStageIndex} />
-      case 'full_chapter': return <FullChapter />
+      case 'full_chapter': return <FullChapter userId={session?.user?.id} />
       case 'lexicon':      return <LexiconPanel />
       case 'progress':     return <ProgressPanel />
       default:             return <GamePanel userId={session?.user?.id} jumpToStageIndex={jumpToStageIndex} />

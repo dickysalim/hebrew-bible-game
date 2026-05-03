@@ -37,94 +37,59 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─── Chapter Selector Bar ───────────────────────────────────────────────── */
+/* ─── Chapter Dropdown Bar ────────────────────────────────────────────────── */
 
-.fc-selector {
+.fc-dropbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 20px;
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
+  gap: 8px;
   flex-shrink: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 
-.fc-selector::-webkit-scrollbar { display: none; }
-
-.fc-selector__label {
+.fc-dropbar__label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--text-muted);
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.fc-selector__empty {
-  font-size: 11px;
-  font-family: var(--font-serif);
-  font-style: italic;
-  color: var(--text-muted);
-  opacity: 0.7;
-}
-
-.fc-selector__list {
-  display: flex;
-  gap: 6px;
-}
-
-.fc-selector__btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  padding: 4px 12px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  white-space: nowrap;
-  line-height: 1.2;
-}
-
-.fc-selector__btn:hover {
+.fc-dropbar__select {
   background: var(--bg-surface);
-  border-color: var(--border-mid);
+  border: 1px solid var(--border-mid);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 24px 4px 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
 }
 
-.fc-selector__btn--active {
-  background: var(--gold-light, rgba(212,165,32,0.12));
+.fc-dropbar__select:hover,
+.fc-dropbar__select:focus {
   border-color: var(--gold-bright);
 }
 
-.fc-selector__book {
-  font-size: 9px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+.fc-dropbar__select option:disabled {
   color: var(--text-muted);
-  font-family: var(--font-body);
+  opacity: 0.5;
 }
 
-.fc-selector__ch {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-family: var(--font-serif);
-}
 
-.fc-selector__btn--active .fc-selector__ch {
-  color: var(--gold, #B8860B);
-}
-
-/* ─── Two-column Reader Grid ─────────────────────────────────────────────── */
+/* ─── Two-column Reader Grid ───────────────────────────────────────────── */
 
 .fc-reader {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 380px 1fr;
   gap: 0;
   flex: 1;
   min-height: 0;
@@ -142,87 +107,10 @@
   overflow: hidden;
 }
 
-.fc-left__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px 8px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
+/* ─── Left Panel Split Layout ────────────────────────────────────────────── */
 
-.fc-left__title {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.fc-left__badge {
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--gold, #B8860B);
-  font-weight: 700;
-  background: var(--gold-light, rgba(212,165,32,0.12));
-  padding: 2px 8px;
-  border-radius: 3px;
-}
-
-/* ─── Verse Progress Pills ───────────────────────────────────────────────── */
-
-.fc-left__verse-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  max-height: 120px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-.fc-left__verse-list::-webkit-scrollbar { width: 4px; }
-.fc-left__verse-list::-webkit-scrollbar-track { background: transparent; }
-.fc-left__verse-list::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
-
-.fc-verse-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 11px;
-  color: var(--text-secondary);
-  min-width: 28px;
-  justify-content: center;
-}
-
-.fc-verse-pill--done {
-  background: color-mix(in srgb, var(--green) 10%, transparent);
-  border-color: color-mix(in srgb, var(--green) 40%, transparent);
-  color: var(--green);
-}
-
-.fc-verse-pill__num {
-  font-weight: 600;
-}
-
-.fc-verse-pill__dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--green);
-  flex-shrink: 0;
-}
-
-/* ─── Notes Section ──────────────────────────────────────────────────────── */
-
-.fc-notes {
+/* Top pane — takes remaining height, houses the tab panel */
+.fc-left__top {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -230,29 +118,78 @@
   overflow: hidden;
 }
 
+/* Visual divider between top and bottom panes */
+.fc-left__divider {
+  height: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* Bottom pane — larger to give chapter notes more room */
+.fc-left__bottom {
+  display: flex;
+  flex-direction: column;
+  height: 45%;
+  min-height: 220px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.fc-left__bottom-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px 6px;
+  flex-shrink: 0;
+}
+
+.fc-left__bottom-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Scrollable body inside the chapter notes bottom pane */
+.fc-left__bottom-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px 4px;
+}
+
+/* Notes Section (shared between top and bottom) */
+
 .fc-notes__tabs {
   display: flex;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  padding: 0 12px;
-  gap: 2px;
+  padding: 0 8px;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+
+.fc-notes__tabs::-webkit-scrollbar { display: none; }
 
 .fc-notes__tab {
   flex: 1;
-  padding: 8px 6px;
+  padding: 9px 4px;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--text-muted);
   font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
   margin-bottom: -1px;
+  white-space: nowrap;
 }
 
 .fc-notes__tab:hover { color: var(--text-primary); }
@@ -269,29 +206,31 @@
   flex-direction: column;
 }
 
-.fc-notes__empty {
+/* ─── WIP / Coming-soon placeholder ─────────────────────────────────────── */
+
+.fc-wip {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
-  padding: 32px 20px;
+  padding: 40px 24px;
   color: var(--text-muted);
   text-align: center;
 }
 
-.fc-notes__empty-icon {
-  font-size: 30px;
-  opacity: 0.55;
+.fc-wip__icon {
+  font-size: 32px;
+  opacity: 0.5;
 }
 
-.fc-notes__empty p {
+.fc-wip p {
   font-family: var(--font-serif);
   font-size: 13px;
   font-style: italic;
-  line-height: 1.5;
-  max-width: 200px;
+  line-height: 1.55;
+  max-width: 240px;
 }
 
 /* ─── Right Panel ────────────────────────────────────────────────────────── */
@@ -314,11 +253,6 @@
   flex-shrink: 0;
 }
 
-.fc-right__chapter-label {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  color: var(--text-muted);
-}
 
 .fc-right__toggles {
   display: flex;
@@ -519,7 +453,7 @@
 
 /* ─── Responsive — stack on narrow screens ────────────────────────────────── */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .fc-reader {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -528,7 +462,7 @@
   .fc-left {
     border-right: none;
     border-bottom: 1px solid var(--border);
-    max-height: 40vh;
+    max-height: 50vh;
     overflow-y: auto;
   }
 }

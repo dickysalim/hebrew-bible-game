@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useChapterLoader, CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
 import { LETTER_SBL } from '../../utils/hebrewData'
+import ChapterNotesEditor from './ChapterNotesEditor'
 import './FullChapter.css'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -15,94 +16,153 @@ function isVerseCompleted(verse, verseIdx, typedCounts) {
   })
 }
 
-// ─── Chapter Selector ─────────────────────────────────────────────────────────
+// ─── Chapter Dropdown Bar ────────────────────────────────────────────────────
 
-function ChapterSelector({ selectedStageIndex, onSelect, completedStageIndexes }) {
-  const entries = CHAPTER_REGISTRY.filter(e => completedStageIndexes.has(e.stageIndex))
+// Derive unique books (in registry order, de-duped)
+const REGISTRY_BOOKS = [...new Set(CHAPTER_REGISTRY.map(e => e.book))]
 
-  if (entries.length === 0) {
-    return (
-      <div className="fc-selector">
-        <span className="fc-selector__label">Chapter</span>
-        <span className="fc-selector__empty">Finish a chapter to unlock it here</span>
-      </div>
-    )
+function ChapterDropdownBar({ selectedStageIndex, onSelect, completedStageIndexes, cachedProgress }) {
+  const selectedEntry = CHAPTER_REGISTRY.find(e => e.stageIndex === selectedStageIndex)
+  const [selectedBook, setSelectedBook] = useState(selectedEntry?.book ?? REGISTRY_BOOKS[0])
+
+  // When the outer selection changes (e.g. on mount), sync the book
+  // so the chapter dropdown stays coherent.
+  const handleBookChange = (e) => {
+    const book = e.target.value
+    setSelectedBook(book)
+    // Auto-select the first completed chapter in the new book, or just first
+    const chaptersForBook = CHAPTER_REGISTRY.filter(c => c.book === book)
+    const firstDone = chaptersForBook.find(c => completedStageIndexes.has(c.stageIndex))
+    if (firstDone) onSelect(firstDone.stageIndex)
   }
 
+  const handleChapterChange = (e) => {
+    const si = Number(e.target.value)
+    if (completedStageIndexes.has(si)) onSelect(si)
+  }
+
+  const chaptersForBook = CHAPTER_REGISTRY.filter(e => e.book === selectedBook)
+
+  // A book is "active" (not disabled) if it has at least one completed chapter
+  const bookHasProgress = (book) =>
+    CHAPTER_REGISTRY.some(e => e.book === book && completedStageIndexes.has(e.stageIndex))
+
   return (
-    <div className="fc-selector">
-      <span className="fc-selector__label">Chapter</span>
-      <div className="fc-selector__list">
-        {entries.map(entry => (
-          <button
-            key={entry.stageIndex}
-            className={`fc-selector__btn ${entry.stageIndex === selectedStageIndex ? 'fc-selector__btn--active' : ''}`}
-            onClick={() => onSelect(entry.stageIndex)}
-            title={`${entry.book} ${entry.chapter}`}
+    <div className="fc-dropbar">
+      <span className="fc-dropbar__label">Reading</span>
+
+      {/* Book select */}
+      <select
+        className="fc-dropbar__select"
+        value={selectedBook}
+        onChange={handleBookChange}
+        aria-label="Select book"
+      >
+        {REGISTRY_BOOKS.map(book => (
+          <option
+            key={book}
+            value={book}
+            disabled={!bookHasProgress(book)}
+            className={!bookHasProgress(book) ? 'fc-dropbar__opt--dim' : ''}
           >
-            <span className="fc-selector__book">{entry.book}</span>
-            <span className="fc-selector__ch">{entry.chapter}</span>
-          </button>
+            {book}
+          </option>
         ))}
-      </div>
+      </select>
+
+      {/* Chapter select */}
+      <select
+        className="fc-dropbar__select"
+        value={selectedStageIndex}
+        onChange={handleChapterChange}
+        aria-label="Select chapter"
+      >
+        {chaptersForBook.map(entry => {
+          const done = completedStageIndexes.has(entry.stageIndex)
+          return (
+            <option
+              key={entry.stageIndex}
+              value={entry.stageIndex}
+              disabled={!done}
+            >
+              {done ? `Chapter ${entry.chapter}` : `Chapter ${entry.chapter} — locked`}
+            </option>
+          )
+        })}
+      </select>
     </div>
   )
 }
 
-// ─── Left Panel: Notes tabs only ─────────────────────────────────────────────
+// ─── Left Panel: 5-tab study panel ───────────────────────────────────────────
 
-function LeftPanel({ verses, chapterMeta, typedCounts }) {
-  const [activeTab, setActiveTab] = useState('Verse Notes')
-  const TABS = ['Verse Notes', 'Chapter Notes']
+const FC_TABS = [
+  { id: 'verse-notes',  label: 'Verse Notes' },
+  { id: 'lemma',        label: 'Lemma' },
+  { id: 'root',         label: 'Root' },
+  { id: 'concordance',  label: 'Concordance' },
+]
+
+function WipPlaceholder({ icon, message }) {
+  return (
+    <div className="fc-wip">
+      <span className="fc-wip__icon" aria-hidden="true">{icon}</span>
+      <p>{message}</p>
+    </div>
+  )
+}
+
+function LeftPanel({ userId, chapterMeta }) {
+  const [activeTab, setActiveTab] = useState('verse-notes')
 
   return (
     <div className="fc-left">
-      {/* Header */}
-      <div className="fc-left__header">
-        <span className="fc-left__title">
-          {chapterMeta ? `${chapterMeta.book} ${chapterMeta.chapter}` : '—'}
-        </span>
-        <span className="fc-left__badge">Study Notes</span>
-      </div>
-
-      {/* Verse progress pills */}
-      <div className="fc-left__verse-list" role="list" aria-label="Verse completion status">
-        {verses.map((v, vi) => {
-          const done = isVerseCompleted(v, vi, typedCounts)
-          return (
-            <span
-              key={vi}
-              role="listitem"
-              className={`fc-verse-pill ${done ? 'fc-verse-pill--done' : ''}`}
-              title={`Verse ${v.verse}${done ? ' — completed' : ''}`}
-            >
-              <span className="fc-verse-pill__num">{v.verse}</span>
-              {done && <span className="fc-verse-pill__dot" aria-hidden="true" />}
-            </span>
-          )
-        })}
-      </div>
-
-      {/* Notes tabs */}
-      <div className="fc-notes">
-        <div className="fc-notes__tabs" role="tablist">
-          {TABS.map(tab => (
+      {/* ── Top pane: tabbed content ── */}
+      <div className="fc-left__top">
+        <div className="fc-notes__tabs" role="tablist" aria-label="Study panel tabs">
+          {FC_TABS.map(tab => (
             <button
-              key={tab}
+              key={tab.id}
               role="tab"
-              aria-selected={activeTab === tab}
-              className={`fc-notes__tab ${activeTab === tab ? 'fc-notes__tab--active' : ''}`}
-              onClick={() => setActiveTab(tab)}
+              aria-selected={activeTab === tab.id}
+              className={`fc-notes__tab ${activeTab === tab.id ? 'fc-notes__tab--active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
+
         <div className="fc-notes__body">
-          <div className="fc-notes__empty">
-            <span className="fc-notes__empty-icon" aria-hidden="true">📝</span>
-            <p>{activeTab === 'Verse Notes' ? 'Verse notes coming soon.' : 'Chapter notes coming soon.'}</p>
-          </div>
+          {activeTab === 'verse-notes' && (
+            <WipPlaceholder icon="📝" message="Verse notes coming soon." />
+          )}
+          {activeTab === 'lemma' && (
+            <WipPlaceholder icon="🔤" message="Click a word in the text to see its lemma entry." />
+          )}
+          {activeTab === 'root' && (
+            <WipPlaceholder icon="🌱" message="Click a word in the text to see its root." />
+          )}
+          {activeTab === 'concordance' && (
+            <WipPlaceholder icon="🔍" message="Click a word in the text to see concordance data." />
+          )}
+        </div>
+      </div>
+
+      {/* ── Divider ── */}
+      <div className="fc-left__divider" aria-hidden="true" />
+
+      {/* ── Bottom pane: Chapter Notes ── */}
+      <div className="fc-left__bottom">
+        <div className="fc-left__bottom-header">
+          <span className="fc-left__bottom-label">Chapter Notes</span>
+        </div>
+        <div className="fc-left__bottom-body">
+          <ChapterNotesEditor
+            userId={userId}
+            book={chapterMeta?.book ?? ''}
+            chapter={chapterMeta?.chapter ?? 0}
+          />
         </div>
       </div>
     </div>
@@ -173,18 +233,20 @@ function HebrewVerseRow({ verse, verseIdx, typedCounts, showSBLWord, showSBLLett
 }
 
 
-function RightPanel({ verses, chapterMeta, typedCounts }) {
+function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSelect, completedStageIndexes }) {
   const [showSBLWord, setShowSBLWord] = useState(true)
   const [showSBLLetter, setShowSBLLetter] = useState(true)
   const [showGloss, setShowGloss] = useState(true)
 
   return (
     <div className="fc-right">
-      {/* Controls bar */}
+      {/* Controls bar — dropdown on left, toggles on right */}
       <div className="fc-right__toolbar">
-        <span className="fc-right__chapter-label">
-          {chapterMeta ? `${chapterMeta.book} ${chapterMeta.chapter}` : ''}
-        </span>
+        <ChapterDropdownBar
+          selectedStageIndex={selectedStageIndex}
+          onSelect={onSelect}
+          completedStageIndexes={completedStageIndexes}
+        />
         <div className="fc-right__toggles">
           <label className="fc-toggle">
             <input
@@ -239,13 +301,9 @@ function RightPanel({ verses, chapterMeta, typedCounts }) {
 
 // ─── Main FullChapter Component ───────────────────────────────────────────────
 
-export default function FullChapter() {
+export default function FullChapter({ userId }) {
   const { cachedProgress } = useProgressCache()
 
-  // Derive which chapters the user has fully completed.
-  // A chapter is complete when highestVerse (0-based count of verses reached)
-  // is >= totalVerses for that chapter — this is set by the TYPE reducer the
-  // moment the last word of the last verse is typed, no navigation required.
   const completedStageIndexes = useMemo(() => {
     const set = new Set()
     const chapters = cachedProgress?.chapters ?? {}
@@ -258,7 +316,6 @@ export default function FullChapter() {
     return set
   }, [cachedProgress])
 
-  // Default to the first completed chapter; fall back to 1 if none yet
   const [selectedStageIndex, setSelectedStageIndex] = useState(() => {
     const chapters = cachedProgress?.chapters ?? {}
     const first = CHAPTER_REGISTRY.find(e =>
@@ -269,7 +326,6 @@ export default function FullChapter() {
 
   const { chapterData, chapterMeta, isLoading } = useChapterLoader(selectedStageIndex)
 
-  // Resolve typed counts for the selected chapter from cached progress
   const typedCounts = useMemo(() => {
     if (!cachedProgress?.chapters) return {}
     const chapterProgress = cachedProgress.chapters[selectedStageIndex]
@@ -291,24 +347,16 @@ export default function FullChapter() {
 
   return (
     <div className="fc-panel">
-      {/* Top bar: chapter selector — only completed chapters */}
-      <ChapterSelector
-        selectedStageIndex={selectedStageIndex}
-        onSelect={setSelectedStageIndex}
-        completedStageIndexes={completedStageIndexes}
-      />
-
-      {/* Two-column reader */}
+      {/* Two-column reader — dropdown bar is now inside the right panel toolbar */}
       <div className="fc-reader">
-        <LeftPanel
-          verses={verses}
-          chapterMeta={chapterMeta}
-          typedCounts={typedCounts}
-        />
+        <LeftPanel userId={userId} chapterMeta={chapterMeta} />
         <RightPanel
           verses={verses}
           chapterMeta={chapterMeta}
           typedCounts={typedCounts}
+          selectedStageIndex={selectedStageIndex}
+          onSelect={setSelectedStageIndex}
+          completedStageIndexes={completedStageIndexes}
         />
       </div>
     </div>

@@ -1,69 +1,75 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
-import { loadAllNotes, saveNote as saveNoteToDB, noteKey } from '../lib/notes'
+import {
+  loadAllNotes, saveNote as saveNoteToDB, noteKey,
+  loadAllChapterNotes, saveChapterNote as saveChapterNoteToDB, chapterNoteKey,
+} from '../lib/notes'
 
 /**
- * NotesContext — session-scoped cache for all user verse notes.
+ * NotesContext — session-scoped cache for all user verse AND chapter notes.
  *
  * Strategy:
- *   - On mount (userId available): fetch ALL notes in one query → sessionStorage
- *   - getNote(book, chapter, verse): O(1) map lookup, never hits DB
- *   - saveNote(book, chapter, verse, content): write-through (cache first, then DB)
+ *   - On mount (userId available): fetch ALL notes in one query each → sessionStorage
+ *   - getNote / getChapterNote: O(1) map lookup, never hits DB
+ *   - saveNote / saveChapterNote: write-through (cache first, then debounced DB write)
  *   - clearNotesCache(): called on sign-out to purge session data
  */
 
-const SESSION_KEY = (userId) => `hebrew-bible-notes-${userId}`
+const SESSION_KEY         = (userId) => `hebrew-bible-notes-${userId}`
+const SESSION_KEY_CHAPTER = (userId) => `hebrew-bible-chapter-notes-${userId}`
 
-function readSessionCache(userId) {
+function readSession(key) {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY(userId))
+    const raw = sessionStorage.getItem(key)
     return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
+  } catch { return null }
 }
 
-function writeSessionCache(userId, map) {
-  try {
-    sessionStorage.setItem(SESSION_KEY(userId), JSON.stringify(map))
-  } catch {}
+function writeSession(key, map) {
+  try { sessionStorage.setItem(key, JSON.stringify(map)) } catch {}
 }
 
-function removeSessionCache(userId) {
-  try {
-    if (userId) sessionStorage.removeItem(SESSION_KEY(userId))
-  } catch {}
+function removeSession(key) {
+  try { sessionStorage.removeItem(key) } catch {}
 }
 
 const NotesContext = createContext(null)
 
 export function NotesProvider({ children, userId }) {
-  // The in-memory notes map: { [noteKey]: htmlContent }
-  const [notesMap, setNotesMap] = useState({})
-  const [loadStatus, setLoadStatus] = useState('idle') // idle | loading | ready | error
-  const saveTimerRef = useRef({}) // { [key]: timeoutId } — per-note debounce
+  const [notesMap,        setNotesMap]        = useState({})
+  const [chapterNotesMap, setChapterNotesMap] = useState({})
+  const [loadStatus,      setLoadStatus]      = useState('idle') // idle | loading | ready | error
+
+  const saveTimerRef = useRef({})
 
   // Load all notes once when userId becomes available
   useEffect(() => {
     if (!userId) {
       setNotesMap({})
+      setChapterNotesMap({})
       setLoadStatus('idle')
       return
     }
 
-    // Fast path — already fetched this session
-    const cached = readSessionCache(userId)
-    if (cached) {
-      setNotesMap(cached)
+    const cachedVerse   = readSession(SESSION_KEY(userId))
+    const cachedChapter = readSession(SESSION_KEY_CHAPTER(userId))
+
+    if (cachedVerse && cachedChapter) {
+      setNotesMap(cachedVerse)
+      setChapterNotesMap(cachedChapter)
       setLoadStatus('ready')
       return
     }
 
-    // Slow path — first visit this session, fetch from Supabase
     setLoadStatus('loading')
-    loadAllNotes(userId)
-      .then((map) => {
-        setNotesMap(map)
-        writeSessionCache(userId, map)
+    Promise.all([
+      loadAllNotes(userId),
+      loadAllChapterNotes(userId),
+    ])
+      .then(([verseMap, chMap]) => {
+        setNotesMap(verseMap)
+        setChapterNotesMap(chMap)
+        writeSession(SESSION_KEY(userId),         verseMap)
+        writeSession(SESSION_KEY_CHAPTER(userId), chMap)
         setLoadStatus('ready')
       })
       .catch((err) => {
@@ -72,29 +78,18 @@ export function NotesProvider({ children, userId }) {
       })
   }, [userId])
 
-  /**
-   * Get a note's HTML content synchronously.
-   * Returns '' if no note exists (never shows a loading state).
-   */
+  // ─── Verse notes ────────────────────────────────────────────────────────────
+
   const getNote = useCallback(
     (book, chapter, verse) => notesMap[noteKey(book, chapter, verse)] ?? '',
     [notesMap]
   )
 
-  /**
-   * Save a note — write-through: update cache immediately, debounce DB write.
-   * @param {string} book
-   * @param {number} chapter
-   * @param {number} verse
-   * @param {string} content  HTML string
-   * @param {function} onStatus  (status: 'saving'|'saved'|'error') => void
-   */
   const saveNote = useCallback(
     (book, chapter, verse, content, onStatus) => {
       if (!userId) return
       const key = noteKey(book, chapter, verse)
 
-      // 1. Write to in-memory map immediately
       setNotesMap((prev) => {
         const next = { ...prev }
         if (!content || content.replace(/<[^>]*>/g, '').trim() === '') {
@@ -102,11 +97,10 @@ export function NotesProvider({ children, userId }) {
         } else {
           next[key] = content
         }
-        writeSessionCache(userId, next)
+        writeSession(SESSION_KEY(userId), next)
         return next
       })
 
-      // 2. Debounced DB write — cancel any pending save for this same key
       if (saveTimerRef.current[key]) clearTimeout(saveTimerRef.current[key])
       onStatus?.('saving')
 
@@ -119,17 +113,59 @@ export function NotesProvider({ children, userId }) {
     [userId]
   )
 
-  /** Purge session cache on sign-out. */
+  // ─── Chapter notes ───────────────────────────────────────────────────────────
+
+  const getChapterNote = useCallback(
+    (book, chapter) => chapterNotesMap[chapterNoteKey(book, chapter)] ?? '',
+    [chapterNotesMap]
+  )
+
+  const saveChapterNote = useCallback(
+    (book, chapter, content, onStatus) => {
+      if (!userId) return
+      const key = chapterNoteKey(book, chapter)
+
+      setChapterNotesMap((prev) => {
+        const next = { ...prev }
+        if (!content || content.replace(/<[^>]*>/g, '').trim() === '') {
+          delete next[key]
+        } else {
+          next[key] = content
+        }
+        writeSession(SESSION_KEY_CHAPTER(userId), next)
+        return next
+      })
+
+      if (saveTimerRef.current[key]) clearTimeout(saveTimerRef.current[key])
+      onStatus?.('saving')
+
+      saveTimerRef.current[key] = setTimeout(async () => {
+        const ok = await saveChapterNoteToDB(userId, book, chapter, content)
+        onStatus?.(ok ? 'saved' : 'error')
+        delete saveTimerRef.current[key]
+      }, 1000)
+    },
+    [userId]
+  )
+
+  // ─── Cache purge ─────────────────────────────────────────────────────────────
+
   const clearNotesCache = useCallback(() => {
     Object.values(saveTimerRef.current).forEach(clearTimeout)
     saveTimerRef.current = {}
-    removeSessionCache(userId)
+    removeSession(SESSION_KEY(userId))
+    removeSession(SESSION_KEY_CHAPTER(userId))
     setNotesMap({})
+    setChapterNotesMap({})
     setLoadStatus('idle')
   }, [userId])
 
   return (
-    <NotesContext.Provider value={{ getNote, saveNote, clearNotesCache, loadStatus }}>
+    <NotesContext.Provider value={{
+      getNote, saveNote,
+      getChapterNote, saveChapterNote,
+      clearNotesCache, loadStatus,
+    }}>
       {children}
     </NotesContext.Provider>
   )
