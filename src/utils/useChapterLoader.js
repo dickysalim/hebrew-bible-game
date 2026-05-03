@@ -55,6 +55,9 @@ export function useChapterLoader(initialStageIndex = 1) {
   const [stageIndex, setStageIndex] = useState(initialStageIndex)
   const [chapterData, setChapterData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  // Monotonically increasing counter — bumped on every successful load so consumers
+  // can reliably detect new data even when bouncing between the same two stages.
+  const [loadId, setLoadId] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -70,6 +73,7 @@ export function useChapterLoader(initialStageIndex = 1) {
         if (!cancelled) {
           setChapterData(data)
           setIsLoading(false)
+          setLoadId((prev) => prev + 1)
         }
       })
       .catch((err) => {
@@ -91,10 +95,17 @@ export function useChapterLoader(initialStageIndex = 1) {
     else console.log('[useChapterLoader] No next chapter — end of canon reached!')
   }, [stageIndex])
 
+  const goToPrev = useCallback(() => {
+    const prev = stageIndex - 1
+    if (BY_STAGE[prev]) setStageIndex(prev)
+    else console.log('[useChapterLoader] No previous chapter — already at beginning!')
+  }, [stageIndex])
+
   const chapterMeta = BY_STAGE[stageIndex] ?? null
   const hasNext = Boolean(BY_STAGE[stageIndex + 1])
+  const hasPrev = Boolean(BY_STAGE[stageIndex - 1])
 
-  return { chapterData, chapterMeta, stageIndex, isLoading, hasNext, jumpToStage, advanceToNext }
+  return { chapterData, chapterMeta, stageIndex, isLoading, loadId, hasNext, hasPrev, jumpToStage, advanceToNext, goToPrev }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

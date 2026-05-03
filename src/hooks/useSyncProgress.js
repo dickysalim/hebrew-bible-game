@@ -68,7 +68,7 @@ export function useSyncProgress({
       state,
       contextDiscoveredRoots,
       discoveredWordsByRoot,
-      { showSBLWord: state.showSBLWord, showSBLLetter: state.showSBLLetter }
+      { showSBLWord: state.showSBLWord, showSBLLetter: state.showSBLLetter, expertMode: state.expertMode }
     )
   }, [
     userId,
@@ -82,6 +82,7 @@ export function useSyncProgress({
     state.celebratedVerses,
     state.showSBLWord,
     state.showSBLLetter,
+    state.expertMode,
     contextDiscoveredRoots,
     discoveredWordsByRoot,
   ]) // eslint-disable-line react-hooks/exhaustive-deps

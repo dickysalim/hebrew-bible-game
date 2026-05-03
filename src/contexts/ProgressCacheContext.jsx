@@ -58,7 +58,7 @@ function ensurePerChapterCache(formatted) {
       },
     },
     // Carry forward new fields if present, otherwise defaults
-    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true },
+    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true, expertMode: false },
     alphabetProgress: formatted.alphabetProgress || {},
   }
 }
@@ -155,6 +155,7 @@ export function ProgressCacheProvider({ children, userId }) {
         settings: {
           showSBLWord: settings.showSBLWord ?? prev?.settings?.showSBLWord ?? true,
           showSBLLetter: settings.showSBLLetter ?? prev?.settings?.showSBLLetter ?? true,
+          expertMode: settings.expertMode ?? prev?.settings?.expertMode ?? false,
         },
         // Preserve existing alphabet progress
         alphabetProgress: prev?.alphabetProgress || {},

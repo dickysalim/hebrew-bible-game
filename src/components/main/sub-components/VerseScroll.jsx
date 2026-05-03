@@ -20,7 +20,7 @@ import { useRef, useState, useEffect, useLayoutEffect } from 'react'
 const EXIT_MS  = 140   // exit animation duration
 const ENTER_MS = 220   // enter animation duration
 
-export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter }) {
+export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter, expertMode }) {
   // --- verse transition state ---
   const [displayedVerse, setDisplayedVerse] = useState(currentVerse)
   const [animState, setAnimState]           = useState('')
@@ -196,6 +196,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
             wordRefs={wordRefs}
             showSBLWord={showSBLWord}
             showSBLLetter={showSBLLetter}
+            expertMode={expertMode}
           />
         </div>
       </div>
@@ -203,7 +204,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   )
 }
 
-function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter }) {
+function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter, expertMode }) {
   const handleFlagComplete = (flagIndex) => {
     if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
   }
@@ -256,19 +257,31 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
                 const type    = types[i] || 'root'
                 const charCls = done ? 'done' : isTyped ? `typed type-${type}` : 'ghost'
 
+                // Expert mode: ghost chars invisible, SBL Letter forced off
+                const effectiveSBLLetter = expertMode ? false : showSBLLetter
+                const ghostStyle = expertMode && !isTyped && !done ? { opacity: 0 } : undefined
+
                 return (
                   <div key={i} className="word-letter-col">
-                    <span className={`word-char ${charCls}`}>{ch}</span>
-                    <span className={`word-sbl-ch ${(isTyped || done) && showSBLLetter ? 'visible' : ''}`}>
-                      {(isTyped || done) && showSBLLetter ? (LETTER_SBL[ch] || '') : ''}
-                    </span>
+                    <span className={`word-char ${charCls}`} style={ghostStyle}>{ch}</span>
+                    {effectiveSBLLetter && (
+                      <span className={`word-sbl-ch ${(isTyped || done) ? 'visible' : ''}`}>
+                        {(isTyped || done) ? (LETTER_SBL[ch] || '') : ''}
+                      </span>
+                    )}
                   </div>
                 )
               })}
             </div>
 
-            {/* Full word SBL — only when word is done */}
-            {done && showSBLWord && <div className="word-full-sbl">{word.sbl}</div>}
+            {/* Full word SBL — shown when done (always), or during typing in expert mode */}
+            {(() => {
+              const effectiveSBLWord = expertMode ? true : showSBLWord
+              const showForActive = expertMode && isActive && !done
+              return (done || showForActive) && effectiveSBLWord
+                ? <div className="word-full-sbl">{word.sbl}</div>
+                : null
+            })()}
 
             {/* Root flags */}
             {wordFlags.map((flag, flagIndex) => {

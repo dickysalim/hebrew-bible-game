@@ -39,7 +39,9 @@ export const initialState = {
   celebratedVerses: [],
   showSBLWord: true,
   showSBLLetter: true,
+  expertMode: false,
   chapterEndSignal: 0,
+  prevChapterSignal: 0,
   chapters: {},
 }
 
@@ -173,7 +175,18 @@ export function reducer(state, action) {
 
     case 'MOVE_VERSE': {
       const nextVi = currentVerse + action.dir
-      if (nextVi < 0 || nextVi > highestVerse || nextVi >= verses.length) return state
+      // Going backward past the first verse: signal the previous chapter
+      if (action.dir === -1 && currentVerse === 0) {
+        return { ...state, prevChapterSignal: state.prevChapterSignal + 1 }
+      }
+      // Going forward past the last verse: signal the next chapter,
+      // but only if this verse has been completed or already surpassed
+      if (action.dir === 1 && nextVi >= verses.length) {
+        const verseCompleted = isVerseDone(verses, typedCounts, currentVerse) || currentVerse < highestVerse
+        if (verseCompleted) return { ...state, chapterEndSignal: state.chapterEndSignal + 1 }
+        return state
+      }
+      if (nextVi < 0 || nextVi > highestVerse) return state
       return { ...state, currentVerse: nextVi, activeWordIdx: 0, errorCount: 0, wrongHebKeys: [] }
     }
 
@@ -216,6 +229,7 @@ export function reducer(state, action) {
         recentTypedLetter: null,
         celebratedVerses: [],
         chapterEndSignal: 0,
+        prevChapterSignal: 0,
         chapters: {},
       }
     }
@@ -248,6 +262,7 @@ export function reducer(state, action) {
         errorCount: 0,
         wrongHebKeys: [],
         chapterEndSignal: 0,
+        prevChapterSignal: 0,
         chapters: updatedChapters,
       }
     }
@@ -289,6 +304,25 @@ export function reducer(state, action) {
 
     case 'TOGGLE_SBL_LETTER':
       return { ...state, showSBLLetter: !state.showSBLLetter }
+
+    case 'TOGGLE_EXPERT_MODE':
+      return { ...state, expertMode: !state.expertMode }
+
+    case 'RESET_VERSE': {
+      // Clear all typedCounts for the current verse, reset cursor to word 0
+      const clearedCounts = { ...typedCounts }
+      const vWords = verses[currentVerse]?.words || []
+      for (let wi = 0; wi < vWords.length; wi++) {
+        delete clearedCounts[wkey(currentVerse, wi)]
+      }
+      return {
+        ...state,
+        typedCounts: clearedCounts,
+        activeWordIdx: 0,
+        errorCount: 0,
+        wrongHebKeys: [],
+      }
+    }
 
     // Full state restore from Supabase — dispatched once after async load completes.
     // Uses buildInitialStateFromCache so the restore logic stays in one place.
@@ -358,5 +392,6 @@ export function buildInitialStateFromCache(cp) {
     chapters:         chaptersMap,
     showSBLWord:      cp.settings?.showSBLWord   ?? true,
     showSBLLetter:    cp.settings?.showSBLLetter ?? true,
+    expertMode:       cp.settings?.expertMode    ?? false,
   }
 }

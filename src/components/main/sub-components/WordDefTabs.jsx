@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 import WordDefinition from './WordDefinition'
 import WordRootTab from './WordRootTab'
 import WordConcordanceTab from './WordConcordanceTab'
+import VerseNotesTab from './VerseNotesTab'
 import './WordDefTabs.css'
 
-const TABS = ['Word', 'Root', 'Concordance']
+const TABS = ['Word', 'Root', 'Concordance', 'My Notes']
 
 /**
  * WordDefTabs — the outer .word-definition card with a tab bar inside it.
@@ -21,12 +22,14 @@ const TABS = ['Word', 'Root', 'Concordance']
 export default function WordDefTabs({
   word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber,
   isWordNew = false,
+  userId, book, chapter, verseNumber,
 }) {
   const [activeTab, setActiveTab] = useState('Word')
 
-  // Reset to the Word tab whenever the selected word changes
+  // Reset to the Word tab whenever the selected word changes,
+  // but preserve the My Notes tab since it's per-verse not per-word.
   useEffect(() => {
-    setActiveTab('Word')
+    setActiveTab(prev => (prev === 'My Notes' ? prev : 'Word'))
   }, [wordId])
 
   return (
@@ -70,6 +73,16 @@ export default function WordDefTabs({
         {activeTab === 'Concordance' && (
           <div className="wdt__tab-panel">
             <WordConcordanceTab wordId={isWordCompleted ? wordId : null} />
+          </div>
+        )}
+        {activeTab === 'My Notes' && (
+          <div className="wdt__tab-panel">
+            <VerseNotesTab
+              userId={userId}
+              book={book}
+              chapter={chapter}
+              verse={verseNumber}
+            />
           </div>
         )}
       </div>

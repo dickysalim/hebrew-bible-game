@@ -79,7 +79,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   // Dynamic chapter loader — only loads the chapter we need
   const {
     chapterData, chapterMeta, stageIndex: loaderStageIndex,
-    isLoading: chapterLoading, hasNext, jumpToStage, advanceToNext
+    isLoading: chapterLoading, loadId, hasNext, hasPrev, jumpToStage, advanceToNext, goToPrev
   } = useChapterLoader(resolvedInitialStage)
 
   // Derive verses from loaded chapter data (empty while loading)
@@ -118,6 +118,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         chapters: chaptersMap,
         showSBLWord:   jumpSettings.showSBLWord   ?? true,
         showSBLLetter: jumpSettings.showSBLLetter ?? true,
+        expertMode:    jumpSettings.expertMode    ?? false,
       }
     }
     if (userId) {
@@ -161,25 +162,68 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     }
   }, [jumpToStageIndex, jumpToStage])
 
-  // When chapter data finishes loading (after advance or jump), sync reducer
-  const prevLoaderStageRef = useRef(loaderStageIndex)
-  useEffect(() => {
-    if (!chapterLoading && chapterData && loaderStageIndex !== prevLoaderStageRef.current) {
-      prevLoaderStageRef.current = loaderStageIndex
-      // Only dispatch LOAD_CHAPTER if reducer hasn't already been set (e.g. by JUMP_TO_STAGE)
-      if (state.stageIndex !== loaderStageIndex) {
-        dispatch({ type: 'LOAD_CHAPTER', stageIndex: loaderStageIndex })
-      }
-    }
-  }, [chapterLoading, chapterData, loaderStageIndex]) // eslint-disable-line react-hooks/exhaustive-deps
+  // ─── Chapter navigation (robust, loadId-based + smooth transition) ──────
+  // All chapter transitions work the same way:
+  //   1. Signal effect triggers a fade-out
+  //   2. After fade-out, loader navigation fires (advanceToNext / goToPrev)
+  //   3. Loader fetches the JSON and bumps loadId
+  //   4. Sync-effect (watching loadId) dispatches LOAD_CHAPTER + triggers fade-in
+  // This produces a smooth visual crossfade between chapters.
 
-  // Auto-advance to next chapter when user presses SPACE on last verse
+  // Transition state: 'idle' | 'fading-out' | 'fading-in'
+  const [chapterTransition, setChapterTransition] = useState('idle')
+  // Ref to carry startAtVerse intent from the backward signal to the sync-effect
+  const pendingStartAtVerseRef = useRef(null)
+  // Ref to hold the navigation callback to execute after fade-out completes
+  const pendingNavRef = useRef(null)
+
+  // Execute the pending navigation after fade-out animation finishes
+  useEffect(() => {
+    if (chapterTransition !== 'fading-out') return
+    const timer = setTimeout(() => {
+      if (pendingNavRef.current) {
+        pendingNavRef.current()
+        pendingNavRef.current = null
+      }
+    }, 250) // matches CSS fade-out duration
+    return () => clearTimeout(timer)
+  }, [chapterTransition])
+
+  // Single sync-effect: fires reliably on every new load via loadId
+  useEffect(() => {
+    // Skip the initial load (loadId=0) — reducer init already handles that
+    if (loadId === 0 || !chapterData || chapterLoading) return
+    dispatch({
+      type: 'LOAD_CHAPTER',
+      stageIndex: loaderStageIndex,
+      startAtVerse: pendingStartAtVerseRef.current ?? undefined,
+    })
+    pendingStartAtVerseRef.current = null
+    // Trigger fade-in
+    setChapterTransition('fading-in')
+    const timer = setTimeout(() => setChapterTransition('idle'), 350)
+    return () => clearTimeout(timer)
+  }, [loadId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-advance to next chapter (down arrow / space on last verse)
   useEffect(() => {
     if (state.chapterEndSignal > 0 && hasNext) {
-      advanceToNext()
-      dispatch({ type: 'LOAD_CHAPTER', stageIndex: loaderStageIndex + 1 })
+      setChapterTransition('fading-out')
+      pendingNavRef.current = () => advanceToNext()
     }
   }, [state.chapterEndSignal]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Go back to previous chapter (up arrow on first verse)
+  useEffect(() => {
+    if (state.prevChapterSignal === 0 || !hasPrev) return
+    const prevSi = loaderStageIndex - 1
+    const prevChProgress = state.chapters[prevSi]
+    if (!prevChProgress || prevChProgress.highestVerse === 0) return
+    // Store landing verse so the sync-effect can pass it to LOAD_CHAPTER
+    pendingStartAtVerseRef.current = prevChProgress.highestVerse - 1
+    setChapterTransition('fading-out')
+    pendingNavRef.current = () => goToPrev()
+  }, [state.prevChapterSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [isTyping, setIsTyping] = useState(false)
   const [haberSessions, setHaberSessions] = useState({})
@@ -356,9 +400,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     )
   }
 
+  const transitionClass = chapterTransition !== 'idle' ? ` chapter-${chapterTransition}` : ''
+
   return (
     <div
-      className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}`}
+      className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}${transitionClass}`}
       style={isMobile && mobileBottomH > 0 ? { paddingBottom: `${mobileBottomH}px` } : undefined}
     >
 
@@ -410,6 +456,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             isWordCompleted={wordDone}
             onOpenHaber={() => setHaberOpen(true)}
             isWordNew={isWordNew}
+            userId={userId}
+            book={bookLabel}
+            chapter={chapterNum}
+            verseNumber={verse.verse}
           />
         </div>
 
@@ -425,10 +475,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               dispatch={dispatch}
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
+              expertMode={state.expertMode}
             />
           </div>
 
           <div className="bottom-strip">
+            {/* DEPRECATED: InsightCarousel disabled — kept as backup
             {verseDone && !isMobile && (
               <InsightCarousel
                 key={currentVerse}
@@ -439,6 +491,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 isNewCompletion={!alreadyCelebrated}
               />
             )}
+            */}
 
             {!isMobile && (
               <TAHOTStrip
@@ -451,13 +504,16 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             <KeyboardGuide
               rows={KEYBOARD_ROWS}
               keys={KEYS}
-              targetHeb={targetLetter}
-              showActiveKey={activeWord && !wordDone && errorCount >= 3}
+              targetHeb={state.expertMode ? null : targetLetter}
+              showActiveKey={!state.expertMode && activeWord && !wordDone && errorCount >= 3}
               wrongHebKeys={wrongHebKeys}
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
+              expertMode={state.expertMode}
               onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
               onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+              onToggleExpertMode={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
+              onResetVerse={() => dispatch({ type: 'RESET_VERSE' })}
             />
 
             <div className="footer-note">
@@ -471,6 +527,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
       {isMobile && (
         <div className="mobile-bottom-fixed" ref={mobileBottomRef}>
           <div className="mobile-floating-strip">
+            {/* DEPRECATED: InsightCarousel disabled — kept as backup
             {verseDone && (
               <InsightCarousel
                 key={currentVerse}
@@ -481,6 +538,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 isNewCompletion={!alreadyCelebrated}
               />
             )}
+            */}
             <TAHOTStrip
               words={verse.words}
               activeWordIndex={activeWordIdx}
@@ -503,26 +561,41 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 Ask Haber
               </button>
               <button
-                className={`mobile-pill mobile-pill--toggle${state.showSBLLetter ? ' mobile-pill--active' : ''}`}
+                className={`mobile-pill mobile-pill--toggle${state.showSBLLetter ? ' mobile-pill--active' : ''}${state.expertMode ? ' mobile-pill--locked' : ''}`}
                 onClick={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+                disabled={state.expertMode}
               >
                 SBL Letter
               </button>
               <button
-                className={`mobile-pill mobile-pill--toggle${state.showSBLWord ? ' mobile-pill--active' : ''}`}
+                className={`mobile-pill mobile-pill--toggle${state.showSBLWord ? ' mobile-pill--active' : ''}${state.expertMode ? ' mobile-pill--locked' : ''}`}
                 onClick={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
+                disabled={state.expertMode}
               >
                 SBL Word
               </button>
+              <button
+                className={`mobile-pill mobile-pill--toggle mobile-pill--expert${state.expertMode ? ' mobile-pill--active' : ''}`}
+                onClick={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
+              >
+                Expert
+              </button>
+              <button
+                className="mobile-pill mobile-pill--reset"
+                onClick={() => dispatch({ type: 'RESET_VERSE' })}
+              >
+                Reset Verse
+              </button>
             </div>
             <MobileHebrewKeyboard
-              targetHeb={targetLetter}
+              targetHeb={state.expertMode ? null : targetLetter}
               wrongHebKeys={wrongHebKeys}
-              showActiveKey={activeWord && !wordDone && errorCount >= 3}
+              showActiveKey={!state.expertMode && activeWord && !wordDone && errorCount >= 3}
               onKey={handleMobileKey}
               onSpace={handleMobileSpace}
               showSBLLetter={state.showSBLLetter}
               showSBLWord={state.showSBLWord}
+              expertMode={state.expertMode}
             />
           </div>
         </div>

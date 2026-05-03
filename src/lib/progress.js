@@ -38,6 +38,7 @@ export async function saveProgress(userId, progress) {
     // Settings
     show_sbl_word: progress.settings?.showSBLWord ?? true,
     show_sbl_letter: progress.settings?.showSBLLetter ?? true,
+    expert_mode: progress.settings?.expertMode ?? false,
     // Alphabet training progress
     alphabet_progress: progress.alphabetProgress || {},
     updated_at: new Date().toISOString(),
@@ -131,6 +132,7 @@ export function formatProgressForSupabase(
     settings: {
       showSBLWord: settings.showSBLWord ?? gameState.showSBLWord ?? true,
       showSBLLetter: settings.showSBLLetter ?? gameState.showSBLLetter ?? true,
+      expertMode: settings.expertMode ?? gameState.expertMode ?? false,
     },
     alphabetProgress,
   }
@@ -155,6 +157,7 @@ export function formatProgressFromSupabase(supabaseProgress) {
     settings: {
       showSBLWord: supabaseProgress.show_sbl_word ?? true,
       showSBLLetter: supabaseProgress.show_sbl_letter ?? true,
+      expertMode: supabaseProgress.expert_mode ?? false,
     },
     // Alphabet progress
     alphabetProgress: supabaseProgress.alphabet_progress || {},

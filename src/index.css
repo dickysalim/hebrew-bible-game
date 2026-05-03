@@ -218,6 +218,27 @@ html, body {
   overflow: hidden;
 }
 
+/* ── Chapter transition animations ── */
+@keyframes chapterFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes chapterFadeIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.game-panel.chapter-fading-out {
+  animation: chapterFadeOut 250ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}
+
+.game-panel.chapter-fading-in {
+  animation: chapterFadeIn 300ms cubic-bezier(0, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
 /* Main content grid for two-column layout */
 .main-content-grid {
   position: relative;
@@ -704,6 +725,43 @@ html, body {
 
 .sbl-checkbox:hover {
   color: var(--text-primary);
+}
+
+/* Expert mode checkbox — coral accent when active */
+.sbl-checkbox--expert {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.sbl-checkbox--expert-active span {
+  color: var(--coral);
+  font-weight: 600;
+}
+.sbl-checkbox--expert-active input[type="checkbox"] {
+  accent-color: var(--coral);
+}
+
+/* Reset verse button — below toggles panel */
+.sbl-reset-btn {
+  position: absolute;
+  right: 10px;
+  top: 120px;
+  padding: 5px 14px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.sbl-reset-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+  background: var(--bg-surface);
 }
 
 /* ─── FOOTER ─────────────────────────────────────────── */
@@ -5225,6 +5283,24 @@ html, body {
     background: var(--purple-light);
     color: var(--purple);
     border-color: var(--purple-mid);
+  }
+
+  .mobile-pill--toggle.mobile-pill--locked {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Expert mode pill — coral accent when active */
+  .mobile-pill--expert.mobile-pill--active {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--coral);
+    border-color: var(--coral);
+  }
+
+  .mobile-pill--reset {
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    border-color: var(--border-mid);
   }
 
   /* ── Mobile Hebrew virtual keyboard ── */

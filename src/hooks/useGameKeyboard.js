@@ -4,8 +4,8 @@ import { LATIN_TO_HEB } from '../utils/hebrewData'
 export function useGameKeyboard(dispatch, resetProgress, resetDiscoveredRoots, clearCache, setIsTyping) {
   useEffect(() => {
     const handler = e => {
-      // Don't intercept keypresses in text inputs (e.g. Haber conversation)
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+      // Don't intercept keypresses in text inputs or contentEditable (e.g. Haber conversation, verse notes)
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return
 
       // Debug reset: Ctrl+Shift+R
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {

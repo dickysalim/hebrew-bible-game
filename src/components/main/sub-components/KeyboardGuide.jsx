@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, onToggleSBLWord, onToggleSBLLetter }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleExpertMode, onResetVerse }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -87,18 +87,29 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
             type="checkbox"
             checked={showSBLLetter}
             onChange={onToggleSBLLetter}
+            disabled={expertMode}
           />
-          <span>SBL Letter</span>
+          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Letter</span>
         </label>
         <label className="sbl-checkbox">
           <input
             type="checkbox"
             checked={showSBLWord}
             onChange={onToggleSBLWord}
+            disabled={expertMode}
           />
-          <span>SBL Word</span>
+          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Word</span>
+        </label>
+        <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`}>
+          <input
+            type="checkbox"
+            checked={expertMode}
+            onChange={onToggleExpertMode}
+          />
+          <span>Expert</span>
         </label>
       </div>
+      <button className="sbl-reset-btn" onClick={onResetVerse}>↻ Reset Verse</button>
     </div>
   )
 }
