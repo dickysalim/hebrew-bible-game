@@ -10,6 +10,7 @@ import MainMenu from './components/ui/MainMenu'
 import AlphabetHub from './components/alphabet/AlphabetHub'
 import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscoveryContext'
 import { ProgressCacheProvider, useProgressCache } from './contexts/ProgressCacheContext'
+import { NotesProvider } from './contexts/NotesContext'
 import { supabase } from './lib/supabase'
 import { stageIndexFromId } from './utils/useChapterLoader'
 import { primeLexiconCache } from './lib/lexiconCache'
@@ -240,48 +241,50 @@ export default function App() {
 
   return (
     <ProgressCacheProvider userId={session?.user?.id}>
-      <RootDiscoveryProvider userId={session?.user?.id}>
-        <Routes>
-          {/* Main Menu */}
-          <Route
-            path="/"
-            element={
-              <MainMenuWrapper
-                session={session}
-                onEnterMidrash={handleEnterMidrash}
-                onSelectChapter={handleSelectChapter}
-                onLearnAlphabet={() => navigate('/alphabet')}
-                onSignOut={() => supabase.auth.signOut()}
-              />
-            }
-          />
+      <NotesProvider userId={session?.user?.id}>
+        <RootDiscoveryProvider userId={session?.user?.id}>
+          <Routes>
+            {/* Main Menu */}
+            <Route
+              path="/"
+              element={
+                <MainMenuWrapper
+                  session={session}
+                  onEnterMidrash={handleEnterMidrash}
+                  onSelectChapter={handleSelectChapter}
+                  onLearnAlphabet={() => navigate('/alphabet')}
+                  onSignOut={() => supabase.auth.signOut()}
+                />
+              }
+            />
 
-          {/* Alphabet Hub + Levels (/alphabet, /alphabet/level/1–5) */}
-          <Route
-            path="/alphabet/*"
-            element={
-              <div className="app-container">
-                <AlphabetHub onBack={handleBackToMenu} />
-              </div>
-            }
-          />
+            {/* Alphabet Hub + Levels (/alphabet, /alphabet/level/1–5) */}
+            <Route
+              path="/alphabet/*"
+              element={
+                <div className="app-container">
+                  <AlphabetHub onBack={handleBackToMenu} />
+                </div>
+              }
+            />
 
-          {/* Game — single path, tabs are internal state */}
-          <Route
-            path="/game"
-            element={
-              <GameLayout
-                session={session}
-                jumpToStageIndex={jumpToStageIndex}
-                onBackToMenu={handleBackToMenu}
-              />
-            }
-          />
+            {/* Game — single path, tabs are internal state */}
+            <Route
+              path="/game"
+              element={
+                <GameLayout
+                  session={session}
+                  jumpToStageIndex={jumpToStageIndex}
+                  onBackToMenu={handleBackToMenu}
+                />
+              }
+            />
 
-          {/* Catch-all → Main Menu */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </RootDiscoveryProvider>
+            {/* Catch-all → Main Menu */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </RootDiscoveryProvider>
+      </NotesProvider>
     </ProgressCacheProvider>
   )
 }

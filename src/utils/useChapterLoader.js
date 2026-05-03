@@ -16,8 +16,8 @@ import { useState, useEffect, useCallback } from 'react'
 // All chapters in canonical order, keyed by stage_index.
 // Add new chapters here as data files are created.
 export const CHAPTER_REGISTRY = [
-  { stageIndex: 1, id: 'genesis-1', book: 'Genesis', chapter: 1 },
-  { stageIndex: 2, id: 'genesis-2', book: 'Genesis', chapter: 2 },
+  { stageIndex: 1, id: 'genesis-1', book: 'Genesis', chapter: 1, totalVerses: 31 },
+  { stageIndex: 2, id: 'genesis-2', book: 'Genesis', chapter: 2, totalVerses: 25 },
   // future chapters go here, e.g.:
   // { stageIndex: 3, id: 'genesis-3', book: 'Genesis', chapter: 3 },
 ]

@@ -419,7 +419,10 @@
 /* Remove parent padding when notes tab is active so toolbar sits flush under tabs */
 .wdt__tab-panel:has(.verse-notes) {
   padding-top: 0;
-  overscroll-behavior: none; /* prevent macOS elastic bounce on the toolbar */
+  overscroll-behavior: none;
+  /* Make this a flex column so the verse-notes chain can stretch to fill it */
+  display: flex;
+  flex-direction: column;
 }
 
 .verse-notes {
@@ -493,7 +496,8 @@
   color: var(--text-primary);
   padding: 8px 4px;
   outline: none;
-  min-height: 120px;
+  cursor: text;
+  min-height: 120px; /* safety floor so it never collapses */
   border-radius: 4px;
   transition: box-shadow 0.2s;
 }
@@ -516,12 +520,13 @@
 .verse-notes__editor::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
 .verse-notes__editor::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* Editor inner wrapper */
+/* Editor inner wrapper — fills available space, click anywhere = start writing */
 .verse-notes__inner {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  cursor: text;
 }
 
 /* Empty / sign-in prompt */

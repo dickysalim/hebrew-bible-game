@@ -1,5 +1,9 @@
 import { supabase } from './supabase'
 
+/** Canonical cache key for a single verse note. */
+export const noteKey = (book, chapter, verse) =>
+  `${String(book).toLowerCase()}-${chapter}-${verse}`
+
 /**
  * Load a single note for a specific verse.
  * Returns the HTML content string, or '' if no note exists.
@@ -24,6 +28,32 @@ export async function loadNote(userId, book, chapter, verse) {
   } catch (err) {
     console.error('[loadNote] Exception:', err)
     return ''
+  }
+}
+
+/**
+ * Load ALL notes for a user in a single query.
+ * Returns a flat map: { "genesis-1-1": "<html>", "genesis-1-5": "<html>" }
+ */
+export async function loadAllNotes(userId) {
+  if (!userId) return {}
+  try {
+    const { data, error } = await supabase
+      .from('verse_notes')
+      .select('book, chapter, verse, content')
+      .eq('user_id', userId)
+    if (error) {
+      console.error('[loadAllNotes] Error:', error)
+      return {}
+    }
+    const map = {}
+    for (const row of data ?? []) {
+      map[noteKey(row.book, row.chapter, row.verse)] = row.content
+    }
+    return map
+  } catch (err) {
+    console.error('[loadAllNotes] Exception:', err)
+    return {}
   }
 }
 
