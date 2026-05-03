@@ -152,12 +152,9 @@ function LeftPanel({ userId, chapterMeta }) {
       {/* ── Divider ── */}
       <div className="fc-left__divider" aria-hidden="true" />
 
-      {/* ── Bottom pane: Chapter Notes ── */}
+      {/* ── Bottom pane: Chapter Notes (header is rendered by the editor itself) ── */}
       <div className="fc-left__bottom">
-        <div className="fc-left__bottom-header">
-          <span className="fc-left__bottom-label">Chapter Notes</span>
-        </div>
-        <div className="fc-left__bottom-body">
+        <div className="fc-left__bottom-body" dir="ltr">
           <ChapterNotesEditor
             userId={userId}
             book={chapterMeta?.book ?? ''}
@@ -234,9 +231,13 @@ function HebrewVerseRow({ verse, verseIdx, typedCounts, showSBLWord, showSBLLett
 
 
 function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSelect, completedStageIndexes }) {
-  const [showSBLWord, setShowSBLWord] = useState(true)
+  const [showSBLWord,   setShowSBLWord]   = useState(true)
   const [showSBLLetter, setShowSBLLetter] = useState(true)
-  const [showGloss, setShowGloss] = useState(true)
+  const [showGloss,     setShowGloss]     = useState(true)
+  const [fontSize,      setFontSize]      = useState(24) // px, 18–36 step 2
+
+  const decSize = () => setFontSize(s => Math.max(18, s - 2))
+  const incSize = () => setFontSize(s => Math.min(36, s + 2))
 
   return (
     <div className="fc-right">
@@ -248,6 +249,26 @@ function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSe
           completedStageIndexes={completedStageIndexes}
         />
         <div className="fc-right__toggles">
+          {/* Font size control */}
+          <div className="fc-font-size" aria-label="Hebrew font size">
+            <button
+              className="fc-font-size__btn"
+              onClick={decSize}
+              disabled={fontSize <= 18}
+              aria-label="Decrease font size"
+              title="Smaller"
+            >A−</button>
+            <button
+              className="fc-font-size__btn"
+              onClick={incSize}
+              disabled={fontSize >= 36}
+              aria-label="Increase font size"
+              title="Larger"
+            >A+</button>
+          </div>
+
+          <div className="fc-right__toggles-sep" aria-hidden="true" />
+
           <label className="fc-toggle">
             <input
               type="checkbox"
@@ -278,8 +299,13 @@ function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSe
         </div>
       </div>
 
-      {/* Scrollable text body */}
-      <div className="fc-right__scroll" role="document" aria-label="Hebrew chapter text">
+      {/* Scrollable text body — CSS var drives all Hebrew sizing */}
+      <div
+        className="fc-right__scroll"
+        role="document"
+        aria-label="Hebrew chapter text"
+        style={{ '--fc-heb-size': `${fontSize}px` }}
+      >
         {verses.map((verse, vi) => (
           <HebrewVerseRow
             key={vi}
@@ -298,6 +324,7 @@ function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSe
     </div>
   )
 }
+
 
 // ─── Main FullChapter Component ───────────────────────────────────────────────
 

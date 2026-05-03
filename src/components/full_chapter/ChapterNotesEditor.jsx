@@ -4,12 +4,12 @@ import { useNotes } from '../../contexts/NotesContext'
 /**
  * ChapterNotesEditor — rich-text (B/I/U) note editor for the active chapter.
  *
- * Identical spec to VerseNotesTab but scoped to (book, chapter) via
- * getChapterNote / saveChapterNote from NotesContext.
+ * Renders its own header row: "CHAPTER NOTES" label on the left,
+ * B/I/U toolbar + save status on the right.
  */
 export default function ChapterNotesEditor({ userId, book, chapter }) {
   const { getChapterNote, saveChapterNote, loadStatus } = useNotes()
-  const editorRef    = useRef(null)
+  const editorRef     = useRef(null)
   const statusSpanRef = useRef(null)
 
   const setStatus = useCallback((s) => {
@@ -21,17 +21,26 @@ export default function ChapterNotesEditor({ userId, book, chapter }) {
     }
   }, [])
 
-  const chapterKey    = `${book}-${chapter}`
-  const prevKeyRef    = useRef(null)
+  const chapterKey = `${book}-${chapter}`
+  const prevKeyRef = useRef(null)
 
-  // Sync editor content when chapter changes or cache becomes ready
+  // Force LTR on mount — belt-and-suspenders for contentEditable bidi
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.setAttribute('dir', 'ltr')
+      editorRef.current.style.direction = 'ltr'
+      editorRef.current.style.textAlign = 'left'
+      editorRef.current.style.unicodeBidi = 'plaintext'
+    }
+  }, [])
+
   useEffect(() => {
     if (loadStatus !== 'ready') return
     if (!editorRef.current) return
-
     const content = getChapterNote(book, chapter)
     editorRef.current.innerHTML = content
-
+    // Re-enforce LTR after innerHTML replacement (browsers can reset dir)
+    editorRef.current.setAttribute('dir', 'ltr')
     if (chapterKey !== prevKeyRef.current) {
       setStatus('idle')
       prevKeyRef.current = chapterKey
@@ -63,29 +72,38 @@ export default function ChapterNotesEditor({ userId, book, chapter }) {
 
   if (!userId) {
     return (
-      <div className="notes-empty">
-        <span className="notes-empty__icon">🔒</span>
-        <p>Sign in to save chapter notes</p>
-      </div>
+      <>
+        <div className="cn-header">
+          <span className="cn-header__label">Chapter Notes</span>
+        </div>
+        <div className="notes-empty">
+          <span className="notes-empty__icon">🔒</span>
+          <p>Sign in to save chapter notes</p>
+        </div>
+      </>
     )
   }
 
   if (loadStatus === 'loading') {
     return (
-      <div className="notes-empty">
-        <span className="notes-empty__icon" style={{ fontSize: 20 }}>⏳</span>
-        <p style={{ fontSize: 12 }}>Loading notes…</p>
-      </div>
+      <>
+        <div className="cn-header">
+          <span className="cn-header__label">Chapter Notes</span>
+        </div>
+        <div className="notes-empty">
+          <span className="notes-empty__icon" style={{ fontSize: 20 }}>⏳</span>
+          <p style={{ fontSize: 12 }}>Loading notes…</p>
+        </div>
+      </>
     )
   }
 
   return (
-    <div className="verse-notes">
-      <div
-        className="verse-notes__inner"
-        onClick={() => editorRef.current?.focus()}
-      >
-        <div className="verse-notes__toolbar">
+    <div className="verse-notes" dir="ltr" onClick={() => editorRef.current?.focus()}>
+      {/* Header row: label left, toolbar right */}
+      <div className="cn-header">
+        <span className="cn-header__label">Chapter Notes</span>
+        <div className="cn-header__toolbar">
           <button
             onMouseDown={e => { e.preventDefault(); execFormat('bold') }}
             title="Bold (Ctrl+B)"
@@ -107,27 +125,29 @@ export default function ChapterNotesEditor({ userId, book, chapter }) {
           >
             <span className="verse-notes__u-btn">U</span>
           </button>
-
           <span
             ref={statusSpanRef}
             className="verse-notes__status"
             aria-live="polite"
           />
         </div>
-
-        <div
-          ref={editorRef}
-          className="verse-notes__editor"
-          contentEditable
-          onInput={handleInput}
-          onKeyDown={stopGameKeys}
-          data-placeholder="Write your chapter notes here…"
-          suppressContentEditableWarning
-          role="textbox"
-          aria-label="Chapter notes editor"
-          aria-multiline="true"
-        />
       </div>
+
+      {/* Editor body */}
+      <div
+        ref={editorRef}
+        className="verse-notes__editor cn-editor"
+        contentEditable
+        dir="ltr"
+        lang="en"
+        onInput={handleInput}
+        onKeyDown={stopGameKeys}
+        data-placeholder="Write your chapter notes here…"
+        suppressContentEditableWarning
+        role="textbox"
+        aria-label="Chapter notes editor"
+        aria-multiline="true"
+      />
     </div>
   )
 }
