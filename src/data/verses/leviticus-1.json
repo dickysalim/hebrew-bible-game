@@ -9,47 +9,61 @@
         {
           "id": "ויקרא",
           "sbl": "vai.yik.Ra'",
-          "gloss": "and called(m)"
+          "gloss": "and called(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7121"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "to"
+          "gloss": "to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "משה",
           "sbl": "mo.Sheh",
-          "gloss": "Moses"
+          "gloss": "Moses",
+          "lemma_strongs": "H4872"
         },
         {
           "id": "וידבר",
           "sbl": "vay.da.Ber",
-          "gloss": "and spoke(m)"
+          "gloss": "and spoke(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H1696"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "אליו",
           "sbl": "'e.Lav",
-          "gloss": "to him"
+          "gloss": "to him",
+          "lemma_strongs": "H0413",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "מאהל",
           "sbl": "me.'O.hel",
-          "gloss": "from [the] tent of"
+          "gloss": "from [the] tent of",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H0168"
         },
         {
           "id": "מועד",
           "sbl": "mo.'Ed",
-          "gloss": "meeting"
+          "gloss": "meeting",
+          "lemma_strongs": "H4150"
         },
         {
           "id": "לאמר",
           "sbl": "le.Mor",
-          "gloss": "[to] saying"
+          "gloss": "[to] saying",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H0559"
         }
       ],
       "insights": []
@@ -60,107 +74,137 @@
         {
           "id": "דבר",
           "sbl": "da.Ber",
-          "gloss": "speak"
+          "gloss": "speak",
+          "lemma_strongs": "H1696"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "to"
+          "gloss": "to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] people of"
+          "gloss": "[the] people of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "ישראל",
           "sbl": "Yis.ra.'El",
-          "gloss": "Israel"
+          "gloss": "Israel",
+          "lemma_strongs": "H3478"
         },
         {
           "id": "ואמרת",
           "sbl": "ve.'a.mar.Ta",
-          "gloss": "and you will say"
+          "gloss": "and you will say",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H0559"
         },
         {
           "id": "אלהם",
           "sbl": "'a.le.Hem",
-          "gloss": "to them"
+          "gloss": "to them",
+          "lemma_strongs": "H0413",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "אדם",
           "sbl": "'a.Dam",
-          "gloss": "anyone"
+          "gloss": "anyone",
+          "lemma_strongs": "H0120"
         },
         {
           "id": "כי",
           "sbl": "ki-",
-          "gloss": "that"
+          "gloss": "that",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "יקריב",
           "sbl": "yak.Riv",
-          "gloss": "will present(m)"
+          "gloss": "will present(m)",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "מכם",
           "sbl": "mi.Kem",
-          "gloss": "of [the] you"
+          "gloss": "of [the] you",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H9036"
         },
         {
           "id": "קרבן",
           "sbl": "kor.ban",
-          "gloss": "a present"
+          "gloss": "a present",
+          "lemma_strongs": "H7133"
         },
         {
           "id": "ליהוה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh"
+          "gloss": "to Yahweh",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הבהמה",
           "sbl": "ha.be.he.Mah",
-          "gloss": "the livestock"
+          "gloss": "the livestock",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0929"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הבקר",
           "sbl": "ha.ba.Kar",
-          "gloss": "the herd"
+          "gloss": "the herd",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1241"
         },
         {
           "id": "ומן",
           "sbl": "u.min-",
-          "gloss": "and from"
+          "gloss": "and from",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הצאן",
           "sbl": "ha.Tzon",
-          "gloss": "the flock"
+          "gloss": "the flock",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6629"
         },
         {
           "id": "תקריבו",
           "sbl": "tak.Ri.vu",
-          "gloss": "you will present"
+          "gloss": "you will present",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "קרבנכם",
           "sbl": "ka.re.ban.Khem",
-          "gloss": "present your"
+          "gloss": "your present",
+          "lemma_strongs": "H7133",
+          "suffix_strongs": "H9026"
         }
       ],
       "insights": []
@@ -171,87 +215,111 @@
         {
           "id": "אם",
           "sbl": "'im-",
-          "gloss": "if"
+          "gloss": "if",
+          "lemma_strongs": "H0518"
         },
         {
           "id": "עלה",
           "sbl": "'o.Lah",
-          "gloss": "[is] a burnt offering"
+          "gloss": "[is] a burnt offering",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "קרבנו",
           "sbl": "ka.re.ba.No",
-          "gloss": "present his"
+          "gloss": "his present",
+          "lemma_strongs": "H7133",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הבקר",
           "sbl": "ha.ba.Kar",
-          "gloss": "the herd"
+          "gloss": "the herd",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1241"
         },
         {
           "id": "זכר",
           "sbl": "za.Khar",
-          "gloss": "a male"
+          "gloss": "a male",
+          "lemma_strongs": "H2145"
         },
         {
           "id": "תמים",
           "sbl": "ta.Mim",
-          "gloss": "unblemished"
+          "gloss": "unblemished",
+          "lemma_strongs": "H8549"
         },
         {
           "id": "יקריבנו",
           "sbl": "yak.ri.Ve.nu",
-          "gloss": "will present it(m)"
+          "gloss": "will present it(m)",
+          "lemma_strongs": "H7126",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "to"
+          "gloss": "to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "פתח",
           "sbl": "Pe.tach",
-          "gloss": "[the] entrance of"
+          "gloss": "[the] entrance of",
+          "lemma_strongs": "H6607"
         },
         {
           "id": "אהל",
           "sbl": "'O.hel",
-          "gloss": "[the] tent of"
+          "gloss": "[the] tent of",
+          "lemma_strongs": "H0168"
         },
         {
           "id": "מועד",
           "sbl": "mo.'Ed",
-          "gloss": "meeting"
+          "gloss": "meeting",
+          "lemma_strongs": "H4150"
         },
         {
           "id": "יקריב",
           "sbl": "yak.Riv",
-          "gloss": "will present(m)"
+          "gloss": "will present(m)",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "אתו",
           "sbl": "'o.To",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "לרצנו",
           "sbl": "lir.tzo.No",
-          "gloss": "for acceptance its"
+          "gloss": "its for acceptance",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H7522",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "לפני",
           "sbl": "lif.Nei",
-          "gloss": "[to] before"
+          "gloss": "[to] before",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H6440"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         }
       ],
       "insights": []
@@ -262,47 +330,63 @@
         {
           "id": "וסמך",
           "sbl": "ve.sa.Makh",
-          "gloss": "and will lean(m)"
+          "gloss": "and will lean(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5564"
         },
         {
           "id": "ידו",
           "sbl": "ya.Do",
-          "gloss": "hand his"
+          "gloss": "his hand",
+          "lemma_strongs": "H3027",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "על",
           "sbl": "'al",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "ראש",
           "sbl": "rosh",
-          "gloss": "[the] head of"
+          "gloss": "[the] head of",
+          "lemma_strongs": "H7218"
         },
         {
           "id": "העלה",
           "sbl": "ha.'o.Lah",
-          "gloss": "the burnt offering"
+          "gloss": "the burnt offering",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "ונרצה",
           "sbl": "ve.nir.Tzah",
-          "gloss": "and will be accepted(m)"
+          "gloss": "and will be accepted(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7521"
         },
         {
           "id": "לו",
           "sbl": "lo",
-          "gloss": "for [the] him"
+          "gloss": "for [the] him",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9033"
         },
         {
           "id": "לכפר",
           "sbl": "le.kha.Per",
-          "gloss": "to make atonement"
+          "gloss": "to make atonement",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3722"
         },
         {
           "id": "עליו",
           "sbl": "'a.Lav",
-          "gloss": "on him"
+          "gloss": "on him",
+          "lemma_strongs": "H5921",
+          "suffix_strongs": "H9033"
         }
       ],
       "insights": []
@@ -313,112 +397,143 @@
         {
           "id": "ושחט",
           "sbl": "ve.sha.Chat",
-          "gloss": "and will cut [the] throat of(m)"
+          "gloss": "and will cut [the] throat of(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7819"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "בן",
           "sbl": "ben",
-          "gloss": "[the] young one of"
+          "gloss": "[the] young one of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "הבקר",
           "sbl": "ha.ba.Kar",
-          "gloss": "the herd"
+          "gloss": "the herd",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1241"
         },
         {
           "id": "לפני",
           "sbl": "lif.Nei",
-          "gloss": "[to] before"
+          "gloss": "[to] before",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H6440"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "והקריבו",
           "sbl": "Ve.hik.ri.vu",
-          "gloss": "and will present"
+          "gloss": "and will present",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] sons of"
+          "gloss": "[the] sons of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "אהרן",
           "sbl": "'a.ha.Ron",
-          "gloss": "Aaron"
+          "gloss": "Aaron",
+          "lemma_strongs": "H0175"
         },
         {
           "id": "הכהנים",
           "sbl": "ha.ko.ha.Nim",
-          "gloss": "the priests"
+          "gloss": "the priests",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הדם",
           "sbl": "ha.Dam",
-          "gloss": "the blood"
+          "gloss": "the blood",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1818"
         },
         {
           "id": "וזרקו",
           "sbl": "ve.za.re.Ku",
-          "gloss": "and will sprinkle"
+          "gloss": "and will sprinkle",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H2236"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הדם",
           "sbl": "ha.Dam",
-          "gloss": "the blood"
+          "gloss": "the blood",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1818"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "סביב",
           "sbl": "sa.Viv",
-          "gloss": "all around"
+          "gloss": "all around",
+          "lemma_strongs": "H5439"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher-",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "פתח",
           "sbl": "Pe.tach",
-          "gloss": "[is] [the] entrance of"
+          "gloss": "[is] [the] entrance of",
+          "lemma_strongs": "H6607"
         },
         {
           "id": "אהל",
           "sbl": "'O.hel",
-          "gloss": "[the] tent of"
+          "gloss": "[the] tent of",
+          "lemma_strongs": "H0168"
         },
         {
           "id": "מועד",
           "sbl": "mo.'Ed",
-          "gloss": "meeting"
+          "gloss": "meeting",
+          "lemma_strongs": "H4150"
         }
       ],
       "insights": []
@@ -429,32 +544,44 @@
         {
           "id": "והפשיט",
           "sbl": "ve.hif.Shit",
-          "gloss": "and will skin(m)"
+          "gloss": "and will skin(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6584"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "העלה",
           "sbl": "ha.'o.Lah",
-          "gloss": "the burnt offering"
+          "gloss": "the burnt offering",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "ונתח",
           "sbl": "ve.ni.Tach",
-          "gloss": "and will cut in pieces(m)"
+          "gloss": "and will cut in pieces(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5408"
         },
         {
           "id": "אתה",
           "sbl": "'o.Tah",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9034"
         },
         {
           "id": "לנתחיה",
           "sbl": "lin.ta.Chei.ha",
-          "gloss": "into pieces its"
+          "gloss": "its into pieces",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H5409",
+          "suffix_strongs": "H9024"
         }
       ],
       "insights": []
@@ -465,57 +592,73 @@
         {
           "id": "ונתנו",
           "sbl": "Ve.na.te.nu",
-          "gloss": "and will put"
+          "gloss": "and will put",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5414"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] sons of"
+          "gloss": "[the] sons of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "אהרן",
           "sbl": "'a.ha.Ron",
-          "gloss": "Aaron"
+          "gloss": "Aaron",
+          "lemma_strongs": "H0175"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "אש",
           "sbl": "'esh",
-          "gloss": "fire"
+          "gloss": "fire",
+          "lemma_strongs": "H0784"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "וערכו",
           "sbl": "ve.'a.re.Khu",
-          "gloss": "and will arrange"
+          "gloss": "and will arrange",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6186"
         },
         {
           "id": "עצים",
           "sbl": "'e.Tzim",
-          "gloss": "wood[s]"
+          "gloss": "wood[s]",
+          "lemma_strongs": "H6086"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "האש",
           "sbl": "ha.'Esh",
-          "gloss": "the fire"
+          "gloss": "the fire",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0784"
         }
       ],
       "insights": []
@@ -526,92 +669,119 @@
         {
           "id": "וערכו",
           "sbl": "ve.'a.re.Khu",
-          "gloss": "and will arrange"
+          "gloss": "and will arrange",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6186"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] sons of"
+          "gloss": "[the] sons of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "אהרן",
           "sbl": "'a.ha.Ron",
-          "gloss": "Aaron"
+          "gloss": "Aaron",
+          "lemma_strongs": "H0175"
         },
         {
           "id": "הכהנים",
           "sbl": "ha.Ko.ha.Nim",
-          "gloss": "the priests"
+          "gloss": "the priests",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "את",
           "sbl": "'et",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הנתחים",
           "sbl": "ha.ne.ta.Chim",
-          "gloss": "the pieces"
+          "gloss": "the pieces",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5409"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הראש",
           "sbl": "ha.Rosh",
-          "gloss": "the head"
+          "gloss": "the head",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H7218"
         },
         {
           "id": "ואת",
           "sbl": "ve.'Et",
-          "gloss": "and [obj]"
+          "gloss": "and [obj]",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הפדר",
           "sbl": "ha.Pa.der",
-          "gloss": "the suet"
+          "gloss": "the suet",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6309"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "העצים",
           "sbl": "ha.'e.Tzim",
-          "gloss": "the wood[s]"
+          "gloss": "the wood[s]",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6086"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "[are] on"
+          "gloss": "[are] on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "האש",
           "sbl": "ha.'Esh",
-          "gloss": "the fire"
+          "gloss": "the fire",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0784"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "[is] on"
+          "gloss": "[is] on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         }
       ],
       "insights": []
@@ -622,72 +792,97 @@
         {
           "id": "וקרבו",
           "sbl": "ve.kir.Bo",
-          "gloss": "and entrails its"
+          "gloss": "its and entrails",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7130",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "וכרעיו",
           "sbl": "u.khe.ra.'Av",
-          "gloss": "and legs its"
+          "gloss": "its and legs",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3767",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ירחץ",
           "sbl": "yir.Chatz",
-          "gloss": "will wash(m)"
+          "gloss": "will wash(m)",
+          "lemma_strongs": "H7364"
         },
         {
           "id": "במים",
           "sbl": "ba.Ma.yim",
-          "gloss": "with [the] water"
+          "gloss": "with [the] water",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H4325"
         },
         {
           "id": "והקטיר",
           "sbl": "ve.hik.Tir",
-          "gloss": "and will make smoke(m)"
+          "gloss": "and will make smoke(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6999"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הכל",
           "sbl": "ha.Kol",
-          "gloss": "[the] everything"
+          "gloss": "[the] everything",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "המזבחה",
           "sbl": "ha.miz.Be.chah",
-          "gloss": "the altar towards"
+          "gloss": "the altar towards",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "עלה",
           "sbl": "'o.Lah",
-          "gloss": "a burnt offering"
+          "gloss": "a burnt offering",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "אשה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering of"
+          "gloss": "a fire offering of",
+          "lemma_strongs": "H0801"
         },
         {
           "id": "ריח",
           "sbl": "rei.ach-",
-          "gloss": "an odor of"
+          "gloss": "an odor of",
+          "lemma_strongs": "H7381"
         },
         {
           "id": "ניחוח",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing"
+          "gloss": "soothing",
+          "lemma_strongs": "H5207"
         },
         {
           "id": "ליהוה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh"
+          "gloss": "to Yahweh",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3068"
         }
       ],
       "insights": []
@@ -698,67 +893,87 @@
         {
           "id": "ואם",
           "sbl": "ve.'im-",
-          "gloss": "and if"
+          "gloss": "and if",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0518"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "[is] from"
+          "gloss": "[is] from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הצאן",
           "sbl": "ha.Tzon",
-          "gloss": "the flock"
+          "gloss": "the flock",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6629"
         },
         {
           "id": "קרבנו",
           "sbl": "ka.re.ba.No",
-          "gloss": "present his"
+          "gloss": "his present",
+          "lemma_strongs": "H7133",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "הכשבים",
           "sbl": "ha.ke.sa.Vim",
-          "gloss": "the young rams"
+          "gloss": "the young rams",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3775"
         },
         {
           "id": "או",
           "sbl": "'o",
-          "gloss": "or"
+          "gloss": "or",
+          "lemma_strongs": "H0176"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "העזים",
           "sbl": "ha.'i.Zim",
-          "gloss": "the goats"
+          "gloss": "the goats",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5795"
         },
         {
           "id": "לעלה",
           "sbl": "le.'o.Lah",
-          "gloss": "to a burnt offering"
+          "gloss": "to a burnt offering",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "זכר",
           "sbl": "za.Khar",
-          "gloss": "a male"
+          "gloss": "a male",
+          "lemma_strongs": "H2145"
         },
         {
           "id": "תמים",
           "sbl": "ta.Mim",
-          "gloss": "unblemished"
+          "gloss": "unblemished",
+          "lemma_strongs": "H8549"
         },
         {
           "id": "יקריבנו",
           "sbl": "yak.ri.Ve.nu",
-          "gloss": "will present it(m)"
+          "gloss": "will present it(m)",
+          "lemma_strongs": "H7126",
+          "suffix_strongs": "H9033"
         }
       ],
       "insights": []
@@ -769,87 +984,113 @@
         {
           "id": "ושחט",
           "sbl": "ve.sha.Chat",
-          "gloss": "and will cut [the] throat of(m)"
+          "gloss": "and will cut [the] throat of(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7819"
         },
         {
           "id": "אתו",
           "sbl": "'o.To",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "על",
           "sbl": "'al",
-          "gloss": "at"
+          "gloss": "at",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "ירך",
           "sbl": "Ye.rekh",
-          "gloss": "[the] side of"
+          "gloss": "[the] side of",
+          "lemma_strongs": "H3409"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "צפנה",
           "sbl": "tza.Fo.nah",
-          "gloss": "north -ward"
+          "gloss": "north -ward",
+          "lemma_strongs": "H6828",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "לפני",
           "sbl": "lif.Nei",
-          "gloss": "[to] before"
+          "gloss": "[to] before",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H6440"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "וזרקו",
           "sbl": "ve.za.re.Ku",
-          "gloss": "and will sprinkle"
+          "gloss": "and will sprinkle",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H2236"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] sons of"
+          "gloss": "[the] sons of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "אהרן",
           "sbl": "'a.ha.Ron",
-          "gloss": "Aaron"
+          "gloss": "Aaron",
+          "lemma_strongs": "H0175"
         },
         {
           "id": "הכהנים",
           "sbl": "ha.ko.ha.Nim",
-          "gloss": "the priests"
+          "gloss": "the priests",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "דמו",
           "sbl": "da.Mo",
-          "gloss": "blood its"
+          "gloss": "its blood",
+          "lemma_strongs": "H1818",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "סביב",
           "sbl": "sa.Viv",
-          "gloss": "all around"
+          "gloss": "all around",
+          "lemma_strongs": "H5439"
         }
       ],
       "insights": []
@@ -860,92 +1101,124 @@
         {
           "id": "ונתח",
           "sbl": "ve.ni.Tach",
-          "gloss": "and will cut in pieces(m)"
+          "gloss": "and will cut in pieces(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5408"
         },
         {
           "id": "אתו",
           "sbl": "'o.To",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "לנתחיו",
           "sbl": "lin.ta.Chav",
-          "gloss": "into pieces its"
+          "gloss": "its into pieces",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H5409",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ואת",
           "sbl": "ve.'Et",
-          "gloss": "and [obj]"
+          "gloss": "and [obj]",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "ראשו",
           "sbl": "ro.Sho",
-          "gloss": "head its"
+          "gloss": "its head",
+          "lemma_strongs": "H7218",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ואת",
           "sbl": "ve.'Et",
-          "gloss": "and [obj]"
+          "gloss": "and [obj]",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "פדרו",
           "sbl": "pid.Ro",
-          "gloss": "suet its"
+          "gloss": "its suet",
+          "lemma_strongs": "H6309",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "וערך",
           "sbl": "ve.'a.Rakh",
-          "gloss": "and will arrange(m)"
+          "gloss": "and will arrange(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6186"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "אתם",
           "sbl": "'o.Tam",
-          "gloss": "[obj] them"
+          "gloss": "[obj] them",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "העצים",
           "sbl": "ha.'e.Tzim",
-          "gloss": "the wood[s]"
+          "gloss": "the wood[s]",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6086"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "[are] on"
+          "gloss": "[are] on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "האש",
           "sbl": "ha.'Esh",
-          "gloss": "the fire"
+          "gloss": "the fire",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0784"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "[is] on"
+          "gloss": "[is] on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         }
       ],
       "insights": []
@@ -956,82 +1229,108 @@
         {
           "id": "והקרב",
           "sbl": "ve.ha.Ke.rev",
-          "gloss": "and the entrails"
+          "gloss": "and the entrails",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H7130"
         },
         {
           "id": "והכרעים",
           "sbl": "ve.ha.ke.ra.'A.yim",
-          "gloss": "and the legs"
+          "gloss": "and the legs",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3767"
         },
         {
           "id": "ירחץ",
           "sbl": "yir.Chatz",
-          "gloss": "will wash(m)"
+          "gloss": "will wash(m)",
+          "lemma_strongs": "H7364"
         },
         {
           "id": "במים",
           "sbl": "ba.Ma.yim",
-          "gloss": "with [the] water"
+          "gloss": "with [the] water",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H4325"
         },
         {
           "id": "והקריב",
           "sbl": "ve.hik.Riv",
-          "gloss": "and will present(m)"
+          "gloss": "and will present(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "הכל",
           "sbl": "ha.Kol",
-          "gloss": "[the] everything"
+          "gloss": "[the] everything",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "והקטיר",
           "sbl": "ve.hik.Tir",
-          "gloss": "and will make [it] smoke(m)"
+          "gloss": "and will make [it] smoke(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6999"
         },
         {
           "id": "המזבחה",
           "sbl": "ha.miz.Be.chah",
-          "gloss": "the altar towards"
+          "gloss": "the altar towards",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "עלה",
           "sbl": "'o.Lah",
-          "gloss": "[is] a burnt offering"
+          "gloss": "[is] a burnt offering",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "הוא",
           "sbl": "Hu'",
-          "gloss": "it"
+          "gloss": "it",
+          "lemma_strongs": "H1931"
         },
         {
           "id": "אשה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering of"
+          "gloss": "a fire offering of",
+          "lemma_strongs": "H0801"
         },
         {
           "id": "ריח",
           "sbl": "Rei.ach",
-          "gloss": "an odor of"
+          "gloss": "an odor of",
+          "lemma_strongs": "H7381"
         },
         {
           "id": "ניחח",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing"
+          "gloss": "soothing",
+          "lemma_strongs": "H5207"
         },
         {
           "id": "ליהוה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh"
+          "gloss": "to Yahweh",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3068"
         }
       ],
       "insights": []
@@ -1042,77 +1341,100 @@
         {
           "id": "ואם",
           "sbl": "ve.'Im",
-          "gloss": "and if"
+          "gloss": "and if",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0518"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "העוף",
           "sbl": "ha.'of",
-          "gloss": "the bird[s]"
+          "gloss": "the bird[s]",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5775"
         },
         {
           "id": "עלה",
           "sbl": "'o.Lah",
-          "gloss": "[is] a burnt offering"
+          "gloss": "[is] a burnt offering",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "קרבנו",
           "sbl": "ka.re.ba.No",
-          "gloss": "present his"
+          "gloss": "his present",
+          "lemma_strongs": "H7133",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ליהוה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh"
+          "gloss": "to Yahweh",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "והקריב",
           "sbl": "ve.hik.Riv",
-          "gloss": "and will present(m)"
+          "gloss": "and will present(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7126"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "התרים",
           "sbl": "ha.to.Rim",
-          "gloss": "the turtle-doves"
+          "gloss": "the turtle-doves",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H8449"
         },
         {
           "id": "או",
           "sbl": "'o",
-          "gloss": "or"
+          "gloss": "or",
+          "lemma_strongs": "H0176"
         },
         {
           "id": "מן",
           "sbl": "min-",
-          "gloss": "from"
+          "gloss": "from",
+          "lemma_strongs": "H4480"
         },
         {
           "id": "בני",
           "sbl": "be.Nei",
-          "gloss": "[the] young ones of"
+          "gloss": "[the] young ones of",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "היונה",
           "sbl": "hai.yo.Nah",
-          "gloss": "the dove"
+          "gloss": "the dove",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3123"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "קרבנו",
           "sbl": "ka.re.ba.No",
-          "gloss": "present his"
+          "gloss": "his present",
+          "lemma_strongs": "H7133",
+          "suffix_strongs": "H9023"
         }
       ],
       "insights": []
@@ -1123,72 +1445,98 @@
         {
           "id": "והקריבו",
           "sbl": "ve.hik.ri.Vo",
-          "gloss": "and will present it(m)"
+          "gloss": "and will present it(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7126",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "to"
+          "gloss": "to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "ומלק",
           "sbl": "u.ma.Lak",
-          "gloss": "and will nip off(m)"
+          "gloss": "and will nip off(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H4454"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "ראשו",
           "sbl": "ro.Sho",
-          "gloss": "head its"
+          "gloss": "its head",
+          "lemma_strongs": "H7218",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "והקטיר",
           "sbl": "ve.hik.Tir",
-          "gloss": "and will make [it] smoke(m)"
+          "gloss": "and will make [it] smoke(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6999"
         },
         {
           "id": "המזבחה",
           "sbl": "ha.miz.Be.chah",
-          "gloss": "the altar towards"
+          "gloss": "the altar towards",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "ונמצה",
           "sbl": "ve.nim.Tzah",
-          "gloss": "and will be drained out(m)"
+          "gloss": "and will be drained out(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H4680"
         },
         {
           "id": "דמו",
           "sbl": "da.Mo",
-          "gloss": "blood its"
+          "gloss": "its blood",
+          "lemma_strongs": "H1818",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "על",
           "sbl": "'al",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "קיר",
           "sbl": "kir",
-          "gloss": "[the] side of"
+          "gloss": "[the] side of",
+          "lemma_strongs": "H7023"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         }
       ],
       "insights": []
@@ -1199,62 +1547,83 @@
         {
           "id": "והסיר",
           "sbl": "ve.he.Sir",
-          "gloss": "and will remove(m)"
+          "gloss": "and will remove(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5493"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "מראתו",
           "sbl": "mur.'a.To",
-          "gloss": "craw its"
+          "gloss": "its craw",
+          "lemma_strongs": "H4760",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "בנצתה",
           "sbl": "be.no.tza.Tah",
-          "gloss": "with feather[s] its"
+          "gloss": "its with feather[s]",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H5133",
+          "suffix_strongs": "H9024"
         },
         {
           "id": "והשליך",
           "sbl": "ve.hish.Likh",
-          "gloss": "and will throw(m)"
+          "gloss": "and will throw(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H7993"
         },
         {
           "id": "אתה",
           "sbl": "'o.Tah",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9034"
         },
         {
           "id": "אצל",
           "sbl": "'E.tzel",
-          "gloss": "beside"
+          "gloss": "beside",
+          "lemma_strongs": "H0681"
         },
         {
           "id": "המזבח",
           "sbl": "ha.miz.Be.ach",
-          "gloss": "the altar"
+          "gloss": "the altar",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196"
         },
         {
           "id": "קדמה",
           "sbl": "Ke.de.mah",
-          "gloss": "east -ward"
+          "gloss": "east -ward",
+          "lemma_strongs": "H6924",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "to"
+          "gloss": "to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "מקום",
           "sbl": "me.Kom",
-          "gloss": "[the] place of"
+          "gloss": "[the] place of",
+          "lemma_strongs": "H4725"
         },
         {
           "id": "הדשן",
           "sbl": "ha.Da.shen",
-          "gloss": "the fatty ash"
+          "gloss": "the fatty ash",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H1880"
         }
       ],
       "insights": []
@@ -1265,102 +1634,134 @@
         {
           "id": "ושסע",
           "sbl": "ve.shi.Sa'",
-          "gloss": "and will tear apart(m)"
+          "gloss": "and will tear apart(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H8156"
         },
         {
           "id": "אתו",
           "sbl": "'o.To",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "בכנפיו",
           "sbl": "vikh.na.Fav",
-          "gloss": "by wings its"
+          "gloss": "its by wings",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3671",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "לא",
           "sbl": "lo'",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "יבדיל",
           "sbl": "yav.Dil",
-          "gloss": "will separate [it](m)"
+          "gloss": "will separate [it](m)",
+          "lemma_strongs": "H0914"
         },
         {
           "id": "והקטיר",
           "sbl": "ve.hik.Tir",
-          "gloss": "and will make smoke(m)"
+          "gloss": "and will make smoke(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H6999"
         },
         {
           "id": "אתו",
           "sbl": "'o.To",
-          "gloss": "[obj] it"
+          "gloss": "[obj] it",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "הכהן",
           "sbl": "ha.ko.Hen",
-          "gloss": "the priest"
+          "gloss": "the priest",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3548"
         },
         {
           "id": "המזבחה",
           "sbl": "ha.miz.Be.chah",
-          "gloss": "the altar towards"
+          "gloss": "the altar towards",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4196",
+          "suffix_strongs": "H9011"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "העצים",
           "sbl": "ha.'e.Tzim",
-          "gloss": "the wood[s]"
+          "gloss": "the wood[s]",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H6086"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "[are] on"
+          "gloss": "[are] on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "האש",
           "sbl": "ha.'Esh",
-          "gloss": "the fire"
+          "gloss": "the fire",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0784"
         },
         {
           "id": "עלה",
           "sbl": "'o.Lah",
-          "gloss": "[is] a burnt offering"
+          "gloss": "[is] a burnt offering",
+          "lemma_strongs": "H5930"
         },
         {
           "id": "הוא",
           "sbl": "Hu'",
-          "gloss": "it"
+          "gloss": "it",
+          "lemma_strongs": "H1931"
         },
         {
           "id": "אשה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering of"
+          "gloss": "a fire offering of",
+          "lemma_strongs": "H0801"
         },
         {
           "id": "ריח",
           "sbl": "Rei.ach",
-          "gloss": "an odor of"
+          "gloss": "an odor of",
+          "lemma_strongs": "H7381"
         },
         {
           "id": "ניחח",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing"
+          "gloss": "soothing",
+          "lemma_strongs": "H5207"
         },
         {
           "id": "ליהוה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh"
+          "gloss": "to Yahweh",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3068"
         }
       ],
       "insights": []

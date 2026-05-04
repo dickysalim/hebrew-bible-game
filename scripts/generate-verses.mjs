@@ -28,6 +28,66 @@ function getText(node) {
   return result.replace(/\s+/g, ' ').trim();
 }
 
+// ── parse dStrongs from TAHOT column 4 ───────────────────────────────────────
+//
+// Format: H9003/{H7225G}          → prefix / lemma
+//         {H1254A}                → lemma only
+//         H9005/H4327/H9023       → prefix / lemma / suffix
+//         H2233G/H9023            → lemma / suffix
+//
+// Rules:
+//   - {curly brackets} = lemma (root word)
+//   - token BEFORE { with / separator = prefix
+//   - token AFTER } with / separator = suffix
+//
+// Returns: { prefix_strongs, lemma_strongs, suffix_strongs }
+
+function parseDStrongs(raw) {
+  if (!raw) return { prefix_strongs: null, lemma_strongs: null, suffix_strongs: null };
+
+  // strip backslash-separated punctuation tags (e.g. \H9014=־=link, \H9016=׃=verseEnd)
+  const cleaned = raw.split('\\')[0].trim();
+
+  // extract lemma — content inside first { }
+  const lemmaMatch = cleaned.match(/\{([^}]+)\}/);
+  const lemma_strongs = lemmaMatch ? lemmaMatch[1].replace(/[{}]/g, '').trim() : null;
+
+  let prefix_strongs = null;
+  let suffix_strongs = null;
+
+  if (lemmaMatch) {
+    // everything before the { is prefix candidates
+    const beforeLemma = cleaned.slice(0, cleaned.indexOf('{')).trim();
+    if (beforeLemma) {
+      // strip trailing slash and get last token
+      const prefixTokens = beforeLemma.replace(/\/$/, '').split('/').map(s => s.trim()).filter(Boolean);
+      // take the last prefix token (closest to lemma)
+      if (prefixTokens.length > 0) {
+        prefix_strongs = prefixTokens[prefixTokens.length - 1];
+      }
+    }
+
+    // everything after the } is suffix candidates
+    const afterLemma = cleaned.slice(cleaned.indexOf('}') + 1).trim();
+    if (afterLemma) {
+      // strip leading slash and get first token
+      const suffixTokens = afterLemma.replace(/^\//, '').split('/').map(s => s.trim()).filter(Boolean);
+      if (suffixTokens.length > 0) {
+        suffix_strongs = suffixTokens[0];
+      }
+    }
+  }
+
+  // clean up any trailing letters that are just occurrence markers (H7225G_A → H7225G)
+  const cleanId = (id) => id ? id.replace(/[A-Z]$/, '').replace(/_[A-Z]$/, '') : null;
+
+  return {
+    prefix_strongs: cleanId(prefix_strongs),
+    lemma_strongs:  cleanId(lemma_strongs),
+    suffix_strongs: cleanId(suffix_strongs),
+  };
+}
+
 // ── book order ────────────────────────────────────────────────────────────────
 
 const BOOK_ORDER = [
@@ -83,8 +143,9 @@ const TAHOT_FILES = [
   'scripts/TAHOT/TAHOT-Isa-Mal.txt',
 ];
 
-const tahotGloss = {};
-const tahotSbl = {};
+const tahotGloss    = {};
+const tahotSbl      = {};
+const tahotDStrongs = {}; // NEW — stores raw dStrongs column per word ref
 
 for (const file of TAHOT_FILES) {
   let content;
@@ -99,43 +160,50 @@ for (const file of TAHOT_FILES) {
   for (const line of lines) {
     const trimmed = line.trim();
 
-    // skip empty lines, comment lines, header lines
     if (!trimmed) continue;
     if (trimmed.startsWith('#')) continue;
     if (!trimmed.match(/^[A-Z1-9]/)) continue;
 
     const cols = trimmed.split('\t');
-    if (cols.length < 4) continue;
+    if (cols.length < 5) continue;
 
     // col 0: Gen.1.1#01=L
     // col 1: Hebrew text
     // col 2: transliteration
     // col 3: English gloss
+    // col 4: dStrongs  ← NEW
     const refRaw = cols[0].trim();
-    const refMatch = refRaw.match(/^([A-Za-z0-9]+\.\d+\.\d+#\d+)/);
+    const refMatch = refRaw.match(/^([A-Za-z0-9]+\.\d+\.\d+)(?:\([^)]+\))?(#\d+)/);
     if (!refMatch) continue;
 
-    const ref = refMatch[1];
+    const ref = refMatch[1] + refMatch[2];
 
-    // clean SBL — just remove slashes, no markdown in data rows
+    // clean SBL
     const sbl = (cols[2] || '').trim()
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // strip [text](url) markdown
-      .replace(/\//g, '')                          // remove slashes
-      .replace(/\./g, '.')                         // normalize dots
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/\//g, '')
+      .replace(/\./g, '.')
       .trim();
 
     // clean gloss
     let gloss = (cols[3] || '').trim();
     gloss = gloss
-      .replace(/<([^>]+)>/g, '[$1]')       // <obj.> → [obj.]
-      .replace(/\[obj\.\]/gi, '[obj]')      // normalize obj
-      .replace(/\//g, ' ')                  // in/beginning → in beginning
+      .replace(/<([^>]+)>/g, '[$1]')
+      .replace(/\[obj\.\]/gi, '[obj]')
+      .replace(/\//g, ' ')
       .replace(/\s+/g, ' ')
-      .replace(/^\s+|\s+$/g, '')
       .trim();
 
-    tahotGloss[ref] = gloss;
-    tahotSbl[ref] = sbl;
+    // flip ownership suffixes to natural English order
+    // "host their" → "their host", "seed its" → "its seed"
+    gloss = gloss.replace(
+      /^(.+?)\s+(their|his|her|its|our|your)$/i,
+      '$2 $1'
+    );
+
+    tahotGloss[ref]    = gloss;
+    tahotSbl[ref]      = sbl;
+    tahotDStrongs[ref] = (cols[4] || '').trim(); // NEW
   }
 }
 
@@ -144,9 +212,9 @@ console.log(`TAHOT glosses loaded: ${Object.keys(tahotGloss).length}`);
 // ── load words export ─────────────────────────────────────────────────────────
 
 console.log('Loading words export...');
-const wordsExportRaw = readFileSync('scripts/words-export.json', 'utf8');
+const wordsExportRaw  = readFileSync('scripts/words-export.json', 'utf8');
 const wordsExportData = JSON.parse(wordsExportRaw);
-const wordsExport = {};
+const wordsExport     = {};
 
 const rows = wordsExportData[0]?.results || wordsExportData.results || wordsExportData;
 for (const row of rows) {
@@ -156,7 +224,7 @@ for (const row of rows) {
 }
 console.log(`Words export loaded: ${Object.keys(wordsExport).length} entries`);
 
-// ── TAHOT book code → OSHB osisID map ────────────────────────────────────────
+// ── OSHB osisID → TAHOT book code map ────────────────────────────────────────
 
 const OSIS_TO_TAHOT = {
   'Gen': 'Gen', 'Exod': 'Exo', 'Lev': 'Lev', 'Num': 'Num', 'Deut': 'Deu',
@@ -176,7 +244,6 @@ mkdirSync(outDir, { recursive: true });
 
 let stageIndex = 0;
 
-// process only genesis for now — remove filter for full Bible
 const booksToProcess = BOOK_ORDER;
 
 for (const book of booksToProcess) {
@@ -194,79 +261,88 @@ for (const book of booksToProcess) {
 
   const doc = new DOMParser().parseFromString(xml, 'text/xml');
 
-  // get OSHB book code from first verse
-  const firstVerse = doc.getElementsByTagName('verse')[0];
+  const firstVerse  = doc.getElementsByTagName('verse')[0];
   const firstOsisId = attr(firstVerse, 'osisID');
-  const osisBook = firstOsisId.split('.')[0];
-  const tahotBook = OSIS_TO_TAHOT[osisBook] || osisBook;
+  const osisBook    = firstOsisId.split('.')[0];
+  const tahotBook   = OSIS_TO_TAHOT[osisBook] || osisBook;
 
-  // group verses by chapter
   const chapters = {};
 
   const verseNodes = doc.getElementsByTagName('verse');
   for (let v = 0; v < verseNodes.length; v++) {
     const verseNode = verseNodes[v];
-    const osisID = attr(verseNode, 'osisID');
-    const parts = osisID.split('.');
+    const osisID    = attr(verseNode, 'osisID');
+    const parts     = osisID.split('.');
     const chapterNum = parseInt(parts[1]);
-    const verseNum = parseInt(parts[2]);
+    const verseNum   = parseInt(parts[2]);
 
     if (!chapters[chapterNum]) chapters[chapterNum] = [];
 
     const wNodes = verseNode.getElementsByTagName('w');
-    const words = [];
+    const words  = [];
 
     for (let w = 0; w < wNodes.length; w++) {
-      const wNode = wNodes[w];
+      const wNode      = wNodes[w];
       const hebrewText = getText(wNode);
-      const wordId = stripNikud(hebrewText);
+      const wordId     = stripNikud(hebrewText);
       if (!wordId) continue;
 
-      const wordNum = w + 1;
+      const wordNum    = w + 1;
       const wordNumStr = String(wordNum).padStart(2, '0');
-      const tahotRef = `${tahotBook}.${chapterNum}.${verseNum}#${wordNumStr}`;
+      const tahotRef   = `${tahotBook}.${chapterNum}.${verseNum}#${wordNumStr}`;
 
-      // get gloss from TAHOT
+      // ── gloss ──────────────────────────────────────────────────────────────
       let gloss = tahotGloss[tahotRef] || '';
 
-      // fallback — build from words export
       if (!gloss) {
         const wordData = wordsExport[wordId];
         if (wordData) {
-          const parts = [
+          const fallbackParts = [
             wordData.word_prefix_gloss?.split(',')[0],
             wordData.word_lemma_gloss?.split(',')[0],
             wordData.word_suffix_gloss?.split(',')[0],
           ].filter(Boolean);
-          gloss = parts.join(' ');
+          gloss = fallbackParts.join(' ');
         }
       }
 
-      // verb gender marker — 3rd person only
+      // verb gender marker
       const verbMorph = attr(wNodes[w], 'morph') || '';
       if (verbMorph.match(/^H[cC]?\/?(V)|^HV/) && !verbMorph.match(/^HAc|^HAa|^HAo/)) {
-        // strip implied subject pronoun from start
         gloss = gloss
           .replace(/\b(he|she|they|it)\s+/gi, '')
           .replace(/\s+/g, ' ')
           .trim();
-        // add gender marker for 3rd person
         if (verbMorph.match(/3ms|w3ms|qw3ms/)) gloss += '(m)';
         else if (verbMorph.match(/3fs|w3fs|qw3fs/)) gloss += '(f)';
         else if (verbMorph.match(/3mp|w3mp|qw3mp/)) gloss += '(m)';
         else if (verbMorph.match(/3fp|w3fp|qw3fp/)) gloss += '(f)';
       }
 
-      // get SBL from TAHOT
+      // ── SBL ────────────────────────────────────────────────────────────────
       let sbl = tahotSbl[tahotRef] || '';
-
-      // fallback SBL from words export
       if (!sbl) {
         const wordData = wordsExport[wordId];
         sbl = wordData?.word_hebrew_sbl || '';
       }
 
-      words.push({ id: wordId, sbl, gloss });
+      // ── dStrongs → prefix / lemma / suffix ────────────────────────────────
+      const rawDStrongs = tahotDStrongs[tahotRef] || '';
+      const { prefix_strongs, lemma_strongs, suffix_strongs } = parseDStrongs(rawDStrongs);
+
+      // ── build word entry ───────────────────────────────────────────────────
+      const wordEntry = {
+        id:    wordId,
+        sbl,
+        gloss,
+        ...(prefix_strongs && { prefix_strongs }),
+        lemma_strongs,
+        ...(suffix_strongs && { suffix_strongs }),
+        // root_strongs will be resolved at runtime via lemma table lookup
+        // or you can add a lemma→root map here later
+      };
+
+      words.push(wordEntry);
     }
 
     chapters[chapterNum].push({
@@ -283,8 +359,8 @@ for (const book of booksToProcess) {
     if (verses.length === 0) continue;
 
     const output = {
-      book: book.name,
-      chapter: c,
+      book:        book.name,
+      chapter:     c,
       stage_index: stageIndex,
       verses,
     };

@@ -9,42 +9,54 @@
         {
           "id": "שיר",
           "sbl": "shîyr",
-          "gloss": "song"
+          "gloss": "song",
+          "lemma_strongs": null
         },
         {
           "id": "המעלות",
           "sbl": "maʻălâh",
-          "gloss": "the elevation"
+          "gloss": "the elevation",
+          "lemma_strongs": null
         },
         {
           "id": "אליך",
           "sbl": "'E.lei.kha",
-          "gloss": "to you"
+          "gloss": "to you",
+          "lemma_strongs": "H0413",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "נשאתי",
           "sbl": "na.Sa.ti",
-          "gloss": "I have lifted up"
+          "gloss": "I have lifted up",
+          "lemma_strongs": "H5375"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "עיני",
           "sbl": "'ei.Nai",
-          "gloss": "eyes my"
+          "gloss": "eyes my",
+          "lemma_strongs": "H5869",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "הישבי",
           "sbl": "hai.yo.she.Vi",
-          "gloss": "the [one who] sits"
+          "gloss": "the [one who] sits",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3427"
         },
         {
           "id": "בשמים",
           "sbl": "ba.sha.Ma.yim",
-          "gloss": "in the heavens"
+          "gloss": "in the heavens",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H8064"
         }
       ],
       "insights": []
@@ -55,92 +67,118 @@
         {
           "id": "הנה",
           "sbl": "hi.Neh",
-          "gloss": "here!"
+          "gloss": "here!",
+          "lemma_strongs": "H2009"
         },
         {
           "id": "כעיני",
           "sbl": "khe.'ei.Nei",
-          "gloss": "like [the] eyes of"
+          "gloss": "like [the] eyes of",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H5869"
         },
         {
           "id": "עבדים",
           "sbl": "'a.va.Dim",
-          "gloss": "slaves"
+          "gloss": "slaves",
+          "lemma_strongs": "H5650"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "[which are] to"
+          "gloss": "[which are] to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "יד",
           "sbl": "yad",
-          "gloss": "[the] hand of"
+          "gloss": "[the] hand of",
+          "lemma_strongs": "H3027"
         },
         {
           "id": "אדוניהם",
           "sbl": "'ado.nei.Hem",
-          "gloss": "master[s] their"
+          "gloss": "their master[s]",
+          "lemma_strongs": "H0113",
+          "suffix_strongs": "H9028"
         },
         {
           "id": "כעיני",
           "sbl": "ke.'ei.Nei",
-          "gloss": "like [the] eyes of"
+          "gloss": "like [the] eyes of",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H5869"
         },
         {
           "id": "שפחה",
           "sbl": "shif.Chah",
-          "gloss": "a female slave"
+          "gloss": "a female slave",
+          "lemma_strongs": "H8198"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "[which are] to"
+          "gloss": "[which are] to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "יד",
           "sbl": "yad",
-          "gloss": "[the] hand of"
+          "gloss": "[the] hand of",
+          "lemma_strongs": "H3027"
         },
         {
           "id": "גברתה",
           "sbl": "ge.Vir.Tah",
-          "gloss": "mistress her"
+          "gloss": "her mistress",
+          "lemma_strongs": "H1404",
+          "suffix_strongs": "H9024"
         },
         {
           "id": "כן",
           "sbl": "ken",
-          "gloss": "so"
+          "gloss": "so",
+          "lemma_strongs": "H3651"
         },
         {
           "id": "עינינו",
           "sbl": "'Ei.nei.nu",
-          "gloss": "eyes our"
+          "gloss": "our eyes",
+          "lemma_strongs": "H5869",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "אל",
           "sbl": "'el-",
-          "gloss": "[are] to"
+          "gloss": "[are] to",
+          "lemma_strongs": "H0413"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "אלהינו",
           "sbl": "'e.lo.Hei.nu",
-          "gloss": "God our"
+          "gloss": "our God",
+          "lemma_strongs": "H0430",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "עד",
           "sbl": "'Ad",
-          "gloss": "until"
+          "gloss": "until",
+          "lemma_strongs": "H5704"
         },
         {
           "id": "שיחננו",
           "sbl": "shei.ye.cha.Ne.nu",
-          "gloss": "that he will show favor to us"
+          "gloss": "that he will show favor to us",
+          "prefix_strongs": "H9007",
+          "lemma_strongs": "H2603",
+          "suffix_strongs": "H9035"
         }
       ],
       "insights": []
@@ -151,37 +189,46 @@
         {
           "id": "חננו",
           "sbl": "cha.Ne.nu",
-          "gloss": "show favor to us"
+          "gloss": "show favor to us",
+          "lemma_strongs": "H2603",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "O Yahweh"
+          "gloss": "O Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "חננו",
           "sbl": "cha.Ne.nu",
-          "gloss": "show favor to us"
+          "gloss": "show favor to us",
+          "lemma_strongs": "H2603",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "כי",
           "sbl": "ki-",
-          "gloss": "for"
+          "gloss": "for",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "רב",
           "sbl": "Rav",
-          "gloss": "much"
+          "gloss": "much",
+          "lemma_strongs": "H7227"
         },
         {
           "id": "שבענו",
           "sbl": "sa.Va'.nu",
-          "gloss": "we have been surfeited"
+          "gloss": "we have been surfeited",
+          "lemma_strongs": "H7646"
         },
         {
           "id": "בוז",
           "sbl": "Vuz",
-          "gloss": "contempt"
+          "gloss": "contempt",
+          "lemma_strongs": "H0937"
         }
       ],
       "insights": []
@@ -192,42 +239,57 @@
         {
           "id": "רבת",
           "sbl": "ra.Bat",
-          "gloss": "much"
+          "gloss": "much",
+          "lemma_strongs": "H7227"
         },
         {
           "id": "שבעה",
           "sbl": "sa.ve.'ah-",
-          "gloss": "has been surfeited(f)"
+          "gloss": "has been surfeited(f)",
+          "lemma_strongs": "H7646"
         },
         {
           "id": "לה",
           "sbl": "lah",
-          "gloss": "[for] itself"
+          "gloss": "[for] itself",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9034"
         },
         {
           "id": "נפשנו",
           "sbl": "naf.She.nu",
-          "gloss": "self our"
+          "gloss": "our self",
+          "lemma_strongs": "H5315",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "הלעג",
           "sbl": "ha.La.'ag",
-          "gloss": "the mockery of"
+          "gloss": "the mockery of",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H3933"
         },
         {
           "id": "השאננים",
           "sbl": "ha.sha.'a.na.Nim",
-          "gloss": "[the] self-confident [people]"
+          "gloss": "[the] self-confident [people]",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H7600"
         },
         {
           "id": "הבוז",
           "sbl": "ha.Buz",
-          "gloss": "the contempt"
+          "gloss": "the contempt",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H0937"
         },
         {
           "id": "לגאיונים",
           "sbl": "lig.'E yo.nim",
-          "gloss": "of arrogant opressors"
+          "gloss": "of arrogant opressors",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H1343",
+          "suffix_strongs": "{H3238}"
         }
       ],
       "insights": []

@@ -9,67 +9,83 @@
         {
           "id": "שיר",
           "sbl": "shîyr",
-          "gloss": "song"
+          "gloss": "song",
+          "lemma_strongs": null
         },
         {
           "id": "המעלות",
           "sbl": "maʻălâh",
-          "gloss": "the elevation"
+          "gloss": "the elevation",
+          "lemma_strongs": null
         },
         {
           "id": "הנה",
           "sbl": "hi.Neh",
-          "gloss": "here!"
+          "gloss": "here!",
+          "lemma_strongs": "H2009"
         },
         {
           "id": "ברכו",
           "sbl": "ba.ra.Khu",
-          "gloss": "bless"
+          "gloss": "bless",
+          "lemma_strongs": "H1288"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "כל",
           "sbl": "kol-",
-          "gloss": "O all"
+          "gloss": "O all",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "עבדי",
           "sbl": "'av.Dei",
-          "gloss": "[the] servants of"
+          "gloss": "[the] servants of",
+          "lemma_strongs": "H5650"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "העמדים",
           "sbl": "ha.'o.me.Dim",
-          "gloss": "who stand"
+          "gloss": "who stand",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5975"
         },
         {
           "id": "בבית",
           "sbl": "be.veit-",
-          "gloss": "in [the] house of"
+          "gloss": "in [the] house of",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H1004"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "בלילות",
           "sbl": "ba.lei.Lot",
-          "gloss": "in the nights"
+          "gloss": "in the nights",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3915"
         }
       ],
       "insights": []
@@ -80,32 +96,40 @@
         {
           "id": "שאו",
           "sbl": "se.'u-",
-          "gloss": "lift up"
+          "gloss": "lift up",
+          "lemma_strongs": "H5375"
         },
         {
           "id": "ידכם",
           "sbl": "ye.de.Khem",
-          "gloss": "hands your"
+          "gloss": "your hands",
+          "lemma_strongs": "H3027",
+          "suffix_strongs": "H9026"
         },
         {
           "id": "קדש",
           "sbl": "Ko.desh",
-          "gloss": "[the] sanctuary"
+          "gloss": "[the] sanctuary",
+          "lemma_strongs": "H6944"
         },
         {
           "id": "וברכו",
           "sbl": "U.va.ra.khu",
-          "gloss": "and bless"
+          "gloss": "and bless",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H1288"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         }
       ],
       "insights": []
@@ -116,32 +140,41 @@
         {
           "id": "יברכך",
           "sbl": "ye.va.rekh.Kha",
-          "gloss": "may bless you(m)"
+          "gloss": "may bless you(m)",
+          "lemma_strongs": "H1288",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "מציון",
           "sbl": "mi.tzi.Yon",
-          "gloss": "from Zion"
+          "gloss": "from Zion",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H6726"
         },
         {
           "id": "עשה",
           "sbl": "'o.Seh",
-          "gloss": "maker of"
+          "gloss": "maker of",
+          "lemma_strongs": "H6213"
         },
         {
           "id": "שמים",
           "sbl": "sha.Ma.yim",
-          "gloss": "heaven"
+          "gloss": "heaven",
+          "lemma_strongs": "H8064"
         },
         {
           "id": "וארץ",
           "sbl": "va.'A.retz",
-          "gloss": "and earth"
+          "gloss": "and earth",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0776"
         }
       ],
       "insights": []

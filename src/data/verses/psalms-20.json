@@ -8,18 +8,23 @@
       "words": [
         {
           "id": "למנצח",
-          "sbl": "nâtsach",
-          "gloss": "to glitter from afar"
+          "sbl": "ya.'an.Kha",
+          "gloss": "may he answer you",
+          "lemma_strongs": "H6030",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "מזמור",
-          "sbl": "mizmôwr",
-          "gloss": "music"
+          "sbl": "Yah.weh",
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "לדוד",
-          "sbl": "Dâvid",
-          "gloss": "to David"
+          "sbl": "be.Yom",
+          "gloss": "in a day of",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3117"
         }
       ],
       "insights": []
@@ -29,43 +34,55 @@
       "words": [
         {
           "id": "יענך",
-          "sbl": "ʻânâh",
-          "gloss": "eye your (ms)(m)"
+          "sbl": "yish.lach-",
+          "gloss": "may send(m)",
+          "lemma_strongs": "H7971"
         },
         {
           "id": "יהוה",
-          "sbl": "Yᵉhôvâh",
-          "gloss": "Existent"
+          "sbl": "'ez.re.Kha",
+          "gloss": "your help",
+          "lemma_strongs": "H5828",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ביום",
-          "sbl": "yôwm",
-          "gloss": "in day"
+          "sbl": "mi.Ko.desh",
+          "gloss": "from [the] sanctuary",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H6944"
         },
         {
           "id": "צרה",
-          "sbl": "tsârâh",
-          "gloss": "tightness"
+          "sbl": "u.mi.tzi.Yon",
+          "gloss": "and from Zion",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H6726"
         },
         {
           "id": "ישגבך",
-          "sbl": "sâgab",
-          "gloss": "be your (ms)(m)"
+          "sbl": "yis.'a.De.ka",
+          "gloss": "may support you(m)",
+          "lemma_strongs": "H5582",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "שם",
           "sbl": "Shêm",
-          "gloss": "Shem"
+          "gloss": "Shem",
+          "lemma_strongs": null
         },
         {
           "id": "אלהי",
           "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "gloss": "gods",
+          "lemma_strongs": null
         },
         {
           "id": "יעקב",
           "sbl": "Yaʻăqôb",
-          "gloss": "Jaakob"
+          "gloss": "Jaakob",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -75,28 +92,37 @@
       "words": [
         {
           "id": "ישלח",
-          "sbl": "shâlach",
-          "gloss": "send(m)"
+          "sbl": "yiz.Kor",
+          "gloss": "may remember(m)",
+          "lemma_strongs": "H2142"
         },
         {
           "id": "עזרך",
-          "sbl": "ʻâzar",
-          "gloss": "surround your (ms)"
+          "sbl": "kol-",
+          "gloss": "all",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "מקדש",
-          "sbl": "miqdâsh",
-          "gloss": "consecrated"
+          "sbl": "min.cho.Te.kha",
+          "gloss": "your offerings",
+          "lemma_strongs": "H4503",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ומציון",
-          "sbl": "Tsîyôwn",
-          "gloss": "and Tsijon"
+          "sbl": "ve.'o.la.te.Kha",
+          "gloss": "your and burnt offering",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H5930",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "יסעדך",
-          "sbl": "çâʻad",
-          "gloss": "support your (ms)(m)"
+          "sbl": "ye.da.she.Neh",
+          "gloss": "may accept !(m)",
+          "lemma_strongs": "H1878",
+          "suffix_strongs": "H9012"
         }
       ],
       "insights": []
@@ -106,33 +132,44 @@
       "words": [
         {
           "id": "יזכר",
-          "sbl": "zâkar",
-          "gloss": "mark(m)"
+          "sbl": "yi.ten-",
+          "gloss": "may give(m)",
+          "lemma_strongs": "H5414"
         },
         {
           "id": "כל",
-          "sbl": "kôl",
-          "gloss": "whole"
+          "sbl": "le.Kha",
+          "gloss": "to you",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9031"
         },
         {
           "id": "מנחתך",
-          "sbl": "minchâh",
-          "gloss": "donation your (ms)"
+          "sbl": "khil.va.Ve.kha",
+          "gloss": "your according to heart",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H3824",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ועולתך",
-          "sbl": "ʻôlâh",
-          "gloss": "and step your (ms)"
+          "sbl": "ve.khol",
+          "gloss": "and every",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "ידשנה",
-          "sbl": "dâshên",
-          "gloss": "be fat (paragogic he)(m)"
+          "sbl": "'a.tza.te.Kha",
+          "gloss": "your plan(m)",
+          "lemma_strongs": "H6098",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "סלה",
-          "sbl": "çelâh",
-          "gloss": "suspension"
+          "sbl": "ye.ma.Le'",
+          "gloss": "may he fulfill",
+          "lemma_strongs": "H4390"
         }
       ],
       "insights": []
@@ -142,33 +179,43 @@
       "words": [
         {
           "id": "יתן",
-          "sbl": "nâthan",
-          "gloss": "give(m)"
+          "sbl": "ne.ra.ne.Nah",
+          "gloss": "we will shout for joy(m)",
+          "lemma_strongs": "H7442"
         },
         {
           "id": "לך",
-          "sbl": "yâlak",
-          "gloss": "walk"
+          "sbl": "bi.Shu.'a.Te.kha",
+          "gloss": "your at victory",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3444",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "כלבבך",
-          "sbl": "lêbâb",
-          "gloss": "like heart your (ms)"
+          "sbl": "u.ve.shem-",
+          "gloss": "and in [the] name of",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H8034"
         },
         {
           "id": "וכל",
-          "sbl": "kôl",
-          "gloss": "and whole"
+          "sbl": "'e.lo.Hei.nu",
+          "gloss": "our God",
+          "lemma_strongs": "H0430",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "עצתך",
-          "sbl": "ʻêtsâh",
-          "gloss": "advice your (ms)"
+          "sbl": "nid.Gol",
+          "gloss": "we will raise a banner",
+          "lemma_strongs": "H1713"
         },
         {
           "id": "ימלא",
-          "sbl": "mâlêʼ",
-          "gloss": "fill(m)"
+          "sbl": "ye.ma.Le'",
+          "gloss": "may fulfill(m)",
+          "lemma_strongs": "H4390"
         }
       ],
       "insights": []
@@ -178,48 +225,61 @@
       "words": [
         {
           "id": "נרננה",
-          "sbl": "rânan",
-          "gloss": "creak"
+          "sbl": "'a.Tah",
+          "gloss": "now",
+          "lemma_strongs": "H6258"
         },
         {
           "id": "בישועתך",
-          "sbl": "yᵉshûwʻâh",
-          "gloss": "in saved your (ms)"
+          "sbl": "ya.Da'.ti",
+          "gloss": "I know",
+          "lemma_strongs": "H3045"
         },
         {
           "id": "ובשם",
-          "sbl": "shêm",
-          "gloss": "and appellation"
+          "sbl": "ki",
+          "gloss": "that",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "אלהינו",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods our"
+          "sbl": "ho.Shi.a'",
+          "gloss": "he delivers",
+          "lemma_strongs": "H3467"
         },
         {
           "id": "נדגל",
-          "sbl": "dâgal",
-          "gloss": "flaunt"
+          "sbl": "Yah.weh",
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "ימלא",
-          "sbl": "mâlêʼ",
-          "gloss": "fill(m)"
+          "sbl": "me.Shi.Cho",
+          "gloss": "his anointed(m)",
+          "lemma_strongs": "H4899",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "יהוה",
-          "sbl": "Yᵉhôvâh",
-          "gloss": "Existent"
+          "sbl": "Ya.'a.ne.hu",
+          "gloss": "he answers him",
+          "lemma_strongs": "H6030",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "כל",
-          "sbl": "kôl",
-          "gloss": "whole"
+          "sbl": "mi.she.Mei",
+          "gloss": "from [the] heavens of",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H8064"
         },
         {
           "id": "משאלותיך",
-          "sbl": "mishʼâlâh",
-          "gloss": "request your (ms)"
+          "sbl": "ka.de.Sho",
+          "gloss": "his holiness",
+          "lemma_strongs": "H6944",
+          "suffix_strongs": "H9023"
         }
       ],
       "insights": []
@@ -229,63 +289,81 @@
       "words": [
         {
           "id": "עתה",
-          "sbl": "ʻattâh",
-          "gloss": "at this time"
+          "sbl": "'E.leh",
+          "gloss": "these",
+          "lemma_strongs": "H0428"
         },
         {
           "id": "ידעתי",
-          "sbl": "yâdaʻ",
-          "gloss": "know"
+          "sbl": "Va.re.khev",
+          "gloss": "[in] [the] chariotry",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H7393"
         },
         {
           "id": "כי",
-          "sbl": "kîy",
-          "gloss": "relative conjunction"
+          "sbl": "ve.'E.leh",
+          "gloss": "and these",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0428"
         },
         {
           "id": "הושיע",
-          "sbl": "yâshaʻ",
-          "gloss": "be open(m)"
+          "sbl": "va.su.Sim",
+          "gloss": "[in] [the] horses(m)",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H5483"
         },
         {
           "id": "יהוה",
-          "sbl": "Yᵉhôvâh",
-          "gloss": "Existent"
+          "sbl": "va.'a.Nach.nu",
+          "gloss": "and we",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0587"
         },
         {
           "id": "משיחו",
-          "sbl": "mâshîyach",
-          "gloss": "anointed his"
+          "sbl": "be.shem-",
+          "gloss": "[in] [the] name of",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H8034"
         },
         {
           "id": "יענהו",
-          "sbl": "ʻânâh",
-          "gloss": "eye his(m)"
+          "sbl": "Yah.weh",
+          "gloss": "Yahweh(m)",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "משמי",
-          "sbl": "shâmayim",
-          "gloss": "from sky"
+          "sbl": "'e.lo.Hei.nu",
+          "gloss": "our God",
+          "lemma_strongs": "H0430",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "קדשו",
-          "sbl": "qôdesh",
-          "gloss": "sacred his"
+          "sbl": "naz.Kir",
+          "gloss": "we bring to remembrance",
+          "lemma_strongs": "H2142"
         },
         {
           "id": "בגברות",
           "sbl": "gᵉbûwrâh",
-          "gloss": "in force"
+          "gloss": "in force",
+          "lemma_strongs": null
         },
         {
           "id": "ישע",
           "sbl": "yeshaʻ",
-          "gloss": "liberty"
+          "gloss": "liberty",
+          "lemma_strongs": null
         },
         {
           "id": "ימינו",
           "sbl": "yâmîyn",
-          "gloss": "right his"
+          "gloss": "right his",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -295,48 +373,60 @@
       "words": [
         {
           "id": "אלה",
-          "sbl": "ʼêl-leh",
-          "gloss": "these"
+          "sbl": "He.mah",
+          "gloss": "they",
+          "lemma_strongs": "H1992"
         },
         {
           "id": "ברכב",
-          "sbl": "rekeb",
-          "gloss": "in vehicle"
+          "sbl": "ka.re.'U",
+          "gloss": "they bow down",
+          "lemma_strongs": "H3766"
         },
         {
           "id": "ואלה",
-          "sbl": "ʼêl-leh",
-          "gloss": "and these"
+          "sbl": "ve.na.Fa.lu",
+          "gloss": "and they fall",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H5307"
         },
         {
           "id": "בסוסים",
-          "sbl": "çûwç",
-          "gloss": "in horse"
+          "sbl": "va.'a.Nach.nu",
+          "gloss": "and we",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0587"
         },
         {
           "id": "ואנחנו",
-          "sbl": "ʼănachnûw",
-          "gloss": "and we"
+          "sbl": "Kam.nu",
+          "gloss": "we arise",
+          "lemma_strongs": "H6965"
         },
         {
           "id": "בשם",
-          "sbl": "shêm",
-          "gloss": "in appellation"
+          "sbl": "va.nit.'o.Dad",
+          "gloss": "and we have kept upright",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5749"
         },
         {
           "id": "יהוה",
           "sbl": "Yᵉhôvâh",
-          "gloss": "Existent"
+          "gloss": "Existent",
+          "lemma_strongs": null
         },
         {
           "id": "אלהינו",
           "sbl": "ʼĕlôhîym",
-          "gloss": "gods our"
+          "gloss": "gods our",
+          "lemma_strongs": null
         },
         {
           "id": "נזכיר",
           "sbl": "zâkar",
-          "gloss": "mark"
+          "gloss": "mark",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -346,33 +436,44 @@
       "words": [
         {
           "id": "המה",
-          "sbl": "hêm",
-          "gloss": "they"
+          "sbl": "Yah.weh",
+          "gloss": "O Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "כרעו",
-          "sbl": "kâraʻ",
-          "gloss": "bend"
+          "sbl": "ho.Shi.'ah",
+          "gloss": "save !",
+          "lemma_strongs": "H3467",
+          "suffix_strongs": "H9012"
         },
         {
           "id": "ונפלו",
-          "sbl": "nâphal",
-          "gloss": "and fall"
+          "sbl": "ha.Me.lekh",
+          "gloss": "the king",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H4428"
         },
         {
           "id": "ואנחנו",
-          "sbl": "ʼănachnûw",
-          "gloss": "and we"
+          "sbl": "ya.'a.Ne.nu",
+          "gloss": "may he answer us",
+          "lemma_strongs": "H6030",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "קמנו",
-          "sbl": "qûwm",
-          "gloss": "rise"
+          "sbl": "ve.yom-",
+          "gloss": "on [the] day",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3117"
         },
         {
           "id": "ונתעודד",
-          "sbl": "ʻûwd",
-          "gloss": "and duplicate"
+          "sbl": "ka.re.'E.nu",
+          "gloss": "call out we",
+          "lemma_strongs": "H7121",
+          "suffix_strongs": "H9045"
         }
       ],
       "insights": []
@@ -383,32 +484,38 @@
         {
           "id": "יהוה",
           "sbl": "Yᵉhôvâh",
-          "gloss": "Existent"
+          "gloss": "Existent",
+          "lemma_strongs": null
         },
         {
           "id": "הושיעה",
           "sbl": "yâshaʻ",
-          "gloss": "be open (paragogic he)"
+          "gloss": "be open (paragogic he)",
+          "lemma_strongs": null
         },
         {
           "id": "המלך",
           "sbl": "melek",
-          "gloss": "the king"
+          "gloss": "the king",
+          "lemma_strongs": null
         },
         {
           "id": "יעננו",
           "sbl": "ʻânâh",
-          "gloss": "eye his(m)"
+          "gloss": "eye his(m)",
+          "lemma_strongs": null
         },
         {
           "id": "ביום",
           "sbl": "yôwm",
-          "gloss": "in day"
+          "gloss": "in day",
+          "lemma_strongs": null
         },
         {
           "id": "קראנו",
           "sbl": "qârâʼ",
-          "gloss": "call out to our"
+          "gloss": "call out to our",
+          "lemma_strongs": null
         }
       ],
       "insights": []

@@ -9,92 +9,118 @@
         {
           "id": "מי",
           "sbl": "mi-",
-          "gloss": "who?"
+          "gloss": "who?",
+          "lemma_strongs": "H4310"
         },
         {
           "id": "זה",
           "sbl": "zeh",
-          "gloss": "this"
+          "gloss": "this",
+          "lemma_strongs": "H2088"
         },
         {
           "id": "בא",
           "sbl": "ba'",
-          "gloss": "[is] coming"
+          "gloss": "[is] coming",
+          "lemma_strongs": "H0935"
         },
         {
           "id": "מאדום",
           "sbl": "me.'e.Dom",
-          "gloss": "from Edom"
+          "gloss": "from Edom",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H0123"
         },
         {
           "id": "חמוץ",
           "sbl": "cha.Mutz",
-          "gloss": "red of"
+          "gloss": "red of",
+          "lemma_strongs": "H2556"
         },
         {
           "id": "בגדים",
           "sbl": "be.ga.Dim",
-          "gloss": "garments"
+          "gloss": "garments",
+          "lemma_strongs": "H0899"
         },
         {
           "id": "מבצרה",
           "sbl": "mi.ba.tze.Rah",
-          "gloss": "from Bozrah"
+          "gloss": "from Bozrah",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H1224"
         },
         {
           "id": "זה",
           "sbl": "zeh",
-          "gloss": "this one"
+          "gloss": "this one",
+          "lemma_strongs": "H2088"
         },
         {
           "id": "הדור",
           "sbl": "ha.Dur",
-          "gloss": "[is] adorned"
+          "gloss": "[is] adorned",
+          "lemma_strongs": "H1921"
         },
         {
           "id": "בלבושו",
           "sbl": "bil.vu.Sho",
-          "gloss": "in clothing his"
+          "gloss": "his in clothing",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3830",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "צעה",
           "sbl": "tzo.'Eh",
-          "gloss": "[is] stooping"
+          "gloss": "[is] stooping",
+          "lemma_strongs": "H6808"
         },
         {
           "id": "ברב",
           "sbl": "be.Ro",
-          "gloss": "in [the] greatness of"
+          "gloss": "in [the] greatness of",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H7230"
         },
         {
           "id": "כחו",
           "sbl": "ko.Cho",
-          "gloss": "strength his"
+          "gloss": "his strength",
+          "lemma_strongs": "H3581",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "אני",
           "sbl": "'a.Ni",
-          "gloss": "I"
+          "gloss": "I",
+          "lemma_strongs": "H0589"
         },
         {
           "id": "מדבר",
           "sbl": "me.da.Ber",
-          "gloss": "[am] speaking"
+          "gloss": "[am] speaking",
+          "lemma_strongs": "H1696"
         },
         {
           "id": "בצדקה",
           "sbl": "bitz.da.Kah",
-          "gloss": "in righteousness"
+          "gloss": "in righteousness",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H6666"
         },
         {
           "id": "רב",
           "sbl": "rav",
-          "gloss": "great"
+          "gloss": "great",
+          "lemma_strongs": "H7227"
         },
         {
           "id": "להושיע",
           "sbl": "le.ho.Shi.a'",
-          "gloss": "to save"
+          "gloss": "to save",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3467"
         }
       ],
       "insights": []
@@ -105,32 +131,44 @@
         {
           "id": "מדוע",
           "sbl": "ma.Du.a'",
-          "gloss": "why?"
+          "gloss": "why?",
+          "lemma_strongs": "H4069"
         },
         {
           "id": "אדם",
           "sbl": "'a.Dom",
-          "gloss": "[does] redness"
+          "gloss": "[does] redness",
+          "lemma_strongs": "H0122"
         },
         {
           "id": "ללבושך",
           "sbl": "lil.vu.She.kha",
-          "gloss": "[belong] to clothing your"
+          "gloss": "your [belong] to clothing",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3830",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ובגדיך",
           "sbl": "u.ve.ga.Dei.kha",
-          "gloss": "and [are] garments? your"
+          "gloss": "your and [are] garments?",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0899",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "כדרך",
           "sbl": "ke.do.Rekh",
-          "gloss": "like [one who] treads"
+          "gloss": "like [one who] treads",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H1869"
         },
         {
           "id": "בגת",
           "sbl": "be.Gat",
-          "gloss": "in a winepress"
+          "gloss": "in a winepress",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H1660"
         }
       ],
       "insights": []
@@ -141,92 +179,127 @@
         {
           "id": "פורה",
           "sbl": "pu.Rah",
-          "gloss": "[the] winepress"
+          "gloss": "[the] winepress",
+          "lemma_strongs": "H6333"
         },
         {
           "id": "דרכתי",
           "sbl": "da.Rakh.ti",
-          "gloss": "I have trodden"
+          "gloss": "I have trodden",
+          "lemma_strongs": "H1869"
         },
         {
           "id": "לבדי",
           "sbl": "le.va.Di",
-          "gloss": "to alone me"
+          "gloss": "to alone me",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H0905",
+          "suffix_strongs": "H9030"
         },
         {
           "id": "ומעמים",
           "sbl": "u.me.'a.Mim",
-          "gloss": "and from peoples"
+          "gloss": "and from peoples",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "אין",
           "sbl": "'ein-",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H0369"
         },
         {
           "id": "איש",
           "sbl": "'ish",
-          "gloss": "anyone"
+          "gloss": "anyone",
+          "lemma_strongs": "H0376"
         },
         {
           "id": "אתי",
           "sbl": "'i.Ti",
-          "gloss": "[was] with me"
+          "gloss": "[was] with me",
+          "lemma_strongs": "H0854",
+          "suffix_strongs": "H9030"
         },
         {
           "id": "ואדרכם",
           "sbl": "ve.'ed.re.Khem",
-          "gloss": "and I trod them(m)"
+          "gloss": "and I trod them(m)",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H1869",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "באפי",
           "sbl": "be.'a.Pi",
-          "gloss": "in anger my"
+          "gloss": "in anger my",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H0639",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "וארמסם",
           "sbl": "ve.'er.me.Sem",
-          "gloss": "and I trampled them(m)"
+          "gloss": "and I trampled them(m)",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7429",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "בחמתי",
           "sbl": "ba.cha.ma.Ti",
-          "gloss": "in rage my"
+          "gloss": "in rage my",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H2534",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "ויז",
           "sbl": "ve.Yez",
-          "gloss": "and spattered(m)"
+          "gloss": "and spattered(m)",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H5137"
         },
         {
           "id": "נצחם",
           "sbl": "nitz.Cham",
-          "gloss": "blood their"
+          "gloss": "their blood",
+          "lemma_strongs": "H5332",
+          "suffix_strongs": "H9028"
         },
         {
           "id": "על",
           "sbl": "'al-",
-          "gloss": "on"
+          "gloss": "on",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "בגדי",
           "sbl": "be.ga.Dai",
-          "gloss": "garments my"
+          "gloss": "garments my",
+          "lemma_strongs": "H0899",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "וכל",
           "sbl": "ve.khol",
-          "gloss": "and all"
+          "gloss": "and all",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "מלבושי",
           "sbl": "mal.bu.Shai",
-          "gloss": "clothes my"
+          "gloss": "clothes my",
+          "lemma_strongs": "H4403",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "אגאלתי",
           "sbl": "'eg.'A.le.ti",
-          "gloss": "I have defiled"
+          "gloss": "I have defiled",
+          "lemma_strongs": "H1351"
         }
       ],
       "insights": []
@@ -237,37 +310,48 @@
         {
           "id": "כי",
           "sbl": "ki",
-          "gloss": "for"
+          "gloss": "for",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "יום",
           "sbl": "Yom",
-          "gloss": "a day of"
+          "gloss": "a day of",
+          "lemma_strongs": "H3117"
         },
         {
           "id": "נקם",
           "sbl": "na.Kam",
-          "gloss": "vengeance"
+          "gloss": "vengeance",
+          "lemma_strongs": "H5359"
         },
         {
           "id": "בלבי",
           "sbl": "be.li.Bi",
-          "gloss": "[was] in heart my"
+          "gloss": "[was] in heart my",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3820",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "ושנת",
           "sbl": "u.she.Nat",
-          "gloss": "and [the] year of"
+          "gloss": "and [the] year of",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H8141"
         },
         {
           "id": "גאולי",
           "sbl": "ge.'u.Lai",
-          "gloss": "redemption[s] my"
+          "gloss": "redemption[s] my",
+          "lemma_strongs": "H1350",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "באה",
           "sbl": "Ba.'ah",
-          "gloss": "had come(f)"
+          "gloss": "had come(f)",
+          "lemma_strongs": "H0935"
         }
       ],
       "insights": []
@@ -278,62 +362,84 @@
         {
           "id": "ואביט",
           "sbl": "ve.'a.Bit",
-          "gloss": "and I may look"
+          "gloss": "and I may look",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H5027"
         },
         {
           "id": "ואין",
           "sbl": "ve.'Ein",
-          "gloss": "and there not"
+          "gloss": "and there not",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0369"
         },
         {
           "id": "עזר",
           "sbl": "'o.Zer",
-          "gloss": "[was] a helper"
+          "gloss": "[was] a helper",
+          "lemma_strongs": "H5826"
         },
         {
           "id": "ואשתומם",
           "sbl": "ve.'esh.to.Mem",
-          "gloss": "and I may be appalled"
+          "gloss": "and I may be appalled",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H8074"
         },
         {
           "id": "ואין",
           "sbl": "ve.'Ein",
-          "gloss": "and there not"
+          "gloss": "and there not",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0369"
         },
         {
           "id": "סומך",
           "sbl": "so.Mekh",
-          "gloss": "[was] a sustainer"
+          "gloss": "[was] a sustainer",
+          "lemma_strongs": "H5564"
         },
         {
           "id": "ותושע",
           "sbl": "va.To.o.sha'",
-          "gloss": "and gave victory(f)"
+          "gloss": "and gave victory(f)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H3467"
         },
         {
           "id": "לי",
           "sbl": "li",
-          "gloss": "to me"
+          "gloss": "to me",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9030"
         },
         {
           "id": "זרעי",
           "sbl": "ze.ro.'I",
-          "gloss": "arm my"
+          "gloss": "arm my",
+          "lemma_strongs": "H2220",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "וחמתי",
           "sbl": "va.cha.ma.Ti",
-          "gloss": "and rage my"
+          "gloss": "and rage my",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H2534",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "היא",
           "sbl": "hi'",
-          "gloss": "it"
+          "gloss": "it",
+          "lemma_strongs": "H1931"
         },
         {
           "id": "סמכתני",
           "sbl": "se.ma.Kha.te.ni",
-          "gloss": "sustained me(f)"
+          "gloss": "sustained me(f)",
+          "lemma_strongs": "H5564",
+          "suffix_strongs": "H9030"
         }
       ],
       "insights": []
@@ -344,42 +450,60 @@
         {
           "id": "ואבוס",
           "sbl": "ve.'a.Vus",
-          "gloss": "and I may tread down"
+          "gloss": "and I may tread down",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H0947"
         },
         {
           "id": "עמים",
           "sbl": "'a.Mim",
-          "gloss": "peoples"
+          "gloss": "peoples",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "באפי",
           "sbl": "be.'a.Pi",
-          "gloss": "in anger my"
+          "gloss": "in anger my",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H0639",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "ואשכרם",
           "sbl": "va.'a.sha.ke.Rem",
-          "gloss": "and I made drunk them(m)"
+          "gloss": "and I made drunk them(m)",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7937",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "בחמתי",
           "sbl": "ba.cha.ma.Ti",
-          "gloss": "in rage my"
+          "gloss": "in rage my",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H2534",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "ואוריד",
           "sbl": "ve.'o.Rid",
-          "gloss": "so I may bring down"
+          "gloss": "so I may bring down",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3381"
         },
         {
           "id": "לארץ",
           "sbl": "la.'A.retz",
-          "gloss": "to the ground"
+          "gloss": "to the ground",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H0776"
         },
         {
           "id": "נצחם",
           "sbl": "nitz.Cham",
-          "gloss": "blood their"
+          "gloss": "their blood",
+          "lemma_strongs": "H5332",
+          "suffix_strongs": "H9028"
         }
       ],
       "insights": []
@@ -390,97 +514,125 @@
         {
           "id": "חסדי",
           "sbl": "chas.Dei",
-          "gloss": "[the] covenant loyalti[es] of"
+          "gloss": "[the] covenant loyalti[es] of",
+          "lemma_strongs": "H2617"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "אזכיר",
           "sbl": "'az.Kir",
-          "gloss": "I will bring to remembrance"
+          "gloss": "I will bring to remembrance",
+          "lemma_strongs": "H2142"
         },
         {
           "id": "תהלת",
           "sbl": "te.hi.Lot",
-          "gloss": "[the] praises of"
+          "gloss": "[the] praises of",
+          "lemma_strongs": "H8416"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "כעל",
           "sbl": "ke.'Al",
-          "gloss": "as on"
+          "gloss": "as on",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H5921"
         },
         {
           "id": "כל",
           "sbl": "kol",
-          "gloss": "all"
+          "gloss": "all",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher-",
-          "gloss": "that"
+          "gloss": "that",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "גמלנו",
           "sbl": "ge.ma.La.nu",
-          "gloss": "has dealt out to us(m)"
+          "gloss": "has dealt out to us(m)",
+          "lemma_strongs": "H1580",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "ורב",
           "sbl": "ve.rav-",
-          "gloss": "and [the] greatness of"
+          "gloss": "and [the] greatness of",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7227"
         },
         {
           "id": "טוב",
           "sbl": "tuv",
-          "gloss": "goodness"
+          "gloss": "goodness",
+          "lemma_strongs": "H2898"
         },
         {
           "id": "לבית",
           "sbl": "le.Veit",
-          "gloss": "to [the] house of"
+          "gloss": "to [the] house of",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H1004"
         },
         {
           "id": "ישראל",
           "sbl": "Yis.ra.'El",
-          "gloss": "Israel"
+          "gloss": "Israel",
+          "lemma_strongs": "H3478"
         },
         {
           "id": "אשר",
           "sbl": "'a.Sher-",
-          "gloss": "which"
+          "gloss": "which",
+          "lemma_strongs": "H0834"
         },
         {
           "id": "גמלם",
           "sbl": "ge.ma.Lam",
-          "gloss": "has dealt out to them(m)"
+          "gloss": "has dealt out to them(m)",
+          "lemma_strongs": "H1580",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "כרחמיו",
           "sbl": "ke.ra.cha.Mav",
-          "gloss": "according to compassion[s] his"
+          "gloss": "his according to compassion[s]",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H7356",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "וכרב",
           "sbl": "u.khe.Ro",
-          "gloss": "and according to [the] greatness of"
+          "gloss": "and according to [the] greatness of",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H7230"
         },
         {
           "id": "חסדיו",
           "sbl": "cha.sa.Dav",
-          "gloss": "covenant loyalti[es] his"
+          "gloss": "his covenant loyalti[es]",
+          "lemma_strongs": "H2617",
+          "suffix_strongs": "H9023"
         }
       ],
       "insights": []
@@ -491,52 +643,67 @@
         {
           "id": "ויאמר",
           "sbl": "vai.Yo.mer",
-          "gloss": "and said(m)"
+          "gloss": "and said(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H0559"
         },
         {
           "id": "אך",
           "sbl": "'akh-",
-          "gloss": "surely"
+          "gloss": "surely",
+          "lemma_strongs": "H0389"
         },
         {
           "id": "עמי",
           "sbl": "'a.Mi",
-          "gloss": "[are] people my"
+          "gloss": "[are] people my",
+          "lemma_strongs": "H5971",
+          "suffix_strongs": "H9020"
         },
         {
           "id": "המה",
           "sbl": "He.mah",
-          "gloss": "they"
+          "gloss": "they",
+          "lemma_strongs": "H1992"
         },
         {
           "id": "בנים",
           "sbl": "ba.Nim",
-          "gloss": "children"
+          "gloss": "children",
+          "lemma_strongs": "H1121"
         },
         {
           "id": "לא",
           "sbl": "lo'",
-          "gloss": "[who] not"
+          "gloss": "[who] not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "ישקרו",
           "sbl": "ye.sha.Ke.ru",
-          "gloss": "will deal falsely(m)"
+          "gloss": "will deal falsely(m)",
+          "lemma_strongs": "H8266"
         },
         {
           "id": "ויהי",
           "sbl": "vay.Hi",
-          "gloss": "and became(m)"
+          "gloss": "and became(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H1961"
         },
         {
           "id": "להם",
           "sbl": "la.Hem",
-          "gloss": "of them"
+          "gloss": "of them",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9038"
         },
         {
           "id": "למושיע",
           "sbl": "le.mo.Shi.a'",
-          "gloss": "[into] a deliverer"
+          "gloss": "[into] a deliverer",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3467"
         }
       ],
       "insights": []
@@ -547,87 +714,119 @@
         {
           "id": "בכל",
           "sbl": "be.khol",
-          "gloss": "in all"
+          "gloss": "in all",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "צרתם",
           "sbl": "tza.ra.Tam",
-          "gloss": "distress their"
+          "gloss": "their distress",
+          "lemma_strongs": "H6869",
+          "suffix_strongs": "H9028"
         },
         {
           "id": "לא",
           "sbl": "lo",
-          "gloss": "[belonged] to him"
+          "gloss": "[belonged] to him",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9033"
         },
         {
           "id": "לו",
           "sbl": "Tzar",
-          "gloss": "distress"
+          "gloss": "distress",
+          "lemma_strongs": "H6862"
         },
         {
           "id": "צר",
           "sbl": "u.mal.'Akh",
-          "gloss": "and [the] angel of"
+          "gloss": "and [the] angel of",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H4397"
         },
         {
           "id": "ומלאך",
           "sbl": "pa.Nav",
-          "gloss": "presence his"
+          "gloss": "his presence",
+          "lemma_strongs": "H6440",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "פניו",
           "sbl": "ho.shi.'Am",
-          "gloss": "it saved them"
+          "gloss": "it saved them",
+          "lemma_strongs": "H3467",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "הושיעם",
           "sbl": "be.'a.ha.va.To",
-          "gloss": "in love his(m)"
+          "gloss": "his in love(m)",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H0160",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "באהבתו",
           "sbl": "u.ve.chem.la.To",
-          "gloss": "and in mercy his"
+          "gloss": "his and in mercy",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H2551",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ובחמלתו",
           "sbl": "hu'",
-          "gloss": "he"
+          "gloss": "he",
+          "lemma_strongs": "H1931"
         },
         {
           "id": "הוא",
           "sbl": "ge.'a.Lam",
-          "gloss": "he redeemed them"
+          "gloss": "he redeemed them",
+          "lemma_strongs": "H1350",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "גאלם",
           "sbl": "vay.na.te.Lem",
-          "gloss": "and lifted up them(m)"
+          "gloss": "and lifted up them(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5190",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "וינטלם",
           "sbl": "vay.na.se.'Em",
-          "gloss": "and carried them(m)"
+          "gloss": "and carried them(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H5375",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "וינשאם",
           "sbl": "kol-",
-          "gloss": "all(m)"
+          "gloss": "all(m)",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "כל",
           "sbl": "ye.Mei",
-          "gloss": "[the] days of"
+          "gloss": "[the] days of",
+          "lemma_strongs": "H3117"
         },
         {
           "id": "ימי",
           "sbl": "o.Lam",
-          "gloss": "antiquity"
+          "gloss": "antiquity",
+          "lemma_strongs": "H5769"
         },
         {
           "id": "עולם",
           "sbl": "ʻôwlâm",
-          "gloss": "concealed"
+          "gloss": "concealed",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -638,62 +837,81 @@
         {
           "id": "והמה",
           "sbl": "ve.He.mah",
-          "gloss": "and they"
+          "gloss": "and they",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H1992"
         },
         {
           "id": "מרו",
           "sbl": "ma.Ru",
-          "gloss": "rebelled"
+          "gloss": "rebelled",
+          "lemma_strongs": "H4784"
         },
         {
           "id": "ועצבו",
           "sbl": "ve.'i.tze.Vu",
-          "gloss": "and grieved"
+          "gloss": "and grieved",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H6087"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "רוח",
           "sbl": "Ru.ach",
-          "gloss": "[the] spirit of"
+          "gloss": "[the] spirit of",
+          "lemma_strongs": "H7307"
         },
         {
           "id": "קדשו",
           "sbl": "ka.de.Sho",
-          "gloss": "holiness his"
+          "gloss": "his holiness",
+          "lemma_strongs": "H6944",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "ויהפך",
           "sbl": "vai.ye.ha.Fekh",
-          "gloss": "and changed himself(m)"
+          "gloss": "and changed himself(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H2015"
         },
         {
           "id": "להם",
           "sbl": "la.Hem",
-          "gloss": "of them"
+          "gloss": "of them",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9038"
         },
         {
           "id": "לאויב",
           "sbl": "le.'o.Yev",
-          "gloss": "into an enemy"
+          "gloss": "into an enemy",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H0341"
         },
         {
           "id": "הוא",
           "sbl": "hu'",
-          "gloss": "he"
+          "gloss": "he",
+          "lemma_strongs": "H1931"
         },
         {
           "id": "נלחם",
           "sbl": "nil.cham-",
-          "gloss": "fought(m)"
+          "gloss": "fought(m)",
+          "lemma_strongs": "H3898"
         },
         {
           "id": "בם",
           "sbl": "Bam",
-          "gloss": "against them"
+          "gloss": "against them",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H9038"
         }
       ],
       "insights": []
@@ -704,87 +922,114 @@
         {
           "id": "ויזכר",
           "sbl": "vai.yiz.Kor",
-          "gloss": "and remembered(m)"
+          "gloss": "and remembered(m)",
+          "prefix_strongs": "H9001",
+          "lemma_strongs": "H2142"
         },
         {
           "id": "ימי",
           "sbl": "ye.mei-",
-          "gloss": "[the] days of"
+          "gloss": "[the] days of",
+          "lemma_strongs": "H3117"
         },
         {
           "id": "עולם",
           "sbl": "o.Lam",
-          "gloss": "antiquity"
+          "gloss": "antiquity",
+          "lemma_strongs": "H5769"
         },
         {
           "id": "משה",
           "sbl": "mo.Sheh",
-          "gloss": "Moses"
+          "gloss": "Moses",
+          "lemma_strongs": "H4872"
         },
         {
           "id": "עמו",
           "sbl": "a.Mo",
-          "gloss": "people his"
+          "gloss": "his people",
+          "lemma_strongs": "H5971",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "איה",
           "sbl": "'ai.Yeh",
-          "gloss": "where?"
+          "gloss": "where?",
+          "lemma_strongs": "H0346"
         },
         {
           "id": "המעלם",
           "sbl": "ha.ma.'a.Lem",
-          "gloss": "[is] who brought up them"
+          "gloss": "[is] who brought up them",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H5927",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "מים",
           "sbl": "mi.Yam",
-          "gloss": "from [the] sea"
+          "gloss": "from [the] sea",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H3220"
         },
         {
           "id": "את",
           "sbl": "'et",
-          "gloss": "with"
+          "gloss": "with",
+          "lemma_strongs": "H0854"
         },
         {
           "id": "רעי",
           "sbl": "ro.'Ei",
-          "gloss": "[the] shepherds of"
+          "gloss": "[the] shepherds of",
+          "lemma_strongs": "H7462"
         },
         {
           "id": "צאנו",
           "sbl": "tzo.No",
-          "gloss": "flock his"
+          "gloss": "his flock",
+          "lemma_strongs": "H6629",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "איה",
           "sbl": "'ai.Yeh",
-          "gloss": "where?"
+          "gloss": "where?",
+          "lemma_strongs": "H0346"
         },
         {
           "id": "השם",
           "sbl": "ha.Sam",
-          "gloss": "[is] the [one who] put"
+          "gloss": "[is] the [one who] put",
+          "prefix_strongs": "H9009",
+          "lemma_strongs": "H7760"
         },
         {
           "id": "בקרבו",
           "sbl": "be.kir.Bo",
-          "gloss": "in midst its"
+          "gloss": "its in midst",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H7130",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "את",
           "sbl": "'et-",
-          "gloss": "[obj]"
+          "gloss": "[obj]",
+          "lemma_strongs": "H0853"
         },
         {
           "id": "רוח",
           "sbl": "Ru.ach",
-          "gloss": "[the] spirit of"
+          "gloss": "[the] spirit of",
+          "lemma_strongs": "H7307"
         },
         {
           "id": "קדשו",
           "sbl": "ka.de.Sho",
-          "gloss": "holiness his"
+          "gloss": "his holiness",
+          "lemma_strongs": "H6944",
+          "suffix_strongs": "H9023"
         }
       ],
       "insights": []
@@ -795,62 +1040,80 @@
         {
           "id": "מוליך",
           "sbl": "mo.liKh",
-          "gloss": "[who] caused to go"
+          "gloss": "[who] caused to go",
+          "lemma_strongs": "H1980"
         },
         {
           "id": "לימין",
           "sbl": "li.Min",
-          "gloss": "to [the] right [hand] of"
+          "gloss": "to [the] right [hand] of",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3225"
         },
         {
           "id": "משה",
           "sbl": "mo.Sheh",
-          "gloss": "Moses"
+          "gloss": "Moses",
+          "lemma_strongs": "H4872"
         },
         {
           "id": "זרוע",
           "sbl": "ze.Ro.a'",
-          "gloss": "[the] arm of"
+          "gloss": "[the] arm of",
+          "lemma_strongs": "H2220"
         },
         {
           "id": "תפארתו",
           "sbl": "tif.'ar.To",
-          "gloss": "splendor his"
+          "gloss": "his splendor",
+          "lemma_strongs": "H8597",
+          "suffix_strongs": "H9023"
         },
         {
           "id": "בוקע",
           "sbl": "Bo.ke.a'",
-          "gloss": "[who] split open"
+          "gloss": "[who] split open",
+          "lemma_strongs": "H1234"
         },
         {
           "id": "מים",
           "sbl": "ma.yim",
-          "gloss": "[the] waters"
+          "gloss": "[the] waters",
+          "lemma_strongs": "H4325"
         },
         {
           "id": "מפניהם",
           "sbl": "mi.pe.nei.Hem",
-          "gloss": "from before them"
+          "gloss": "from before them",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H6440",
+          "suffix_strongs": "H9028"
         },
         {
           "id": "לעשות",
           "sbl": "la.'a.Sot",
-          "gloss": "to make"
+          "gloss": "to make",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H6213"
         },
         {
           "id": "לו",
           "sbl": "lo",
-          "gloss": "for [the] himself"
+          "gloss": "for [the] himself",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9033"
         },
         {
           "id": "שם",
           "sbl": "shem",
-          "gloss": "a name of"
+          "gloss": "a name of",
+          "lemma_strongs": "H8034"
         },
         {
           "id": "עולם",
           "sbl": "o.Lam",
-          "gloss": "perpetuity"
+          "gloss": "perpetuity",
+          "lemma_strongs": "H5769"
         }
       ],
       "insights": []
@@ -861,32 +1124,42 @@
         {
           "id": "מוליכם",
           "sbl": "mo.li.Kham",
-          "gloss": "[who] caused to walk them(m)"
+          "gloss": "[who] caused to walk them(m)",
+          "lemma_strongs": "H1980",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "בתהמות",
           "sbl": "ba.te.ho.Mot",
-          "gloss": "in the deeps"
+          "gloss": "in the deeps",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H8415"
         },
         {
           "id": "כסוס",
           "sbl": "ka.Sus",
-          "gloss": "like [the] horse"
+          "gloss": "like [the] horse",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H5483"
         },
         {
           "id": "במדבר",
           "sbl": "ba.mid.Bar",
-          "gloss": "in the wilderness"
+          "gloss": "in the wilderness",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H4057"
         },
         {
           "id": "לא",
           "sbl": "lo'",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "יכשלו",
           "sbl": "yi.ka.She.lu",
-          "gloss": "stumbled(m)"
+          "gloss": "stumbled(m)",
+          "lemma_strongs": "H3782"
         }
       ],
       "insights": []
@@ -897,67 +1170,86 @@
         {
           "id": "כבהמה",
           "sbl": "ka.be.he.Mah",
-          "gloss": "like [the] livestock"
+          "gloss": "like [the] livestock",
+          "prefix_strongs": "H9004",
+          "lemma_strongs": "H0929"
         },
         {
           "id": "בבקעה",
           "sbl": "ba.bik.'Ah",
-          "gloss": "[which] in the valley"
+          "gloss": "[which] in the valley",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H1237"
         },
         {
           "id": "תרד",
           "sbl": "te.Red",
-          "gloss": "goes down(f)"
+          "gloss": "goes down(f)",
+          "lemma_strongs": "H3381"
         },
         {
           "id": "רוח",
           "sbl": "Ru.ach",
-          "gloss": "[the] spirit of"
+          "gloss": "[the] spirit of",
+          "lemma_strongs": "H7307"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh"
+          "gloss": "Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "תניחנו",
           "sbl": "te.ni.Che.nu",
-          "gloss": "gave rest it(m)"
+          "gloss": "gave rest it(m)",
+          "lemma_strongs": "H5117",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "כן",
           "sbl": "ken",
-          "gloss": "so"
+          "gloss": "so",
+          "lemma_strongs": "H3651"
         },
         {
           "id": "נהגת",
           "sbl": "ni.Hag.ta",
-          "gloss": "you led"
+          "gloss": "you led",
+          "lemma_strongs": "H5090"
         },
         {
           "id": "עמך",
           "sbl": "'a.me.Kha",
-          "gloss": "people your"
+          "gloss": "your people",
+          "lemma_strongs": "H5971",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "לעשות",
           "sbl": "la.'a.Sot",
-          "gloss": "to make"
+          "gloss": "to make",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H6213"
         },
         {
           "id": "לך",
           "sbl": "le.Kha",
-          "gloss": "for [the] yourself"
+          "gloss": "for [the] yourself",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H9031"
         },
         {
           "id": "שם",
           "sbl": "shem",
-          "gloss": "a name of"
+          "gloss": "a name of",
+          "lemma_strongs": "H8034"
         },
         {
           "id": "תפארת",
           "sbl": "tif.'A.ret",
-          "gloss": "splendor"
+          "gloss": "splendor",
+          "lemma_strongs": "H8597"
         }
       ],
       "insights": []
@@ -968,72 +1260,99 @@
         {
           "id": "הבט",
           "sbl": "ha.Bet",
-          "gloss": "look"
+          "gloss": "look",
+          "lemma_strongs": "H5027"
         },
         {
           "id": "משמים",
           "sbl": "mi.sha.Ma.yim",
-          "gloss": "from heaven"
+          "gloss": "from heaven",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H8064"
         },
         {
           "id": "וראה",
           "sbl": "u.re.'Eh",
-          "gloss": "and see"
+          "gloss": "and see",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7200"
         },
         {
           "id": "מזבל",
           "sbl": "mi.ze.Vul",
-          "gloss": "from [the] lofty abode of"
+          "gloss": "from [the] lofty abode of",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H2073"
         },
         {
           "id": "קדשך",
           "sbl": "kod.she.cha",
-          "gloss": "holiness your"
+          "gloss": "your holiness",
+          "lemma_strongs": "H6944",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ותפארתך",
           "sbl": "ve.tif.'ar.Te.kha",
-          "gloss": "and splendor your"
+          "gloss": "your and splendor",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H8597",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "איה",
           "sbl": "'ai.Yeh",
-          "gloss": "where?"
+          "gloss": "where?",
+          "lemma_strongs": "H0346"
         },
         {
           "id": "קנאתך",
           "sbl": "kin.'a.te.Cha",
-          "gloss": "[are] zeal your"
+          "gloss": "your [are] zeal",
+          "lemma_strongs": "H7068",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "וגבורתך",
           "sbl": "u.ge.Vu.ro.Te.kha",
-          "gloss": "and mighty deeds your"
+          "gloss": "your and mighty deeds",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H1369",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "המון",
           "sbl": "ha.Mon",
-          "gloss": "[the] tumult of"
+          "gloss": "[the] tumult of",
+          "lemma_strongs": "H1995"
         },
         {
           "id": "מעיך",
           "sbl": "me.'Ei.kha",
-          "gloss": "inward parts your"
+          "gloss": "your inward parts",
+          "lemma_strongs": "H4578",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "ורחמיך",
           "sbl": "ve.ra.cha.Mei.kha",
-          "gloss": "and compassion[s] your"
+          "gloss": "your and compassion[s]",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7356",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "אלי",
           "sbl": "'e.Lai",
-          "gloss": "to me"
+          "gloss": "to me",
+          "lemma_strongs": "H0413",
+          "suffix_strongs": "H9030"
         },
         {
           "id": "התאפקו",
           "sbl": "hit.'a.Pa.ku",
-          "gloss": "have restrained themselves"
+          "gloss": "have restrained themselves",
+          "lemma_strongs": "H0662"
         }
       ],
       "insights": []
@@ -1044,82 +1363,106 @@
         {
           "id": "כי",
           "sbl": "ki-",
-          "gloss": "for"
+          "gloss": "for",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "אתה",
           "sbl": "'a.Tah",
-          "gloss": "you"
+          "gloss": "you",
+          "lemma_strongs": "H0859"
         },
         {
           "id": "אבינו",
           "sbl": "'a.Vi.nu",
-          "gloss": "[are] father our"
+          "gloss": "our [are] father",
+          "lemma_strongs": "H0001",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "כי",
           "sbl": "ki",
-          "gloss": "for"
+          "gloss": "for",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "אברהם",
           "sbl": "'av.ra.Ham",
-          "gloss": "Abraham"
+          "gloss": "Abraham",
+          "lemma_strongs": "H0085"
         },
         {
           "id": "לא",
           "sbl": "lo'",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "ידענו",
           "sbl": "ye.da.'A.nu",
-          "gloss": "knows us(m)"
+          "gloss": "knows us(m)",
+          "lemma_strongs": "H3045",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "וישראל",
           "sbl": "ve.Yis.ra.'El",
-          "gloss": "and Israel"
+          "gloss": "and Israel",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3478"
         },
         {
           "id": "לא",
           "sbl": "lo'",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "יכירנו",
           "sbl": "ya.ki.Ra.nu",
-          "gloss": "acknowledges us(m)"
+          "gloss": "acknowledges us(m)",
+          "lemma_strongs": "H5234",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "אתה",
           "sbl": "'a.Tah",
-          "gloss": "you"
+          "gloss": "you",
+          "lemma_strongs": "H0859"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "O Yahweh"
+          "gloss": "O Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "אבינו",
           "sbl": "'a.Vi.nu",
-          "gloss": "[are] father our"
+          "gloss": "our [are] father",
+          "lemma_strongs": "H0001",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "גאלנו",
           "sbl": "go.'a.Le.nu",
-          "gloss": "[is] redeemer our"
+          "gloss": "our [is] redeemer",
+          "lemma_strongs": "H1350",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "מעולם",
           "sbl": "me.'o.Lam",
-          "gloss": "from long ago"
+          "gloss": "from long ago",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H5769"
         },
         {
           "id": "שמך",
           "sbl": "she.Me.kha",
-          "gloss": "name your"
+          "gloss": "your name",
+          "lemma_strongs": "H8034",
+          "suffix_strongs": "H9021"
         }
       ],
       "insights": []
@@ -1130,62 +1473,83 @@
         {
           "id": "למה",
           "sbl": "La.mah",
-          "gloss": "[to] why?"
+          "gloss": "[to] why?",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H4100"
         },
         {
           "id": "תתענו",
           "sbl": "tat.'E.nu",
-          "gloss": "do you make wander us"
+          "gloss": "do you make wander us",
+          "lemma_strongs": "H8582",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "יהוה",
           "sbl": "Yah.weh",
-          "gloss": "O Yahweh"
+          "gloss": "O Yahweh",
+          "lemma_strongs": "H3068"
         },
         {
           "id": "מדרכיך",
           "sbl": "mi.de.ra.Khei.kha",
-          "gloss": "from ways your"
+          "gloss": "your from ways",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H1870",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "תקשיח",
           "sbl": "tak.Shi.ach",
-          "gloss": "do you harden?"
+          "gloss": "do you harden?",
+          "lemma_strongs": "H7188"
         },
         {
           "id": "לבנו",
           "sbl": "li.Be.nu",
-          "gloss": "heart our"
+          "gloss": "our heart",
+          "lemma_strongs": "H3820",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "מיראתך",
           "sbl": "mi.yir.'a.Te.kha",
-          "gloss": "from fear of you"
+          "gloss": "from fear of you",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H3374",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "שוב",
           "sbl": "Shuv",
-          "gloss": "return"
+          "gloss": "return",
+          "lemma_strongs": "H7725"
         },
         {
           "id": "למען",
           "sbl": "le.Ma.'an",
-          "gloss": "for [the] sake of"
+          "gloss": "for [the] sake of",
+          "lemma_strongs": "H4616"
         },
         {
           "id": "עבדיך",
           "sbl": "'a.va.Dei.kha",
-          "gloss": "servants your"
+          "gloss": "your servants",
+          "lemma_strongs": "H5650",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "שבטי",
           "sbl": "shiv.Tei",
-          "gloss": "[the] tribes of"
+          "gloss": "[the] tribes of",
+          "lemma_strongs": "H7626"
         },
         {
           "id": "נחלתך",
           "sbl": "na.cha.la.Te.kha",
-          "gloss": "inheritance your"
+          "gloss": "your inheritance",
+          "lemma_strongs": "H5159",
+          "suffix_strongs": "H9021"
         }
       ],
       "insights": []
@@ -1196,37 +1560,48 @@
         {
           "id": "למצער",
           "sbl": "la.mitz.'Ar",
-          "gloss": "for [the] little while"
+          "gloss": "for [the] little while",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H4705"
         },
         {
           "id": "ירשו",
           "sbl": "ya.re.Shu",
-          "gloss": "possessed"
+          "gloss": "possessed",
+          "lemma_strongs": "H3423"
         },
         {
           "id": "עם",
           "sbl": "'am-",
-          "gloss": "[the] people of"
+          "gloss": "[the] people of",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "קדשך",
           "sbl": "kod.She.cha",
-          "gloss": "holiness your"
+          "gloss": "your holiness",
+          "lemma_strongs": "H6944",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "צרינו",
           "sbl": "tza.Rei.nu",
-          "gloss": "opponents our"
+          "gloss": "our opponents",
+          "lemma_strongs": "H6862",
+          "suffix_strongs": "H9025"
         },
         {
           "id": "בוססו",
           "sbl": "bo.Su",
-          "gloss": "have trodden down"
+          "gloss": "have trodden down",
+          "lemma_strongs": "H0947"
         },
         {
           "id": "מקדשך",
           "sbl": "mik.da.She.cha",
-          "gloss": "sanctuary your"
+          "gloss": "your sanctuary",
+          "lemma_strongs": "H4720",
+          "suffix_strongs": "H9021"
         }
       ],
       "insights": []
@@ -1237,82 +1612,102 @@
         {
           "id": "היינו",
           "sbl": "ha.Yi.nu",
-          "gloss": "we have been"
+          "gloss": "we have been",
+          "lemma_strongs": "H1961"
         },
         {
           "id": "מעולם",
           "sbl": "me.'o.Lam",
-          "gloss": "from long ago"
+          "gloss": "from long ago",
+          "prefix_strongs": "H9006",
+          "lemma_strongs": "H5769"
         },
         {
           "id": "לא",
           "sbl": "lo'-",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "משלת",
           "sbl": "ma.Shal.ta",
-          "gloss": "you ruled"
+          "gloss": "you ruled",
+          "lemma_strongs": "H4910"
         },
         {
           "id": "בם",
           "sbl": "Bam",
-          "gloss": "over them"
+          "gloss": "over them",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H9038"
         },
         {
           "id": "לא",
           "sbl": "lo'-",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": "H3808"
         },
         {
           "id": "נקרא",
           "sbl": "nik.Ra'",
-          "gloss": "was called(m)"
+          "gloss": "was called(m)",
+          "lemma_strongs": "H7121"
         },
         {
           "id": "שמך",
           "sbl": "shim.Kha",
-          "gloss": "name your"
+          "gloss": "your name",
+          "lemma_strongs": "H8034",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "עליהם",
           "sbl": "'a.lei.Hem",
-          "gloss": "on them"
+          "gloss": "on them",
+          "lemma_strongs": "H5921",
+          "suffix_strongs": "H9038"
         },
         {
           "id": "לוא",
           "sbl": "lôʼ",
-          "gloss": "not"
+          "gloss": "not",
+          "lemma_strongs": null
         },
         {
           "id": "קרעת",
           "sbl": "qâraʻ",
-          "gloss": "rend"
+          "gloss": "rend",
+          "lemma_strongs": null
         },
         {
           "id": "שמים",
           "sbl": "shâmayim",
-          "gloss": "sky"
+          "gloss": "sky",
+          "lemma_strongs": null
         },
         {
           "id": "ירדת",
           "sbl": "yârad",
-          "gloss": "descend"
+          "gloss": "descend",
+          "lemma_strongs": null
         },
         {
           "id": "מפניך",
           "sbl": "pânîym",
-          "gloss": "from face your (ms)"
+          "gloss": "from face your (ms)",
+          "lemma_strongs": null
         },
         {
           "id": "הרים",
           "sbl": "rûwm",
-          "gloss": "be high"
+          "gloss": "be high",
+          "lemma_strongs": null
         },
         {
           "id": "נזלו",
           "sbl": "zâlal",
-          "gloss": "shake"
+          "gloss": "shake",
+          "lemma_strongs": null
         }
       ],
       "insights": []

@@ -8,23 +8,30 @@
       "words": [
         {
           "id": "למנצח",
-          "sbl": "nâtsach",
-          "gloss": "to glitter from afar"
+          "sbl": "'E.lo.Him",
+          "gloss": "God",
+          "lemma_strongs": "H0430"
         },
         {
           "id": "בנגינת",
-          "sbl": "nᵉgîynâh",
-          "gloss": "in instrumental music"
+          "sbl": "ye.cha.Ne.nu",
+          "gloss": "may he show favor to us",
+          "lemma_strongs": "H2603",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "מזמור",
-          "sbl": "mizmôwr",
-          "gloss": "music"
+          "sbl": "vi.va.re.Khe.nu",
+          "gloss": "and may he bless us",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H1288",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "שיר",
-          "sbl": "shîyr",
-          "gloss": "song"
+          "sbl": "ya.'Er",
+          "gloss": "may he make shine",
+          "lemma_strongs": "H0215"
         }
       ],
       "insights": []
@@ -34,38 +41,50 @@
       "words": [
         {
           "id": "אלהים",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "sbl": "la.Da.'at",
+          "gloss": "to know",
+          "prefix_strongs": "H9005",
+          "lemma_strongs": "H3045"
         },
         {
           "id": "יחננו",
-          "sbl": "chânan",
-          "gloss": "bend his(m)"
+          "sbl": "ba.'A.retz",
+          "gloss": "on the earth(m)",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H0776"
         },
         {
           "id": "ויברכנו",
-          "sbl": "bârak",
-          "gloss": "and kneel our(m)"
+          "sbl": "dar.Ke.kha",
+          "gloss": "your way(m)",
+          "lemma_strongs": "H1870",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "יאר",
-          "sbl": "yᵉʼôr",
-          "gloss": "channel(m)"
+          "sbl": "be.khol",
+          "gloss": "among all(m)",
+          "prefix_strongs": "H9003",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "פניו",
-          "sbl": "pânîym",
-          "gloss": "face his"
+          "sbl": "go.Yim",
+          "gloss": "nations",
+          "lemma_strongs": "H1471"
         },
         {
           "id": "אתנו",
-          "sbl": "ʼêth",
-          "gloss": "nearness our"
+          "sbl": "ye.shu.'a.Te.kha",
+          "gloss": "your salvation",
+          "lemma_strongs": "H3444",
+          "suffix_strongs": "H9021"
         },
         {
           "id": "סלה",
           "sbl": "çelâh",
-          "gloss": "suspension"
+          "gloss": "suspension",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -75,33 +94,42 @@
       "words": [
         {
           "id": "לדעת",
-          "sbl": "yâdaʻ",
-          "gloss": "to know"
+          "sbl": "yo.Du.kha",
+          "gloss": "may they praise you",
+          "lemma_strongs": "H3034",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "בארץ",
-          "sbl": "ʼerets",
-          "gloss": "in earth"
+          "sbl": "'a.Mim",
+          "gloss": "peoples",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "דרכך",
-          "sbl": "derek",
-          "gloss": "road your (ms)"
+          "sbl": "'E.lo.Him",
+          "gloss": "O God",
+          "lemma_strongs": "H0430"
         },
         {
           "id": "בכל",
-          "sbl": "kôl",
-          "gloss": "in whole"
+          "sbl": "yo.Du.kha",
+          "gloss": "may they praise you",
+          "lemma_strongs": "H3034",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "גוים",
-          "sbl": "gôwy",
-          "gloss": "nation"
+          "sbl": "'a.Mim",
+          "gloss": "peoples",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "ישועתך",
-          "sbl": "yᵉshûwʻâh",
-          "gloss": "saved your (ms)"
+          "sbl": "ku.Lam",
+          "gloss": "all of them",
+          "lemma_strongs": "H3605",
+          "suffix_strongs": "H9028"
         }
       ],
       "insights": []
@@ -111,33 +139,40 @@
       "words": [
         {
           "id": "יודוך",
-          "sbl": "yâdâh",
-          "gloss": "throw your (ms)(m)"
+          "sbl": "yis.me.Chu",
+          "gloss": "may rejoice(m)",
+          "lemma_strongs": "H8055"
         },
         {
           "id": "עמים",
-          "sbl": "ʻam",
-          "gloss": "people"
+          "sbl": "vi.ra.ne.Nu",
+          "gloss": "and they may sing for joy",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H7442"
         },
         {
           "id": "אלהים",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "sbl": "le.'U.Mim",
+          "gloss": "nations",
+          "lemma_strongs": "H3816"
         },
         {
           "id": "יודוך",
-          "sbl": "yâdâh",
-          "gloss": "throw your (ms)(m)"
+          "sbl": "ki-",
+          "gloss": "for(m)",
+          "lemma_strongs": "H3588"
         },
         {
           "id": "עמים",
-          "sbl": "ʻam",
-          "gloss": "people"
+          "sbl": "tish.Pot",
+          "gloss": "you judge",
+          "lemma_strongs": "H8199"
         },
         {
           "id": "כלם",
-          "sbl": "kôl",
-          "gloss": "whole their"
+          "sbl": "'a.Mim",
+          "gloss": "peoples",
+          "lemma_strongs": "H5971"
         }
       ],
       "insights": []
@@ -147,58 +182,72 @@
       "words": [
         {
           "id": "ישמחו",
-          "sbl": "sâmêach",
-          "gloss": "blithe(m)"
+          "sbl": "yo.Du.kha",
+          "gloss": "may praise you(m)",
+          "lemma_strongs": "H3034",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "וירננו",
-          "sbl": "rânan",
-          "gloss": "and creak(m)"
+          "sbl": "'a.Mim",
+          "gloss": "peoples(m)",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "לאמים",
-          "sbl": "lᵉʼôm",
-          "gloss": "community"
+          "sbl": "'E.lo.Him",
+          "gloss": "O God",
+          "lemma_strongs": "H0430"
         },
         {
           "id": "כי",
-          "sbl": "kîy",
-          "gloss": "relative conjunction"
+          "sbl": "yo.Du.kha",
+          "gloss": "may they praise you",
+          "lemma_strongs": "H3034",
+          "suffix_strongs": "H9031"
         },
         {
           "id": "תשפט",
-          "sbl": "shâphaṭ",
-          "gloss": "judge"
+          "sbl": "'a.Mim",
+          "gloss": "peoples",
+          "lemma_strongs": "H5971"
         },
         {
           "id": "עמים",
-          "sbl": "ʻam",
-          "gloss": "people"
+          "sbl": "ku.Lam",
+          "gloss": "all of them",
+          "lemma_strongs": "H3605",
+          "suffix_strongs": "H9028"
         },
         {
           "id": "מישור",
           "sbl": "mîyshôwr",
-          "gloss": "level"
+          "gloss": "level",
+          "lemma_strongs": null
         },
         {
           "id": "ולאמים",
           "sbl": "Lᵉʼummîym",
-          "gloss": "and Leummim"
+          "gloss": "and Leummim",
+          "lemma_strongs": null
         },
         {
           "id": "בארץ",
           "sbl": "ʼerets",
-          "gloss": "in earth"
+          "gloss": "in earth",
+          "lemma_strongs": null
         },
         {
           "id": "תנחם",
           "sbl": "nâchâh",
-          "gloss": "guide their(m)"
+          "gloss": "guide their(m)",
+          "lemma_strongs": null
         },
         {
           "id": "סלה",
           "sbl": "çelâh",
-          "gloss": "suspension"
+          "gloss": "suspension",
+          "lemma_strongs": null
         }
       ],
       "insights": []
@@ -208,33 +257,42 @@
       "words": [
         {
           "id": "יודוך",
-          "sbl": "yâdâh",
-          "gloss": "throw your (ms)(m)"
+          "sbl": "'E.retz",
+          "gloss": "earth(m)",
+          "lemma_strongs": "H0776"
         },
         {
           "id": "עמים",
-          "sbl": "ʻam",
-          "gloss": "people"
+          "sbl": "na.te.Nah",
+          "gloss": "it gives",
+          "lemma_strongs": "H5414"
         },
         {
           "id": "אלהים",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "sbl": "ye.vu.Lah",
+          "gloss": "its produce",
+          "lemma_strongs": "H2981",
+          "suffix_strongs": "H9024"
         },
         {
           "id": "יודוך",
-          "sbl": "yâdâh",
-          "gloss": "throw your (ms)(m)"
+          "sbl": "ye.va.re.Khe.nu",
+          "gloss": "will bless us(m)",
+          "lemma_strongs": "H1288",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "עמים",
-          "sbl": "ʻam",
-          "gloss": "people"
+          "sbl": "'E.lo.Him",
+          "gloss": "God",
+          "lemma_strongs": "H0430"
         },
         {
           "id": "כלם",
-          "sbl": "kôl",
-          "gloss": "whole their"
+          "sbl": "'e.lo.Hei.nu",
+          "gloss": "our God",
+          "lemma_strongs": "H0430",
+          "suffix_strongs": "H9025"
         }
       ],
       "insights": []
@@ -244,33 +302,42 @@
       "words": [
         {
           "id": "ארץ",
-          "sbl": "ʼerets",
-          "gloss": "earth"
+          "sbl": "ye.va.re.Khe.nu",
+          "gloss": "he will bless us",
+          "lemma_strongs": "H1288",
+          "suffix_strongs": "H9035"
         },
         {
           "id": "נתנה",
-          "sbl": "nâthan",
-          "gloss": "give(f)"
+          "sbl": "'E.lo.Him",
+          "gloss": "God(f)",
+          "lemma_strongs": "H0430"
         },
         {
           "id": "יבולה",
-          "sbl": "yᵉbûwl",
-          "gloss": "produce her"
+          "sbl": "ve.yi.re.'U",
+          "gloss": "so they may fear",
+          "prefix_strongs": "H9002",
+          "lemma_strongs": "H3372"
         },
         {
           "id": "יברכנו",
-          "sbl": "bârak",
-          "gloss": "kneel our(m)"
+          "sbl": "'o.To",
+          "gloss": "[obj] him(m)",
+          "lemma_strongs": "H0853",
+          "suffix_strongs": "H9033"
         },
         {
           "id": "אלהים",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "sbl": "kol-",
+          "gloss": "all",
+          "lemma_strongs": "H3605"
         },
         {
           "id": "אלהינו",
-          "sbl": "ʼĕlôhîym",
-          "gloss": "gods our"
+          "sbl": "'af.sei-",
+          "gloss": "[the] ends of",
+          "lemma_strongs": "H0657"
         }
       ],
       "insights": []
@@ -281,37 +348,44 @@
         {
           "id": "יברכנו",
           "sbl": "bârak",
-          "gloss": "kneel our(m)"
+          "gloss": "kneel our(m)",
+          "lemma_strongs": null
         },
         {
           "id": "אלהים",
           "sbl": "ʼĕlôhîym",
-          "gloss": "gods"
+          "gloss": "gods",
+          "lemma_strongs": null
         },
         {
           "id": "וייראו",
           "sbl": "yârêʼ",
-          "gloss": "and fear(m)"
+          "gloss": "and fear(m)",
+          "lemma_strongs": null
         },
         {
           "id": "אתו",
           "sbl": "ʼêth",
-          "gloss": "self his"
+          "gloss": "self his",
+          "lemma_strongs": null
         },
         {
           "id": "כל",
           "sbl": "kôl",
-          "gloss": "whole"
+          "gloss": "whole",
+          "lemma_strongs": null
         },
         {
           "id": "אפסי",
           "sbl": "ʼepheç",
-          "gloss": "cessation"
+          "gloss": "cessation",
+          "lemma_strongs": null
         },
         {
           "id": "ארץ",
           "sbl": "ʼerets",
-          "gloss": "earth"
+          "gloss": "earth",
+          "lemma_strongs": null
         }
       ],
       "insights": []
