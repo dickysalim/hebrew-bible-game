@@ -475,13 +475,25 @@ html, body {
 /* Full word SBL — shown only when word is complete */
 .word-full-sbl {
   font-family: var(--font-serif);
-  font-size: 14px; /* Increased from 11px */
-  color: var(--text-primary); /* Brighter color */
-  margin-top: 4px; /* Slightly more spacing */
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-top: 4px;
   letter-spacing: 0.3px;
   white-space: nowrap;
-  font-weight: 600; /* Bolder for emphasis */
+  font-weight: 600;
   opacity: 0.95;
+}
+
+/* Word gloss — shown below SBL when word is done and toggle is on */
+.word-gloss {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+  letter-spacing: 0.15px;
+  white-space: nowrap;
+  font-style: italic;
+  opacity: 0.75;
 }
 
 /* Adjacent verse plain text */
@@ -745,7 +757,7 @@ html, body {
 .sbl-reset-btn {
   position: absolute;
   right: 10px;
-  top: 120px;
+  top: 148px;
   padding: 5px 14px;
   border: 1px solid var(--border-mid);
   border-radius: var(--radius-pill);

@@ -483,6 +483,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               dispatch={dispatch}
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
+              showGloss={state.showGloss}
               expertMode={state.expertMode}
             />
           </div>
@@ -517,9 +518,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               wrongHebKeys={wrongHebKeys}
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
+              showGloss={state.showGloss}
               expertMode={state.expertMode}
               onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
               onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
+              onToggleGloss={() => dispatch({ type: 'TOGGLE_GLOSS' })}
               onToggleExpertMode={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
               onResetVerse={() => dispatch({ type: 'RESET_VERSE' })}
             />
@@ -581,6 +584,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 disabled={state.expertMode}
               >
                 SBL Word
+              </button>
+              <button
+                className={`mobile-pill mobile-pill--toggle${state.showGloss ? ' mobile-pill--active' : ''}`}
+                onClick={() => dispatch({ type: 'TOGGLE_GLOSS' })}
+              >
+                Word Gloss
               </button>
               <button
                 className={`mobile-pill mobile-pill--toggle mobile-pill--expert${state.expertMode ? ' mobile-pill--active' : ''}`}

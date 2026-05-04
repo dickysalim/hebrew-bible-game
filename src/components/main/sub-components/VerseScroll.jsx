@@ -20,7 +20,7 @@ import { useRef, useState, useEffect, useLayoutEffect } from 'react'
 const EXIT_MS  = 140   // exit animation duration
 const ENTER_MS = 220   // enter animation duration
 
-export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter, expertMode }) {
+export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter, showGloss, expertMode }) {
   // --- verse transition state ---
   const [displayedVerse, setDisplayedVerse] = useState(currentVerse)
   const [animState, setAnimState]           = useState('')
@@ -196,6 +196,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
             wordRefs={wordRefs}
             showSBLWord={showSBLWord}
             showSBLLetter={showSBLLetter}
+            showGloss={showGloss}
             expertMode={expertMode}
           />
         </div>
@@ -204,7 +205,7 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   )
 }
 
-function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter, expertMode }) {
+function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter, showGloss, expertMode }) {
   const handleFlagComplete = (flagIndex) => {
     if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
   }
@@ -282,6 +283,11 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
                 ? <div className="word-full-sbl">{word.sbl}</div>
                 : null
             })()}
+
+            {/* Gloss — shown only when word is done and toggle is on; not affected by expert mode */}
+            {done && showGloss && word.gloss && (
+              <div className="word-gloss">{word.gloss}</div>
+            )}
 
             {/* Root flags */}
             {wordFlags.map((flag, flagIndex) => {

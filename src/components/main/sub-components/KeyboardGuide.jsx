@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleExpertMode, onResetVerse }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleExpertMode, onResetVerse }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -99,6 +99,14 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
             disabled={expertMode}
           />
           <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Word</span>
+        </label>
+        <label className="sbl-checkbox">
+          <input
+            type="checkbox"
+            checked={showGloss}
+            onChange={onToggleGloss}
+          />
+          <span>Word Gloss</span>
         </label>
         <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`}>
           <input

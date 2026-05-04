@@ -22,7 +22,7 @@ function Divider() {
 // Main component
 // Reads from lemmaMap (chapter-level cache) — no per-word fetch.
 // ---------------------------------------------------------------------------
-export default function WordDefinition({ word: activeWord, lemmaMap, wordId, sbl, noWrapper = false }) {
+export default function WordDefinition({ word: activeWord, lemmaMap, wordId, sbl, isWordCompleted = false, noWrapper = false }) {
 
   const content = (() => {
     // ── No word selected ───────────────────────────────────────────────────
@@ -31,6 +31,16 @@ export default function WordDefinition({ word: activeWord, lemmaMap, wordId, sbl
         <div className="wd-empty-inner">
           <span className="wd-empty-icon">𐤀</span>
           <p>Select a word to see its definition</p>
+        </div>
+      )
+    }
+
+    // ── Word not yet typed — locked ─────────────────────────────────────────
+    if (!isWordCompleted) {
+      return (
+        <div className="wd-locked">
+          <span className="wd-locked__icon">🔒</span>
+          <p>Type this word to unlock its definition</p>
         </div>
       )
     }

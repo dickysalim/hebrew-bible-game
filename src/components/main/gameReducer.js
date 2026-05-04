@@ -39,6 +39,7 @@ export const initialState = {
   celebratedVerses: [],
   showSBLWord: true,
   showSBLLetter: true,
+  showGloss: true,
   expertMode: false,
   chapterEndSignal: 0,
   prevChapterSignal: 0,
@@ -305,6 +306,9 @@ export function reducer(state, action) {
     case 'TOGGLE_SBL_LETTER':
       return { ...state, showSBLLetter: !state.showSBLLetter }
 
+    case 'TOGGLE_GLOSS':
+      return { ...state, showGloss: !state.showGloss }
+
     case 'TOGGLE_EXPERT_MODE':
       return { ...state, expertMode: !state.expertMode }
 
@@ -392,6 +396,7 @@ export function buildInitialStateFromCache(cp) {
     chapters:         chaptersMap,
     showSBLWord:      cp.settings?.showSBLWord   ?? true,
     showSBLLetter:    cp.settings?.showSBLLetter ?? true,
+    showGloss:        cp.settings?.showGloss     ?? true,
     expertMode:       cp.settings?.expertMode    ?? false,
   }
 }
