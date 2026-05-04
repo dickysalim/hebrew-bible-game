@@ -502,7 +502,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
             )}
             */}
 
-            {!isMobile && (
+            {!isMobile && state.showTAHOT && (
               <TAHOTStrip
                 words={verse.words}
                 activeWordIndex={activeWordIdx}
@@ -519,10 +519,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
               showGloss={state.showGloss}
+              showTAHOT={state.showTAHOT}
               expertMode={state.expertMode}
               onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
               onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
               onToggleGloss={() => dispatch({ type: 'TOGGLE_GLOSS' })}
+              onToggleTAHOT={() => dispatch({ type: 'TOGGLE_TAHOT' })}
               onToggleExpertMode={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
               onResetVerse={() => dispatch({ type: 'RESET_VERSE' })}
             />
@@ -550,10 +552,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               />
             )}
             */}
-            <TAHOTStrip
-              words={verse.words}
-              activeWordIndex={activeWordIdx}
-            />
+            {state.showTAHOT && (
+              <TAHOTStrip
+                words={verse.words}
+                activeWordIndex={activeWordIdx}
+              />
+            )}
           </div>
 
           <div className="mobile-keyboard-panel">
@@ -584,6 +588,12 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 disabled={state.expertMode}
               >
                 SBL Word
+              </button>
+              <button
+                className={`mobile-pill mobile-pill--toggle${state.showTAHOT ? ' mobile-pill--active' : ''}`}
+                onClick={() => dispatch({ type: 'TOGGLE_TAHOT' })}
+              >
+                TAHOT
               </button>
               <button
                 className={`mobile-pill mobile-pill--toggle${state.showGloss ? ' mobile-pill--active' : ''}`}

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleExpertMode, onResetVerse }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, showTAHOT, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleTAHOT, onToggleExpertMode, onResetVerse }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -45,6 +45,51 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
 
   return (
     <div className="keyboard-guide">
+      <div className="sbl-controls">
+        <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={showSBLLetter}
+            onChange={onToggleSBLLetter}
+            disabled={expertMode}
+          />
+          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Letter</span>
+        </label>
+        <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={showSBLWord}
+            onChange={onToggleSBLWord}
+            disabled={expertMode}
+          />
+          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Word</span>
+        </label>
+        <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={showGloss}
+            onChange={onToggleGloss}
+          />
+          <span>Word Gloss</span>
+        </label>
+        <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={showTAHOT}
+            onChange={onToggleTAHOT}
+          />
+          <span>TAHOT Strip</span>
+        </label>
+        <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`} onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={expertMode}
+            onChange={onToggleExpertMode}
+          />
+          <span>Expert</span>
+        </label>
+      </div>
+
       <div className="kb-rows">
         {rows.map((row, ri) => (
           <div key={ri} className="kb-row">
@@ -80,44 +125,10 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
           </div>
         ))}
       </div>
-      
-      <div className="sbl-controls">
-        <label className="sbl-checkbox">
-          <input
-            type="checkbox"
-            checked={showSBLLetter}
-            onChange={onToggleSBLLetter}
-            disabled={expertMode}
-          />
-          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Letter</span>
-        </label>
-        <label className="sbl-checkbox">
-          <input
-            type="checkbox"
-            checked={showSBLWord}
-            onChange={onToggleSBLWord}
-            disabled={expertMode}
-          />
-          <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Word</span>
-        </label>
-        <label className="sbl-checkbox">
-          <input
-            type="checkbox"
-            checked={showGloss}
-            onChange={onToggleGloss}
-          />
-          <span>Word Gloss</span>
-        </label>
-        <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`}>
-          <input
-            type="checkbox"
-            checked={expertMode}
-            onChange={onToggleExpertMode}
-          />
-          <span>Expert</span>
-        </label>
+
+      <div className="kb-right">
+        <button className="sbl-reset-btn" onMouseDown={e => e.preventDefault()} onClick={onResetVerse}>↻ Reset</button>
       </div>
-      <button className="sbl-reset-btn" onClick={onResetVerse}>↻ Reset Verse</button>
     </div>
   )
 }

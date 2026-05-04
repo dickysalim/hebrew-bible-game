@@ -40,6 +40,7 @@ export const initialState = {
   showSBLWord: true,
   showSBLLetter: true,
   showGloss: true,
+  showTAHOT: true,
   expertMode: false,
   chapterEndSignal: 0,
   prevChapterSignal: 0,
@@ -309,6 +310,9 @@ export function reducer(state, action) {
     case 'TOGGLE_GLOSS':
       return { ...state, showGloss: !state.showGloss }
 
+    case 'TOGGLE_TAHOT':
+      return { ...state, showTAHOT: !state.showTAHOT }
+
     case 'TOGGLE_EXPERT_MODE':
       return { ...state, expertMode: !state.expertMode }
 
@@ -397,6 +401,7 @@ export function buildInitialStateFromCache(cp) {
     showSBLWord:      cp.settings?.showSBLWord   ?? true,
     showSBLLetter:    cp.settings?.showSBLLetter ?? true,
     showGloss:        cp.settings?.showGloss     ?? true,
+    showTAHOT:        cp.settings?.showTAHOT     ?? true,
     expertMode:       cp.settings?.expertMode    ?? false,
   }
 }

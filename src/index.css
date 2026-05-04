@@ -635,6 +635,16 @@ html, body {
   flex: 1;
   justify-content: center;
 }
+
+/* Left column: just the reset button, vertically centred */
+.kb-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
 .kb-row { display: flex; gap: 2px; }
 .kb-key {
   position: relative;
@@ -707,42 +717,42 @@ html, body {
 .sbl-controls {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 5px;
+  padding: 6px 10px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  min-width: 120px;
-  position: absolute;
-  right: 10px;
-  top: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
 }
 
 .sbl-checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   cursor: pointer;
-  font-size: 13px;
-  color: var(--text-primary);
+  font-size: 10px;
+  color: var(--text-secondary);
   user-select: none;
+  letter-spacing: 0.2px;
 }
 
 .sbl-checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 11px;
+  height: 11px;
   cursor: pointer;
   accent-color: var(--purple-mid);
+  flex-shrink: 0;
 }
 
 .sbl-checkbox:hover {
   color: var(--text-primary);
 }
 
-/* Expert mode checkbox — coral accent when active */
+/* Expert mode checkbox — coral accent, divider above */
 .sbl-checkbox--expert {
-  margin-top: 4px;
-  padding-top: 8px;
+  margin-top: 2px;
+  padding-top: 5px;
   border-top: 1px solid var(--border);
 }
 .sbl-checkbox--expert-active span {
@@ -753,12 +763,9 @@ html, body {
   accent-color: var(--coral);
 }
 
-/* Reset verse button — below toggles panel */
+/* Reset verse button — right of the keyboard rows */
 .sbl-reset-btn {
-  position: absolute;
-  right: 10px;
-  top: 148px;
-  padding: 5px 14px;
+  padding: 5px 12px;
   border: 1px solid var(--border-mid);
   border-radius: var(--radius-pill);
   background: var(--bg-card);
