@@ -22,30 +22,21 @@ export default function ChapterNotesEditor({ userId, book, chapter }) {
   }, [])
 
   const chapterKey = `${book}-${chapter}`
-  const prevKeyRef = useRef(null)
 
-  // Force LTR on mount — belt-and-suspenders for contentEditable bidi
-  useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.setAttribute('dir', 'ltr')
-      editorRef.current.style.direction = 'ltr'
-      editorRef.current.style.textAlign = 'left'
-      editorRef.current.style.unicodeBidi = 'plaintext'
-    }
-  }, [])
+  // Stable ref for getChapterNote — prevents the load effect from
+  // re-running when the callback identity changes after every save.
+  const getChapterNoteRef = useRef(getChapterNote)
+  useEffect(() => { getChapterNoteRef.current = getChapterNote }, [getChapterNote])
 
+  // Set editor innerHTML ONLY when chapter changes or notes finish loading.
+  // NOT on every keystroke — that was resetting the cursor to position 0.
   useEffect(() => {
     if (loadStatus !== 'ready') return
     if (!editorRef.current) return
-    const content = getChapterNote(book, chapter)
+    const content = getChapterNoteRef.current(book, chapter)
     editorRef.current.innerHTML = content
-    // Re-enforce LTR after innerHTML replacement (browsers can reset dir)
-    editorRef.current.setAttribute('dir', 'ltr')
-    if (chapterKey !== prevKeyRef.current) {
-      setStatus('idle')
-      prevKeyRef.current = chapterKey
-    }
-  }, [chapterKey, loadStatus, getChapterNote, book, chapter, setStatus])
+    setStatus('idle')
+  }, [chapterKey, loadStatus, book, chapter, setStatus])
 
   const handleInput = useCallback(() => {
     if (!userId) return
