@@ -11,6 +11,7 @@ import { reducer, initialState, setVersesRef, isVerseDone, getTyped, wordLen, bu
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
 import { formatProgressFromSupabase } from '../../lib/progress'
+import { useLemmaCache } from '../../hooks/useLemmaCache'
 import VerseScroll from './sub-components/VerseScroll'
 import InsightCarousel from './sub-components/InsightCarousel'
 import TAHOTStrip, { getGlossText } from './sub-components/TAHOTStrip'
@@ -86,6 +87,9 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const verses = chapterData?.verses ?? []
   // Keep module-level ref in sync for the reducer
   setVersesRef(verses)
+
+  // Chapter-level lemma + root cache — imperative refresh on each chapter load
+  const [lemmaMap, refreshLemmaCache] = useLemmaCache()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
     // Chapter-select jump: restore target chapter from cache if it exists
@@ -191,14 +195,15 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
   // Single sync-effect: fires reliably on every new load via loadId
   useEffect(() => {
-    // Skip the initial load (loadId=0) — reducer init already handles that
-    if (loadId === 0 || !chapterData || chapterLoading) return
+    if (!chapterData || chapterLoading) return
     dispatch({
       type: 'LOAD_CHAPTER',
       stageIndex: loaderStageIndex,
       startAtVerse: pendingStartAtVerseRef.current ?? undefined,
     })
     pendingStartAtVerseRef.current = null
+    // Refresh lemma cache for the new chapter
+    refreshLemmaCache(chapterData)
     // Trigger fade-in
     setChapterTransition('fading-in')
     const timer = setTimeout(() => setChapterTransition('idle'), 350)
@@ -350,6 +355,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
   const sbl = activeWord?.sbl || ''
 
+
   // "New" badge — true only on first discovery AND while still on that word.
   // When the user navigates away (wordId changes), the previous word is dismissed
   // so returning to it no longer shows the badge.
@@ -450,6 +456,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         <div className="word-definition-column">
           <WordDefTabs
             word={wordData}
+            activeWord={activeWord}
+            lemmaMap={lemmaMap}
             wordId={wordId}
             sbl={sbl}
             encounterCount={encounterCount}
@@ -607,6 +615,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           open={wordDefSheetOpen}
           onClose={() => setWordDefSheetOpen(false)}
           word={wordData}
+          activeWord={activeWord}
+          lemmaMap={lemmaMap}
           wordId={wordId}
           sbl={sbl}
           encounterCount={encounterCount}

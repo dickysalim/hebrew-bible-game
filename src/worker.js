@@ -377,6 +377,33 @@ export default {
       return handleAllRoots(env)
     }
 
+    // New lexicon DB — GET or POST /api/lemma/batch
+    // Must be checked BEFORE /api/lemma/:strongs so it doesn't get caught by the prefix check
+    if (url.pathname === '/api/lemma/batch' && (request.method === 'GET' || request.method === 'POST')) {
+      return handleLemmaBatch(url, request, env)
+    }
+
+    // CORS preflight for POST endpoints
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      })
+    }
+
+    // New lexicon DB — GET /api/lemma/:strongs  (e.g. /api/lemma/H7225)
+    if (url.pathname.startsWith('/api/lemma/') && request.method === 'GET') {
+      return handleLemma(url, env)
+    }
+
+    // New lexicon DB — GET /api/rootdef/:strongs  (e.g. /api/rootdef/H7218)
+    if (url.pathname.startsWith('/api/rootdef/') && request.method === 'GET') {
+      return handleRootDef(url, env)
+    }
+
     return new Response('Not found', { status: 404 })
   }
 }
@@ -477,6 +504,124 @@ async function handleAllRoots(env) {
   ).all()
 
   return Response.json({ roots: rows.results }, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/lemma/:strongs
+// Returns a single lemma entry by Strong's number from the new `lemma` table.
+// Example: GET /api/lemma/H7225
+// ---------------------------------------------------------------------------
+async function handleLemma(url, env) {
+  const strongs = decodeURIComponent(url.pathname.replace('/api/lemma/', ''))
+  if (!strongs) return Response.json({ error: 'Strong\'s number is required' }, { status: 400 })
+
+  const lemma = await env.DB.prepare(
+    'SELECT * FROM lemma WHERE lemma_strongs = ?'
+  ).bind(strongs).first()
+
+  if (!lemma) return Response.json({ error: 'Lemma not found' }, { status: 404 })
+
+  // If the lemma has a root, fetch it too so the panel can show root data
+  let root = null
+  if (lemma.lemma_root_strongs) {
+    root = await env.DB.prepare(
+      'SELECT * FROM roots WHERE root_strongs = ?'
+    ).bind(lemma.lemma_root_strongs).first()
+  }
+
+  return Response.json({ lemma, root }, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET /api/rootdef/:strongs
+// Returns a single root entry by Strong's number from the new `root` table.
+// Example: GET /api/rootdef/H7218
+// ---------------------------------------------------------------------------
+async function handleRootDef(url, env) {
+  const strongs = decodeURIComponent(url.pathname.replace('/api/rootdef/', ''))
+  if (!strongs) return Response.json({ error: 'Strong\'s number is required' }, { status: 400 })
+
+  const root = await env.DB.prepare(
+    'SELECT * FROM roots WHERE root_strongs = ?'
+  ).bind(strongs).first()
+
+  if (!root) return Response.json({ error: 'Root not found' }, { status: 404 })
+
+  return Response.json({ root }, { headers: corsHeaders() })
+}
+
+// ---------------------------------------------------------------------------
+// GET or POST /api/lemma/batch
+// Batch fetch lemmas + roots for a whole chapter in 2 DB round-trips.
+// GET:  /api/lemma/batch?strongs=H7225,H1254,...
+// POST: { strongs: ["H7225", "H1254", ...] }
+// Returns: { [strongs]: { lemma, root | null } }
+// ---------------------------------------------------------------------------
+async function handleLemmaBatch(url, request, env) {
+  let strongsList
+
+  if (request.method === 'POST') {
+    try {
+      const body = await request.json()
+      strongsList = Array.isArray(body.strongs) ? body.strongs : []
+    } catch {
+      return Response.json({ error: 'Invalid JSON' }, { status: 400, headers: corsHeaders() })
+    }
+  } else {
+    const raw = url.searchParams.get('strongs') || ''
+    strongsList = raw.split(',').map(s => s.trim()).filter(Boolean)
+  }
+
+  if (strongsList.length === 0) return Response.json({}, { headers: corsHeaders() })
+
+  const CHUNK_SIZE = 50
+
+  // Chunk the strongs list and query in parallel batches
+  const allLemmaResults = []
+  const chunks = []
+  for (let i = 0; i < strongsList.length; i += CHUNK_SIZE) {
+    chunks.push(strongsList.slice(i, i + CHUNK_SIZE))
+  }
+
+  await Promise.all(chunks.map(async (chunk) => {
+    const placeholders = chunk.map(() => '?').join(',')
+    const rows = await env.DB.prepare(
+      `SELECT * FROM lemma WHERE lemma_strongs IN (${placeholders})`
+    ).bind(...chunk).all()
+    allLemmaResults.push(...rows.results)
+  }))
+
+  // Collect all unique root strongs
+  const rootList = [...new Set(
+    allLemmaResults.map(r => r.lemma_root_strongs).filter(Boolean)
+  )]
+
+  // Chunk root queries too
+  let rootMap = {}
+  if (rootList.length > 0) {
+    const rootChunks = []
+    for (let i = 0; i < rootList.length; i += CHUNK_SIZE) {
+      rootChunks.push(rootList.slice(i, i + CHUNK_SIZE))
+    }
+    await Promise.all(rootChunks.map(async (chunk) => {
+      const placeholders = chunk.map(() => '?').join(',')
+      const rows = await env.DB.prepare(
+        `SELECT * FROM roots WHERE root_strongs IN (${placeholders})`
+      ).bind(...chunk).all()
+      for (const r of rows.results) rootMap[r.root_strongs] = r
+    }))
+  }
+
+  // Build keyed response map
+  const result = {}
+  for (const lemma of allLemmaResults) {
+    result[lemma.lemma_strongs] = {
+      lemma,
+      root: lemma.lemma_root_strongs ? (rootMap[lemma.lemma_root_strongs] ?? null) : null,
+    }
+  }
+
+  return Response.json(result, { headers: corsHeaders() })
 }
 
 // ---------------------------------------------------------------------------

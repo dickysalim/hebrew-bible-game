@@ -177,11 +177,9 @@ for (let i = 0; i < strongEntries.length; i++) {
 
   strongMap[id] = {
     root_strongs: id,
-    root_hebrew: hebrew,
+    root_word: hebrew,
     root_lang: lang || 'heb',
     root_sbl: sbl,
-    root_pron: pron,
-    root_pos: pos,
     root_gloss: gloss,
     isPrimitive,
   };
@@ -217,16 +215,13 @@ for (const row of rows) {
 
   lines.push(
     `INSERT OR IGNORE INTO roots ` +
-    `(root_strongs, root_hebrew, root_lang, root_sbl, root_pron, root_pos, root_gloss, root_bdb, root_homonym) VALUES (` +
+    `(root_strongs, root_word, root_lang, root_sbl, root_gloss, root_bdb) VALUES (` +
     `'${escapeSql(row.root_strongs)}', ` +
-    `'${escapeSql(row.root_hebrew)}', ` +
+    `'${escapeSql(row.root_word)}', ` +
     `'${escapeSql(row.root_lang)}', ` +
     `'${escapeSql(row.root_sbl)}', ` +
-    `'${escapeSql(row.root_pron)}', ` +
-    `'${escapeSql(row.root_pos)}', ` +
     `'${escapeSql(row.root_gloss)}', ` +
-    `'${escapeSql(bdb)}', ` +
-    `${homonym}` +
+    `'${escapeSql(bdb)}'` +
     `);`
   );
 }

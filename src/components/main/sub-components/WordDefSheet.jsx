@@ -5,6 +5,8 @@ export default function WordDefSheet({
   open,
   onClose,
   word,
+  activeWord,
+  lemmaMap,
   wordId,
   sbl,
   encounterCount,
@@ -47,6 +49,8 @@ export default function WordDefSheet({
         <div className="wds-content">
           <WordDefTabs
             word={word}
+            activeWord={activeWord}
+            lemmaMap={lemmaMap}
             wordId={wordId}
             sbl={sbl}
             encounterCount={encounterCount}

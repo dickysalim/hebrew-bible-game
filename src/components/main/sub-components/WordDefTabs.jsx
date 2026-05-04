@@ -20,7 +20,7 @@ const TABS = ['Word', 'Root', 'Concordance', 'My Notes']
  *               cleared by GamePanel when the user moves to a different word
  */
 export default function WordDefTabs({
-  word, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber,
+  word, activeWord, lemmaMap, wordId, sbl, encounterCount, isWordCompleted, onOpenHaber,
   isWordNew = false,
   userId, book, chapter, verseNumber,
 }) {
@@ -56,7 +56,8 @@ export default function WordDefTabs({
       <div className="wdt__content">
         {activeTab === 'Word' && (
           <WordDefinition
-            word={word}
+            word={activeWord}
+            lemmaMap={lemmaMap}
             wordId={wordId}
             sbl={sbl}
             encounterCount={encounterCount}

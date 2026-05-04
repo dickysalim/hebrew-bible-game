@@ -1,4 +1,308 @@
-/* WordDefinition Component Styles */
+/* ─── WordDefinition — D1-backed word panel ─────────────────────────────── */
+
+/* Keep the outer .word-definition card unchanged — it's shared with WordDefTabs */
+
+/* ── Empty / loading states ─────────────────────────────────────────────── */
+
+.wd-empty-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.wd-empty-icon {
+  font-size: 28px;
+  opacity: 0.45;
+  font-family: var(--font-hebrew);
+}
+
+.wd-empty-inner p {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  max-width: 200px;
+  line-height: 1.5;
+}
+
+.wd-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 16px;
+  color: var(--text-muted);
+}
+
+@keyframes wd-spin {
+  to { transform: rotate(360deg); }
+}
+
+.wd-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-mid);
+  border-top-color: var(--gold-mid);
+  border-radius: 50%;
+  animation: wd-spin 0.7s linear infinite;
+}
+
+.wd-loading p {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ── Scrollable word content area ───────────────────────────────────────── */
+
+.wd-word-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 4px;
+}
+
+.wd-word-scroll::-webkit-scrollbar { width: 5px; }
+.wd-word-scroll::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 3px; }
+.wd-word-scroll::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+.wd-word-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Utility ────────────────────────────────────────────────────────────── */
+
+.wd-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+
+.wd-section-label {
+  font-size: 9px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.75;
+  margin-bottom: 5px;
+  flex-shrink: 0;
+}
+
+/* ── 1. Word identity block ─────────────────────────────────────────────── */
+
+.wd-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0 8px;
+}
+
+.wd-identity__hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 38px;
+  direction: rtl;
+  line-height: 1.1;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.wd-identity__sbl {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.wd-identity__gloss {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* ── 2. Particles (prefix / suffix) ────────────────────────────────────── */
+
+.wd-particles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.wd-particle {
+  display: grid;
+  grid-template-columns: 44px 36px 56px 1fr;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+  border-left: 2px solid transparent;
+}
+
+.wd-particle--prefix {
+  background: color-mix(in srgb, var(--blue) 6%, transparent);
+  border-left-color: var(--blue);
+}
+
+.wd-particle--suffix {
+  background: color-mix(in srgb, var(--teal) 6%, transparent);
+  border-left-color: var(--teal);
+}
+
+.wd-particle__type {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+}
+
+.wd-particle--prefix .wd-particle__type { color: var(--blue); }
+.wd-particle--suffix .wd-particle__type { color: var(--teal); }
+
+.wd-particle__word {
+  font-family: var(--font-hebrew);
+  font-size: 15px;
+  direction: rtl;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.wd-particle__sbl {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.wd-particle__gloss {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.wd-particle__strongs {
+  font-size: 9px;
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  text-align: right;
+  opacity: 0.65;
+}
+
+/* ── 3 & 4. Lemma / Root rows ───────────────────────────────────────────── */
+
+.wd-row {
+  display: grid;
+  grid-template-columns: 52px 72px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+  margin-bottom: 2px;
+}
+
+.wd-row--lemma {
+  background: color-mix(in srgb, var(--gold-mid) 8%, transparent);
+}
+
+.wd-row--root {
+  background: color-mix(in srgb, var(--coral) 6%, transparent);
+}
+
+.wd-row--placeholder {
+  background: transparent;
+  opacity: 0.65;
+}
+
+.wd-row__hebrew {
+  font-family: var(--font-hebrew);
+  font-size: 20px;
+  direction: rtl;
+  text-align: right;
+  color: var(--gold-bright);
+  line-height: 1.1;
+}
+
+.wd-row__hebrew--root {
+  color: var(--coral);
+}
+
+.wd-row__sbl {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.wd-row__gloss {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.wd-row__gloss--muted {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.wd-row__strongs {
+  font-size: 10px;
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.wd-no-root {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2px 6px;
+}
+
+/* ── 5. BDB prose ───────────────────────────────────────────────────────── */
+
+.wd-bdb {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 2px 2px 4px;
+}
+
+/* ── New badge (inherited from the wrapper — kept here for reference) ────── */
+.new-badge {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  background: var(--green);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 0 0 var(--radius) var(--radius);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── word-definition wrapper (card shell) ───────────────────────────────── */
 
 .word-definition {
   position: relative;
@@ -13,8 +317,12 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* ── Haber open button ── */
+.word-definition.is-new {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(29, 158, 117, 0.18), 0 0 16px rgba(29, 158, 117, 0.12);
+}
 
+/* Haber open button */
 .haber-open-btn {
   flex-shrink: 0;
   width: 100%;
@@ -31,348 +339,10 @@
   cursor: pointer;
   transition: background 0.2s, color 0.2s, transform 0.1s;
 }
-
 .haber-open-btn:hover {
   background: var(--purple-mid);
-  color: #fff;
   transform: translateY(-1px);
 }
-
 .haber-open-btn:active {
   transform: translateY(0);
-}
-
-/* ── Word scrollable area ── */
-
-.wd-word-scroll {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
-}
-
-.word-definition.is-new {
-  border-color: var(--green);
-  box-shadow: 0 0 0 2px rgba(29, 158, 117, 0.18), 0 0 16px rgba(29, 158, 117, 0.12);
-}
-
-/* Custom scrollbar for word tab content */
-.wd-word-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.wd-word-scroll::-webkit-scrollbar-track {
-  background: var(--bg-surface);
-  border-radius: 3px;
-}
-
-.wd-word-scroll::-webkit-scrollbar-thumb {
-  background: var(--border-mid);
-  border-radius: 3px;
-}
-
-.wd-word-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* Empty state */
-.word-definition.empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-}
-
-.empty-message {
-  text-align: center;
-  color: var(--text-muted);
-}
-
-.empty-icon {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 12px;
-  opacity: 0.5;
-}
-
-.empty-message p {
-  font-size: 14px;
-  font-family: var(--font-serif);
-  font-style: italic;
-  max-width: 200px;
-  line-height: 1.5;
-}
-
-/* New badge */
-.new-badge {
-  position: absolute;
-  top: 0;
-  right: 14px;
-  background: var(--green);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 0 0 var(--radius) var(--radius);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Two-column header layout - optimized spacing */
-.word-definition-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.word-headline-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.segment-breakdown-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 6px;
-}
-
-/* Hebrew word display */
-.hebrew-word-display {
-  font-family: var(--font-hebrew);
-  font-size: 36px;
-  text-align: center;
-  margin-bottom: 6px;
-  direction: rtl;
-  letter-spacing: 0;
-  line-height: 1.1;
-}
-
-.hebrew-segment {
-  display: inline-block;
-}
-
-.prefix-color {
-  color: var(--blue);
-}
-
-.root-color {
-  color: var(--coral);
-}
-
-.suffix-color {
-  color: var(--teal);
-}
-
-/* SBL transliteration */
-.sbl-transliteration {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  text-align: center;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-  letter-spacing: 0.3px;
-  font-weight: 500;
-}
-
-/* English gloss */
-.english-gloss {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  text-align: center;
-  color: var(--text-primary);
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-/* Word metadata - ultra compact layout for POS and Encounter */
-.word-metadata {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.metadata-item {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.metadata-label {
-  font-weight: 500;
-}
-
-.metadata-value {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.metadata-separator {
-  color: var(--border);
-  user-select: none;
-  font-size: 10px;
-}
-
-/* Divider - reduced margin */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 8px 0;
-}
-
-/* Segment rows - optimized for right column */
-.segment-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  gap: 6px;
-  padding: 3px 0;
-  align-items: center;
-}
-
-.segment-row-compact {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  gap: 4px;
-  padding: 1px 0;
-  align-items: center;
-}
-
-.segment-hebrew {
-  font-family: var(--font-hebrew);
-  font-size: 16px;
-  text-align: center;
-}
-
-.segment-sbl {
-  font-family: var(--font-serif);
-  font-size: 11px;
-  color: var(--text-secondary);
-  text-align: center;
-}
-
-.segment-gloss {
-  font-size: 11px;
-  color: var(--text-primary);
-  line-height: 1.3;
-}
-
-/* Explanation section - reduced margins */
-.explanation-section {
-  margin-top: 4px;
-}
-
-.explanation-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 8px;
-  opacity: 0.7;
-}
-
-.explanation-content {
-  font-family: var(--font-serif);
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.explanation-paragraph {
-  margin-bottom: 12px;
-}
-
-.explanation-paragraph:last-child {
-  margin-bottom: 0;
-}
-
-.explanation-paragraph strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .word-definition-header {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .hebrew-word-display {
-    font-size: 36px;
-  }
-  
-  .sbl-transliteration {
-    font-size: 14px;
-  }
-  
-  .english-gloss {
-    font-size: 16px;
-  }
-  
-  .segment-row,
-  .segment-row-compact {
-    grid-template-columns: 1fr 1fr 1.5fr;
-    gap: 6px;
-  }
-  
-  .segment-hebrew {
-    font-size: 16px;
-  }
-  
-  .segment-sbl {
-    font-size: 11px;
-  }
-  
-  .segment-gloss {
-    font-size: 11px;
-  }
-  
-  .word-metadata {
-    font-size: 11px;
-    gap: 12px;
-  }
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .word-definition-header {
-    gap: 12px;
-  }
-  
-  .hebrew-word-display {
-    font-size: 32px;
-  }
-  
-  .sbl-transliteration {
-    font-size: 13px;
-  }
-  
-  .english-gloss {
-    font-size: 15px;
-  }
-  
-  .segment-row-compact {
-    padding: 1px 0;
-    gap: 4px;
-  }
-  
-  .segment-hebrew {
-    font-size: 14px;
-  }
-  
-  .segment-sbl {
-    font-size: 10px;
-  }
-  
-  .segment-gloss {
-    font-size: 10px;
-  }
 }
