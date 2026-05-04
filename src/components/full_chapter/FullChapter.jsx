@@ -40,12 +40,38 @@ export default function FullChapter({ userId }) {
 
   const verses = chapterData?.verses ?? []
 
-  if (isLoading) {
+  // Lock screen — shown until the user finishes at least one chapter
+  const isLocked = completedStageIndexes.size === 0
+
+  if (isLoading && !isLocked) {
     return (
       <div className="fc-panel">
         <div className="fc-loading">
           <div className="fc-loading__spinner" />
           <p>Loading {chapterMeta?.book ?? ''} {chapterMeta?.chapter ?? ''}…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLocked) {
+    return (
+      <div className="fc-panel">
+        <div className="fc-lock">
+          <div className="fc-lock__icon" aria-hidden="true">🔒</div>
+          <h2 className="fc-lock__title">Full Chapter Reader</h2>
+          <p className="fc-lock__body">
+            Complete <strong>Genesis 1</strong> in the main game to unlock this panel.
+          </p>
+          <div className="fc-lock__verse">
+            <p className="fc-lock__verse-heb" lang="he" dir="rtl">
+              אלהים אלי אתה אשחרך
+            </p>
+            <p className="fc-lock__verse-eng">
+              "God, you are my God. I will earnestly seek you."
+            </p>
+            <span className="fc-lock__verse-ref">Psalm 63:1 · WEB</span>
+          </div>
         </div>
       </div>
     )
@@ -63,6 +89,7 @@ export default function FullChapter({ userId }) {
           selectedStageIndex={selectedStageIndex}
           onSelect={setSelectedStageIndex}
           completedStageIndexes={completedStageIndexes}
+          userId={userId}
         />
       </div>
     </div>

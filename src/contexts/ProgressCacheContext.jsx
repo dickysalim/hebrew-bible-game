@@ -58,8 +58,9 @@ function ensurePerChapterCache(formatted) {
       },
     },
     // Carry forward new fields if present, otherwise defaults
-    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true, expertMode: false },
+    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true, showGloss: true, showTAHOT: true, expertMode: false },
     alphabetProgress: formatted.alphabetProgress || {},
+    fcSettings: formatted.fcSettings || {},
   }
 }
 
@@ -123,14 +124,15 @@ export function ProgressCacheProvider({ children, userId }) {
 
   /**
    * updateCache — called by GamePanel on every state change.
-   * Now also persists settings (showSBLWord / showSBLLetter).
+   * Persists game settings (showSBLWord / showSBLLetter / showGloss / showTAHOT / expertMode).
    *
    * @param {object} rawGameState
    * @param {array}  discoveredRoots
    * @param {object} discoveredWordsByRoot
-   * @param {object} settings — { showSBLWord, showSBLLetter }
+   * @param {object} settings — { showSBLWord, showSBLLetter, showGloss, showTAHOT, expertMode }
+   * @param {object} [fcSettings] — Full Chapter prefs { showGloss, showSBLWord, showSBLLetter, fontSize }
    */
-  const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot, settings = {}) => {
+  const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot, settings = {}, fcSettings = null) => {
     if (!userId) return
 
     const si = rawGameState.stageIndex || 1
@@ -155,10 +157,13 @@ export function ProgressCacheProvider({ children, userId }) {
         settings: {
           showSBLWord: settings.showSBLWord ?? prev?.settings?.showSBLWord ?? true,
           showSBLLetter: settings.showSBLLetter ?? prev?.settings?.showSBLLetter ?? true,
+          showGloss: settings.showGloss ?? prev?.settings?.showGloss ?? true,
+          showTAHOT: settings.showTAHOT ?? prev?.settings?.showTAHOT ?? true,
           expertMode: settings.expertMode ?? prev?.settings?.expertMode ?? false,
         },
-        // Preserve existing alphabet progress
+        // Preserve existing alphabet + full-chapter settings
         alphabetProgress: prev?.alphabetProgress || {},
+        fcSettings: fcSettings !== null ? fcSettings : (prev?.fcSettings || {}),
       }
       writeToSessionCache(userId, updated, new Date().toISOString())
       return updated
@@ -182,11 +187,43 @@ export function ProgressCacheProvider({ children, userId }) {
           discoveredWordsByRoot,
           latestChapters,
           latestData.settings || {},
-          latestData.alphabetProgress || {}
+          latestData.alphabetProgress || {},
+          latestData.fcSettings || {}
         )
         await saveProgressToSupabase(userId, progressForSupabase)
       } catch (err) {
         console.error('[ProgressCache] Failed to save to Supabase:', err)
+      }
+    }, SAVE_DEBOUNCE_MS)
+  }, [userId])
+
+  /**
+   * updateFcSettings — called by the Full Chapter panel.
+   * Only patches the fcSettings field; game progress is untouched.
+   */
+  const updateFcSettings = useCallback((patch) => {
+    if (!userId) return
+
+    setCachedProgress(prev => {
+      const updated = {
+        ...(prev || {}),
+        fcSettings: { ...(prev?.fcSettings || {}), ...patch },
+      }
+      writeToSessionCache(userId, updated, new Date().toISOString())
+      return updated
+    })
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        const latestRaw = sessionStorage.getItem(cacheKey(userId))
+        let fcSettings = {}
+        if (latestRaw) {
+          try { fcSettings = JSON.parse(latestRaw)?.data?.fcSettings || {} } catch {}
+        }
+        await savePartialProgress(userId, { fc_settings: fcSettings })
+      } catch (err) {
+        console.error('[ProgressCache] Failed to save fc_settings:', err)
       }
     }, SAVE_DEBOUNCE_MS)
   }, [userId])
@@ -236,7 +273,7 @@ export function ProgressCacheProvider({ children, userId }) {
 
   return (
     <ProgressCacheContext.Provider
-      value={{ cachedProgress, cacheStatus, updateCache, updateAlphabetProgress, clearCache, resetProgress }}
+      value={{ cachedProgress, cacheStatus, updateCache, updateFcSettings, updateAlphabetProgress, clearCache, resetProgress }}
     >
       {children}
     </ProgressCacheContext.Provider>

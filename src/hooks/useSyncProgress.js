@@ -68,7 +68,13 @@ export function useSyncProgress({
       state,
       contextDiscoveredRoots,
       discoveredWordsByRoot,
-      { showSBLWord: state.showSBLWord, showSBLLetter: state.showSBLLetter, expertMode: state.expertMode }
+      {
+        showSBLWord: state.showSBLWord,
+        showSBLLetter: state.showSBLLetter,
+        showGloss: state.showGloss,
+        showTAHOT: state.showTAHOT,
+        expertMode: state.expertMode,
+      }
     )
   }, [
     userId,
@@ -82,6 +88,8 @@ export function useSyncProgress({
     state.celebratedVerses,
     state.showSBLWord,
     state.showSBLLetter,
+    state.showGloss,
+    state.showTAHOT,
     state.expertMode,
     contextDiscoveredRoots,
     discoveredWordsByRoot,

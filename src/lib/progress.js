@@ -35,10 +35,14 @@ export async function saveProgress(userId, progress) {
     highest_verse: progress.highestVerse || 0,
     carousel_idx_map: progress.carouselIdxMap || {},
     celebrated_verses: progress.celebratedVerses || [],
-    // Settings
+    // Main Game settings
     show_sbl_word: progress.settings?.showSBLWord ?? true,
     show_sbl_letter: progress.settings?.showSBLLetter ?? true,
+    show_gloss: progress.settings?.showGloss ?? true,
+    show_tahot: progress.settings?.showTAHOT ?? true,
     expert_mode: progress.settings?.expertMode ?? false,
+    // Full Chapter panel settings
+    fc_settings: progress.fcSettings || {},
     // Alphabet training progress
     alphabet_progress: progress.alphabetProgress || {},
     updated_at: new Date().toISOString(),
@@ -97,8 +101,9 @@ export async function savePartialProgress(userId, fields) {
  * @param {array}  contextDiscoveredRoots
  * @param {object} contextDiscoveredWordsByRoot
  * @param {object} allChapters
- * @param {object} settings  — { showSBLWord, showSBLLetter }
+ * @param {object} settings  — { showSBLWord, showSBLLetter, showGloss, showTAHOT, expertMode }
  * @param {object} alphabetProgress — { level1: bool, … }
+ * @param {object} fcSettings — Full Chapter panel prefs { showGloss, showSBLWord, showSBLLetter, fontSize }
  */
 export function formatProgressForSupabase(
   gameState,
@@ -106,7 +111,8 @@ export function formatProgressForSupabase(
   contextDiscoveredWordsByRoot = {},
   allChapters = {},
   settings = {},
-  alphabetProgress = {}
+  alphabetProgress = {},
+  fcSettings = {}
 ) {
   const completedVerses = []
   if (gameState.typedCounts) {
@@ -132,9 +138,12 @@ export function formatProgressForSupabase(
     settings: {
       showSBLWord: settings.showSBLWord ?? gameState.showSBLWord ?? true,
       showSBLLetter: settings.showSBLLetter ?? gameState.showSBLLetter ?? true,
+      showGloss: settings.showGloss ?? gameState.showGloss ?? true,
+      showTAHOT: settings.showTAHOT ?? gameState.showTAHOT ?? true,
       expertMode: settings.expertMode ?? gameState.expertMode ?? false,
     },
     alphabetProgress,
+    fcSettings,
   }
 }
 
@@ -153,12 +162,16 @@ export function formatProgressFromSupabase(supabaseProgress) {
     carouselIdxMap: supabaseProgress.carousel_idx_map || {},
     celebratedVerses: supabaseProgress.celebrated_verses || [],
     stageIndex: supabaseProgress.stage_index || 1,
-    // Settings
+    // Main Game settings
     settings: {
       showSBLWord: supabaseProgress.show_sbl_word ?? true,
       showSBLLetter: supabaseProgress.show_sbl_letter ?? true,
+      showGloss: supabaseProgress.show_gloss ?? true,
+      showTAHOT: supabaseProgress.show_tahot ?? true,
       expertMode: supabaseProgress.expert_mode ?? false,
     },
+    // Full Chapter panel settings
+    fcSettings: supabaseProgress.fc_settings || {},
     // Alphabet progress
     alphabetProgress: supabaseProgress.alphabet_progress || {},
   }
