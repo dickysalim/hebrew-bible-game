@@ -552,6 +552,235 @@
   }
 }
 
+/* ─── Mobile: full-screen verse reader ────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Kill the sidebar and make the reader single column */
+  .fc-reader {
+    grid-template-columns: 1fr;
+  }
+
+  .fc-left {
+    display: none;
+  }
+
+  /* Hide desktop toolbar — controls move to the mobile pill bar */
+  .fc-right__toolbar {
+    display: none;
+  }
+
+  /* Verse text gets full screen, bottom padded for the pill bar */
+  .fc-right__scroll {
+    padding: 12px 14px 12px;
+  }
+
+  /* ── Mobile pill bar — now at the TOP ── */
+  .fc-mobile-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+
+  .fc-mobile-bar::-webkit-scrollbar { display: none; }
+
+  /* Compact native selects */
+  .fc-mobile-select {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 6px;
+    cursor: pointer;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  /* Vertical divider between groups */
+  .fc-mobile-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border-mid);
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+
+  /* Toggle / action pills */
+  .fc-mobile-pill {
+    flex-shrink: 0;
+    height: 28px;
+    padding: 0 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fc-mobile-pill--on {
+    background: color-mix(in srgb, var(--gold-bright) 14%, var(--bg-surface));
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+
+  .fc-mobile-pill--customize {
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+  }
+
+  .fc-mobile-pill:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ── Customize bottom sheet ── */
+  .fc-customize-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 155;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .fc-customize-overlay--open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .fc-customize-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-radius: 16px 16px 0 0;
+    max-height: calc(100% - 56px);
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-bottom: env(safe-area-inset-bottom, 8px);
+  }
+
+  .fc-customize-overlay--open .fc-customize-sheet {
+    transform: translateY(0);
+  }
+
+  .fc-customize-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border-mid);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    cursor: pointer;
+  }
+
+  .fc-customize-title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 10px 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fc-customize-rows {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0 8px;
+  }
+
+  .fc-customize-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-body);
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fc-customize-row:last-child { border-bottom: none; }
+  .fc-customize-row:active { background: var(--bg-surface); }
+
+  .fc-customize-row-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .fc-customize-row-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .fc-customize-row-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* iOS-style toggle — gold accent for Full Chapter */
+  .fc-customize-toggle {
+    width: 44px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--border-mid);
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .fc-customize-toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+
+  .fc-customize-toggle--on {
+    background: var(--gold-mid);
+  }
+
+  .fc-customize-toggle--on::after {
+    transform: translateX(18px);
+  }
+}
+
 /* ─── Lock Screen ─────────────────────────────────────────────────────────── */
 
 .fc-lock {
