@@ -103,7 +103,37 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
       {/* Mobile top bar — shown only on mobile, sits above the scroll area */}
       {isMobile && (
         <div className="fc-mobile-bar">
-          {/* Customize pill — leftmost */}
+          {/* Combined chapter select — leftmost */}
+          <select
+            className="fc-mobile-select"
+            value={selectedStageIndex}
+            onChange={e => {
+              const si = Number(e.target.value)
+              if (isAccessible(si)) {
+                const entry = CHAPTER_REGISTRY.find(c => c.stageIndex === si)
+                if (entry) setSelectedBook(entry.book)
+                onSelect(si)
+              }
+            }}
+            aria-label="Select chapter"
+          >
+            {REGISTRY_BOOKS.map(book => (
+              <optgroup key={book} label={book} disabled={!bookHasProgress(book)}>
+                {CHAPTER_REGISTRY.filter(e => e.book === book).map(entry => (
+                  <option
+                    key={entry.stageIndex}
+                    value={entry.stageIndex}
+                    disabled={!isAccessible(entry.stageIndex)}
+                  >
+                    {book} {entry.chapter}{!isAccessible(entry.stageIndex) ? ' 🔒' : ''}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+
+          <div className="fc-mobile-sep" aria-hidden="true" />
+
           <button
             className="fc-mobile-pill fc-mobile-pill--customize"
             onClick={() => setFcCustomizeOpen(true)}
@@ -113,33 +143,6 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
 
           <div className="fc-mobile-sep" aria-hidden="true" />
 
-          {/* Chapter selects */}
-          <select
-            className="fc-mobile-select"
-            value={selectedBook}
-            onChange={handleMobileBookChange}
-            aria-label="Select book"
-          >
-            {REGISTRY_BOOKS.map(book => (
-              <option key={book} value={book} disabled={!bookHasProgress(book)}>{book}</option>
-            ))}
-          </select>
-          <select
-            className="fc-mobile-select"
-            value={selectedStageIndex}
-            onChange={handleMobileChapterChange}
-            aria-label="Select chapter"
-          >
-            {chaptersForBook.map(entry => (
-              <option key={entry.stageIndex} value={entry.stageIndex} disabled={!isAccessible(entry.stageIndex)}>
-                Ch. {entry.chapter}{!isAccessible(entry.stageIndex) ? ' 🔒' : ''}
-              </option>
-            ))}
-          </select>
-
-          <div className="fc-mobile-sep" aria-hidden="true" />
-
-          {/* Font size */}
           <button className="fc-mobile-pill" onClick={decSize} disabled={fontSize <= 18} aria-label="Decrease font size">A−</button>
           <button className="fc-mobile-pill" onClick={incSize} disabled={fontSize >= 36} aria-label="Increase font size">A+</button>
         </div>

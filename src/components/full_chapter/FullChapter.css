@@ -574,37 +574,35 @@
     padding: 12px 14px 12px;
   }
 
-  /* ── Mobile pill bar — now at the TOP ── */
+  /* ── Mobile pill bar — single row at the TOP ── */
   .fc-mobile-bar {
     position: sticky;
     top: 0;
     z-index: 10;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 5px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 7px 10px;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
     flex-shrink: 0;
   }
 
-  .fc-mobile-bar::-webkit-scrollbar { display: none; }
-
-  /* Compact native selects */
+  /* Compact native selects — stretch to fill row */
   .fc-mobile-select {
+    flex: 1;
+    min-width: 0;
     background: var(--bg-surface);
     border: 1px solid var(--border-mid);
     border-radius: 6px;
     color: var(--text-primary);
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
-    padding: 4px 6px;
+    padding: 5px 8px;
     cursor: pointer;
     outline: none;
-    flex-shrink: 0;
   }
 
   /* Vertical divider between groups */
@@ -619,13 +617,13 @@
   /* Toggle / action pills */
   .fc-mobile-pill {
     flex-shrink: 0;
-    height: 28px;
-    padding: 0 10px;
+    height: 30px;
+    padding: 0 12px;
     background: var(--bg-surface);
     border: 1px solid var(--border-mid);
     border-radius: 14px;
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--text-secondary);
     cursor: pointer;
@@ -634,13 +632,9 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .fc-mobile-pill--on {
-    background: color-mix(in srgb, var(--gold-bright) 14%, var(--bg-surface));
-    border-color: var(--gold-bright);
-    color: var(--gold-bright);
-  }
-
+  /* Customize pill stretches to fill remaining space in row 2 */
   .fc-mobile-pill--customize {
+    flex: 1;
     background: var(--bg-surface);
     color: var(--text-secondary);
   }
