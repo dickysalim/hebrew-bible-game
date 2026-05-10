@@ -5135,6 +5135,11 @@ html, body {
     overflow: hidden;
   }
 
+  /* Disable browser scroll interception on verse area — drag handled in JS */
+  .scroll-track {
+    touch-action: none;
+  }
+
   /* Shrink Hebrew verse to fit on mobile */
   .word-char {
     font-size: 18px;
@@ -5423,14 +5428,17 @@ html, body {
     z-index: 10;
   }
 
-  /* Action row: space/next-word button */
+  /* Action row: space/next-word button + verse nav arrows */
   .mkb-action-row {
     width: 100%;
     padding: 0 4px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
   }
 
   .mkb-space-btn {
-    width: 100%;
+    flex: 1;
     height: 32px;
     background: var(--bg-surface);
     border: 1px solid var(--border-mid);
@@ -5447,6 +5455,44 @@ html, body {
   .mkb-space-btn:active {
     background: var(--purple-light);
     color: var(--purple);
+  }
+
+  /* Verse navigation buttons flanking the space bar */
+  .mkb-verse-btn {
+    width: 60px;
+    height: 32px;
+    flex-shrink: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-mid);
+    border-radius: 5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .mkb-verse-btn:active {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+  }
+
+  .mkb-verse-arrow {
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .mkb-verse-label {
+    font-family: var(--font-body);
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.3px;
   }
 
   /* ── Word definition bottom sheet ── */

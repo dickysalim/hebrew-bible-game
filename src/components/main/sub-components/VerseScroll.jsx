@@ -115,91 +115,106 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const verse = verses[displayedVerse]
   const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
 
-  // ── Mobile pull-to-navigate ───────────────────────────────────────────────
-  const SWIPE_THRESHOLD = 110
-  const touchStartRef   = useRef(null)
-  const [swipeHint, setSwipeHint] = useState(null) // null | 'prev' | 'next'
+  // ── Mobile drag-to-read + flick-to-navigate ──────────────────────────────
+  const touchStartRef = useRef(null)
+
+  // Read the current translateY from the wrapper's inline style
+  const getWrapY = () => {
+    if (!wrapRef.current) return 0
+    const m = wrapRef.current.style.transform.match(/translateY\((-?[\d.]+)px\)/)
+    return m ? parseFloat(m[1]) : 0
+  }
 
   const handleTouchStart = (e) => {
+    if (e.touches.length !== 1) return
     const t = e.touches[0]
-    touchStartRef.current = { x: t.clientX, y: t.clientY }
-    setSwipeHint(null)
+    // Freeze position — disable CSS transition during drag
+    if (wrapRef.current) wrapRef.current.classList.add('verse-inner-wrap--instant')
+    touchStartRef.current = {
+      x:        t.clientX,
+      y:        t.clientY,
+      baseY:    getWrapY(),
+      lastY:    t.clientY,
+      lastTime: Date.now(),
+      velocity: 0,
+    }
   }
 
   const handleTouchMove = (e) => {
-    if (!touchStartRef.current) return
-    const t   = e.touches[0]
-    const dx  = t.clientX - touchStartRef.current.x
-    const dy  = t.clientY - touchStartRef.current.y
+    if (!touchStartRef.current || e.touches.length !== 1) return
+    const t  = e.touches[0]
+    const dx = t.clientX - touchStartRef.current.x
+    const dy = t.clientY - touchStartRef.current.y
 
-    // Abort if swipe is more horizontal than vertical
-    if (Math.abs(dx) > Math.abs(dy)) {
-      setSwipeHint(null)
-      return
+    // Abort if clearly horizontal
+    if (Math.abs(dx) > Math.abs(dy) + 10) return
+
+    // Move the wrapper live — no React re-render needed
+    if (wrapRef.current) {
+      wrapRef.current.style.transform = `translateY(${touchStartRef.current.baseY + dy}px)`
     }
 
-    if (Math.abs(dy) >= SWIPE_THRESHOLD) {
-      setSwipeHint(dy < 0 ? 'next' : 'prev')
-    } else {
-      setSwipeHint(null)
+    // Update instantaneous velocity (px/ms)
+    const now = Date.now()
+    const dt  = now - touchStartRef.current.lastTime
+    if (dt > 0) {
+      touchStartRef.current.velocity = (t.clientY - touchStartRef.current.lastY) / dt
+      touchStartRef.current.lastY    = t.clientY
+      touchStartRef.current.lastTime = now
     }
   }
 
   const handleTouchEnd = (e) => {
-    if (!touchStartRef.current || !dispatch) {
-      setSwipeHint(null)
-      return
-    }
-    const t  = e.changedTouches[0]
-    const dx = t.clientX - touchStartRef.current.x
-    const dy = t.clientY - touchStartRef.current.y
+    if (!touchStartRef.current) return
+    const t        = e.changedTouches[0]
+    const dy       = t.clientY - touchStartRef.current.y
+    const velocity = touchStartRef.current.velocity
     touchStartRef.current = null
-    setSwipeHint(null)
 
-    // Must be vertical-dominant and past threshold
-    if (Math.abs(dy) < SWIPE_THRESHOLD || Math.abs(dx) > Math.abs(dy)) return
-    dispatch({ type: 'MOVE_VERSE', dir: dy < 0 ? 1 : -1 })
+    const VELOCITY_THRESHOLD = 0.4  // px/ms
+    const DIST_THRESHOLD     = 70   // px
+    const isFlick = Math.abs(velocity) > VELOCITY_THRESHOLD || Math.abs(dy) > DIST_THRESHOLD
+
+    // Re-enable CSS transition
+    if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
+
+    if (isFlick && dispatch) {
+      // Swipe up (dy < 0) → next verse; swipe down (dy > 0) → prev verse
+      dispatch({ type: 'MOVE_VERSE', dir: dy < 0 ? 1 : -1 })
+    }
+    // Slow drag: content stays at dragged position.
+    // Centering snaps back automatically when activeWordIdx changes (Next Word / word click).
   }
 
   const handleTouchCancel = () => {
     touchStartRef.current = null
-    setSwipeHint(null)
+    if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
   }
 
   return (
-    <div className="swipe-nav-wrap">
-      {/* Pull-to-navigate hint — only visible when threshold is crossed */}
-      <div className={`swipe-hint swipe-hint--prev${swipeHint === 'prev' ? ' swipe-hint--visible' : ''}`}>
-        ↑ Previous Verse
-      </div>
-      <div className={`swipe-hint swipe-hint--next${swipeHint === 'next' ? ' swipe-hint--visible' : ''}`}>
-        Next Verse ↓
-      </div>
-
-      <div
-        className="scroll-track"
-        ref={trackRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchCancel}
-      >
-        <div className={`active-verse-container ${animState}`}>
-          <ActiveVerseWords
-            verse={verse}
-            vi={displayedVerse}
-            activeWordIdx={activeWordIdx}
-            typedCounts={typedCounts}
-            currentVerseFlags={currentVerseFlags}
-            dispatch={dispatch}
-            wrapRef={wrapRef}
-            wordRefs={wordRefs}
-            showSBLWord={showSBLWord}
-            showSBLLetter={showSBLLetter}
-            showGloss={showGloss}
-            expertMode={expertMode}
-          />
-        </div>
+    <div
+      className="scroll-track"
+      ref={trackRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+    >
+      <div className={`active-verse-container ${animState}`}>
+        <ActiveVerseWords
+          verse={verse}
+          vi={displayedVerse}
+          activeWordIdx={activeWordIdx}
+          typedCounts={typedCounts}
+          currentVerseFlags={currentVerseFlags}
+          dispatch={dispatch}
+          wrapRef={wrapRef}
+          wordRefs={wordRefs}
+          showSBLWord={showSBLWord}
+          showSBLLetter={showSBLLetter}
+          showGloss={showGloss}
+          expertMode={expertMode}
+        />
       </div>
     </div>
   )

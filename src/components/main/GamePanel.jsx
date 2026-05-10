@@ -588,6 +588,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               showActiveKey={!state.expertMode && activeWord && !wordDone && errorCount >= 3}
               onKey={handleMobileKey}
               onSpace={handleMobileSpace}
+              onPrevVerse={() => dispatch({ type: 'MOVE_VERSE', dir: -1 })}
+              onNextVerse={() => dispatch({ type: 'MOVE_VERSE', dir: 1 })}
               showSBLLetter={state.showSBLLetter}
               showSBLWord={state.showSBLWord}
               expertMode={state.expertMode}

@@ -18,6 +18,8 @@ export default function MobileHebrewKeyboard({
   showActiveKey,
   onKey,
   onSpace,
+  onPrevVerse,
+  onNextVerse,
 }) {
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -88,10 +90,26 @@ export default function MobileHebrewKeyboard({
 
       <div className="mkb-row mkb-action-row">
         <button
+          className="mkb-verse-btn"
+          onPointerDown={e => { e.preventDefault(); onPrevVerse?.() }}
+          aria-label="Previous verse"
+        >
+          <span className="mkb-verse-arrow">↑</span>
+          <span className="mkb-verse-label">Prev</span>
+        </button>
+        <button
           className="mkb-space-btn"
           onPointerDown={e => { e.preventDefault(); onSpace() }}
         >
           Next Word
+        </button>
+        <button
+          className="mkb-verse-btn"
+          onPointerDown={e => { e.preventDefault(); onNextVerse?.() }}
+          aria-label="Next verse"
+        >
+          <span className="mkb-verse-arrow">↓</span>
+          <span className="mkb-verse-label">Next</span>
         </button>
       </div>
     </div>
