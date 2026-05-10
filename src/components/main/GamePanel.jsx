@@ -234,6 +234,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const [haberSessions, setHaberSessions] = useState({})
   const [haberOpen, setHaberOpen] = useState(false)
   const [wordDefSheetOpen, setWordDefSheetOpen] = useState(false)
+  const [customizeOpen, setCustomizeOpen] = useState(false)
 
   // Detect mobile viewport — updates on resize
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
@@ -569,47 +570,14 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                 Definition
               </button>
               <button
-                className="mobile-pill mobile-pill--haber"
-                onClick={() => setHaberOpen(true)}
-                disabled={!currentWordContext}
+                className="mobile-pill mobile-pill--customize"
+                onClick={() => setCustomizeOpen(true)}
               >
-                Ask Haber
-              </button>
-              <button
-                className={`mobile-pill mobile-pill--toggle${state.showSBLLetter ? ' mobile-pill--active' : ''}${state.expertMode ? ' mobile-pill--locked' : ''}`}
-                onClick={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
-                disabled={state.expertMode}
-              >
-                SBL Letter
-              </button>
-              <button
-                className={`mobile-pill mobile-pill--toggle${state.showSBLWord ? ' mobile-pill--active' : ''}${state.expertMode ? ' mobile-pill--locked' : ''}`}
-                onClick={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
-                disabled={state.expertMode}
-              >
-                SBL Word
-              </button>
-              <button
-                className={`mobile-pill mobile-pill--toggle${state.showTAHOT ? ' mobile-pill--active' : ''}`}
-                onClick={() => dispatch({ type: 'TOGGLE_TAHOT' })}
-              >
-                TAHOT
-              </button>
-              <button
-                className={`mobile-pill mobile-pill--toggle${state.showGloss ? ' mobile-pill--active' : ''}`}
-                onClick={() => dispatch({ type: 'TOGGLE_GLOSS' })}
-              >
-                Word Gloss
-              </button>
-              <button
-                className={`mobile-pill mobile-pill--toggle mobile-pill--expert${state.expertMode ? ' mobile-pill--active' : ''}`}
-                onClick={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
-              >
-                Expert
+                Customize
               </button>
               <button
                 className="mobile-pill mobile-pill--reset"
-                onClick={() => dispatch({ type: 'RESET_VERSE' })}
+                onClick={() => { if (window.confirm('Reset this verse? Your progress on the current verse will be cleared.')) dispatch({ type: 'RESET_VERSE' }) }}
               >
                 Reset Verse
               </button>
@@ -643,6 +611,84 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           onOpenHaber={() => { setWordDefSheetOpen(false); setHaberOpen(true) }}
           isWordNew={isWordNew}
         />
+      )}
+
+      {/* Mobile: Customize bottom sheet */}
+      {isMobile && (
+        <div
+          className={`customize-overlay${customizeOpen ? ' customize-overlay--open' : ''}`}
+          onPointerDown={(e) => { if (e.target === e.currentTarget) setCustomizeOpen(false) }}
+          aria-hidden={!customizeOpen}
+        >
+          <div className="customize-sheet"  role="dialog" aria-label="Customize display options">
+            <div className="wds-handle" onClick={() => setCustomizeOpen(false)} />
+            <h3 className="customize-sheet-title">Customize</h3>
+
+            <div className="customize-rows">
+              {/* SBL Letter */}
+              <button
+                className={`customize-row${state.expertMode ? ' customize-row--locked' : ''}`}
+                onClick={() => { if (!state.expertMode) dispatch({ type: 'TOGGLE_SBL_LETTER' }) }}
+                disabled={state.expertMode}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">SBL Letter</span>
+                  <span className="customize-row-desc">Show transliteration below each letter</span>
+                </div>
+                <div className={`customize-toggle${state.showSBLLetter && !state.expertMode ? ' customize-toggle--on' : ''}`} />
+              </button>
+
+              {/* SBL Word */}
+              <button
+                className={`customize-row${state.expertMode ? ' customize-row--locked' : ''}`}
+                onClick={() => { if (!state.expertMode) dispatch({ type: 'TOGGLE_SBL_WORD' }) }}
+                disabled={state.expertMode}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">SBL Word</span>
+                  <span className="customize-row-desc">Show full word transliteration</span>
+                </div>
+                <div className={`customize-toggle${state.showSBLWord && !state.expertMode ? ' customize-toggle--on' : ''}`} />
+              </button>
+
+              {/* TAHOT */}
+              <button
+                className="customize-row"
+                onClick={() => dispatch({ type: 'TOGGLE_TAHOT' })}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">TAHOT Gloss</span>
+                  <span className="customize-row-desc">Show word-by-word English glosses</span>
+                </div>
+                <div className={`customize-toggle${state.showTAHOT ? ' customize-toggle--on' : ''}`} />
+              </button>
+
+              {/* Word Gloss */}
+              <button
+                className="customize-row"
+                onClick={() => dispatch({ type: 'TOGGLE_GLOSS' })}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">Word Gloss</span>
+                  <span className="customize-row-desc">Show gloss on the active word</span>
+                </div>
+                <div className={`customize-toggle${state.showGloss ? ' customize-toggle--on' : ''}`} />
+              </button>
+
+              {/* Expert Mode */}
+              <button
+                className="customize-row customize-row--expert"
+                onClick={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">Expert Mode</span>
+                  <span className="customize-row-desc">Hides all hints — no transliteration</span>
+                </div>
+                <div className={`customize-toggle customize-toggle--expert${state.expertMode ? ' customize-toggle--on' : ''}`} />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

@@ -127,7 +127,11 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
       </div>
 
       <div className="kb-right">
-        <button className="sbl-reset-btn" onMouseDown={e => e.preventDefault()} onClick={onResetVerse}>↻ Reset</button>
+        <button
+          className="sbl-reset-btn"
+          onMouseDown={e => e.preventDefault()}
+          onClick={() => { if (window.confirm('Reset this verse? Your progress on the current verse will be cleared.')) onResetVerse() }}
+        >↻ Reset</button>
       </div>
     </div>
   )
