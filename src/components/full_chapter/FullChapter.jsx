@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useChapterLoader, CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
+import { useLemmaCache } from '../../hooks/useLemmaCache'
 import LeftPanel from './LeftPanel'
 import RightPanel from './RightPanel'
 import './FullChapter.css'
@@ -32,6 +33,17 @@ export default function FullChapter({ userId }) {
 
   const { chapterData, chapterMeta, isLoading } = useChapterLoader(selectedStageIndex)
 
+  // Lemma cache — refreshed whenever a new chapter loads
+  const [lemmaMap, refreshLemmaCache] = useLemmaCache()
+  useEffect(() => {
+    if (chapterData) refreshLemmaCache(chapterData)
+  }, [chapterData]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Selected word for the word-detail panel
+  // { word: { id, sbl, gloss, ... }, verseObj: { verse, words } }
+  const [selectedWord, setSelectedWord] = useState(null)
+
+  const handleWordClick = (word, verseObj) => setSelectedWord({ word, verseObj })
 
   const verses = chapterData?.verses ?? []
 
@@ -74,9 +86,13 @@ export default function FullChapter({ userId }) {
 
   return (
     <div className="fc-panel">
-      {/* Two-column reader — dropdown bar is now inside the right panel toolbar */}
       <div className="fc-reader">
-        <LeftPanel userId={userId} chapterMeta={chapterMeta} />
+        <LeftPanel
+          userId={userId}
+          chapterMeta={chapterMeta}
+          selectedWord={selectedWord}
+          lemmaMap={lemmaMap}
+        />
         <RightPanel
           verses={verses}
           chapterMeta={chapterMeta}
@@ -84,6 +100,10 @@ export default function FullChapter({ userId }) {
           onSelect={setSelectedStageIndex}
           completedStageIndexes={completedStageIndexes}
           userId={userId}
+          selectedWord={selectedWord}
+          onWordClick={handleWordClick}
+          onCloseWord={() => setSelectedWord(null)}
+          lemmaMap={lemmaMap}
         />
       </div>
     </div>

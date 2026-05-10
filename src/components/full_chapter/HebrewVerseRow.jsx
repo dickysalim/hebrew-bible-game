@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { LETTER_SBL } from '../../utils/hebrewData'
 
-function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss }) {
+function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss, onWordClick, selectedWordId }) {
   return (
     <div className="fc-verse-row fc-verse-row--done" id={`fc-v${verseIdx}`}>
       {/* Verse number in its own fixed column — never competes with word wrapping */}
@@ -13,8 +13,15 @@ function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss
       <div className="fc-verse-content" dir="rtl" lang="he">
         {verse.words.map((word, wi) => {
           const letters = word.id.split('')
+          const isSelected = selectedWordId === word.id
           return (
-            <span key={wi} className="fc-word fc-word--done">
+            <button
+              key={wi}
+              className={`fc-word fc-word--done fc-word--clickable${isSelected ? ' fc-word--selected' : ''}`}
+              onClick={() => onWordClick?.(word, verse)}
+              aria-label={`${word.id} — ${word.gloss || ''}`}
+              type="button"
+            >
               {/* Letter columns — Hebrew char + optional SBL Letter below */}
               <span className="fc-word__letters">
                 {letters.map((ch, i) => (
@@ -40,7 +47,7 @@ function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss
                   {word.gloss || word.id}
                 </span>
               )}
-            </span>
+            </button>
           )
         })}
       </div>

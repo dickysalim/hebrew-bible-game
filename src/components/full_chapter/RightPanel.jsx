@@ -3,8 +3,10 @@ import ChapterDropdownBar from './ChapterDropdownBar'
 import HebrewVerseRow from './HebrewVerseRow'
 import { CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
+import { getWord } from '../../lib/lexiconCache'
+import WordDefSheet from '../main/sub-components/WordDefSheet'
 
-export default function RightPanel({ verses, chapterMeta, selectedStageIndex, onSelect, completedStageIndexes, userId }) {
+export default function RightPanel({ verses, chapterMeta, selectedStageIndex, onSelect, completedStageIndexes, userId, selectedWord, onWordClick, onCloseWord, lemmaMap }) {
   const { cachedProgress, updateFcSettings } = useProgressCache()
 
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
@@ -163,6 +165,8 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
             showSBLWord={showSBLWord}
             showSBLLetter={showSBLLetter}
             showGloss={showGloss}
+            onWordClick={onWordClick}
+            selectedWordId={selectedWord?.word?.id}
           />
         ))}
         <div className="fc-right__footer">
@@ -210,6 +214,31 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
           </div>
         </div>
       )}
+      {/* Mobile: word definition sheet */}
+      {isMobile && (() => {
+        const sw = selectedWord
+        const wordId = sw?.word?.id ?? ''
+        const wordData = wordId ? getWord(wordId) : null
+        return (
+          <WordDefSheet
+            open={!!sw}
+            onClose={onCloseWord}
+            word={wordData}
+            activeWord={sw?.word ?? null}
+            lemmaMap={lemmaMap}
+            wordId={wordId}
+            sbl={sw?.word?.sbl ?? ''}
+            encounterCount={2}
+            isWordCompleted={true}
+            onOpenHaber={() => {}}
+            isWordNew={false}
+            userId={userId}
+            book={chapterMeta?.book}
+            chapter={chapterMeta?.chapter}
+            verseNumber={sw?.verseObj?.verse}
+          />
+        )
+      })()}
     </div>
   )
 }
