@@ -3,7 +3,7 @@ import ChapterDropdownBar from './ChapterDropdownBar'
 import HebrewVerseRow from './HebrewVerseRow'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
 
-export default function RightPanel({ verses, chapterMeta, typedCounts, selectedStageIndex, onSelect, completedStageIndexes, userId }) {
+export default function RightPanel({ verses, chapterMeta, selectedStageIndex, onSelect, completedStageIndexes, userId }) {
   const { cachedProgress, updateFcSettings } = useProgressCache()
 
   // Initialise from persisted fcSettings (Supabase) if available, else sensible defaults
@@ -112,7 +112,6 @@ export default function RightPanel({ verses, chapterMeta, typedCounts, selectedS
             key={vi}
             verse={verse}
             verseIdx={vi}
-            typedCounts={typedCounts}
             showSBLWord={showSBLWord}
             showSBLLetter={showSBLLetter}
             showGloss={showGloss}

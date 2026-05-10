@@ -1908,6 +1908,13 @@ export function useChapterLoader(initialStageIndex = 1) {
   // can reliably detect new data even when bouncing between the same two stages.
   const [loadId, setLoadId] = useState(0)
 
+  // Sync internal state when the caller changes the requested stage index.
+  // useState only uses its argument on first mount, so this effect bridges
+  // subsequent prop changes into the hook's internal state.
+  useEffect(() => {
+    setStageIndex(initialStageIndex)
+  }, [initialStageIndex])
+
   useEffect(() => {
     let cancelled = false
     const meta = BY_STAGE[stageIndex]

@@ -8,27 +8,28 @@ export default function ChapterDropdownBar({ selectedStageIndex, onSelect, compl
   const selectedEntry = CHAPTER_REGISTRY.find(e => e.stageIndex === selectedStageIndex)
   const [selectedBook, setSelectedBook] = useState(selectedEntry?.book ?? REGISTRY_BOOKS[0])
 
-  // When the outer selection changes (e.g. on mount), sync the book
-  // so the chapter dropdown stays coherent.
+  // A chapter is accessible in Full Chapter mode only if it has been completed.
+  const isAccessible = (si) => completedStageIndexes.has(si)
+
   const handleBookChange = (e) => {
     const book = e.target.value
     setSelectedBook(book)
-    // Auto-select the first completed chapter in the new book, or just first
+    // Auto-select the first accessible chapter in the new book
     const chaptersForBook = CHAPTER_REGISTRY.filter(c => c.book === book)
-    const firstDone = chaptersForBook.find(c => completedStageIndexes.has(c.stageIndex))
-    if (firstDone) onSelect(firstDone.stageIndex)
+    const first = chaptersForBook.find(c => isAccessible(c.stageIndex))
+    if (first) onSelect(first.stageIndex)
   }
 
   const handleChapterChange = (e) => {
     const si = Number(e.target.value)
-    if (completedStageIndexes.has(si)) onSelect(si)
+    if (isAccessible(si)) onSelect(si)
   }
 
   const chaptersForBook = CHAPTER_REGISTRY.filter(e => e.book === selectedBook)
 
-  // A book is "active" (not disabled) if it has at least one completed chapter
+  // A book is selectable if it has at least one accessible chapter
   const bookHasProgress = (book) =>
-    CHAPTER_REGISTRY.some(e => e.book === book && completedStageIndexes.has(e.stageIndex))
+    CHAPTER_REGISTRY.some(e => e.book === book && isAccessible(e.stageIndex))
 
   return (
     <div className="fc-dropbar">
@@ -61,14 +62,14 @@ export default function ChapterDropdownBar({ selectedStageIndex, onSelect, compl
         aria-label="Select chapter"
       >
         {chaptersForBook.map(entry => {
-          const done = completedStageIndexes.has(entry.stageIndex)
+          const accessible = isAccessible(entry.stageIndex)
           return (
             <option
               key={entry.stageIndex}
               value={entry.stageIndex}
-              disabled={!done}
+              disabled={!accessible}
             >
-              {done ? `Chapter ${entry.chapter}` : `Chapter ${entry.chapter} — locked`}
+              {accessible ? `Chapter ${entry.chapter}` : `Chapter ${entry.chapter} — locked`}
             </option>
           )
         })}

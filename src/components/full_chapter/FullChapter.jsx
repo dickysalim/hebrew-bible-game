@@ -32,11 +32,6 @@ export default function FullChapter({ userId }) {
 
   const { chapterData, chapterMeta, isLoading } = useChapterLoader(selectedStageIndex)
 
-  const typedCounts = useMemo(() => {
-    if (!cachedProgress?.chapters) return {}
-    const chapterProgress = cachedProgress.chapters[selectedStageIndex]
-    return chapterProgress?.typedCounts ?? {}
-  }, [cachedProgress, selectedStageIndex])
 
   const verses = chapterData?.verses ?? []
 
@@ -85,7 +80,6 @@ export default function FullChapter({ userId }) {
         <RightPanel
           verses={verses}
           chapterMeta={chapterMeta}
-          typedCounts={typedCounts}
           selectedStageIndex={selectedStageIndex}
           onSelect={setSelectedStageIndex}
           completedStageIndexes={completedStageIndexes}
