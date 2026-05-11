@@ -603,9 +603,8 @@ html, body {
   font-family: var(--font-serif);
   font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.5;
-  height: 42px; /* fixed 2-line height: 14 × 1.5 × 2 */
-  overflow: hidden;
+  line-height: 1.55;
+  white-space: normal;
 }
 .tahot-highlight {
   color: var(--text-primary);
@@ -5178,7 +5177,6 @@ html, body {
   }
   .tahot-text {
     font-size: 12px;
-    height: 36px;
   }
 
   /* Insight carousel — compact strip on mobile (full-screen via class below) */
