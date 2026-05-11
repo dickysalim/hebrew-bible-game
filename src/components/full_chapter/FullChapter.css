@@ -427,7 +427,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;  /* RTL: flex-start = RIGHT edge */
   align-items: flex-start;
-  gap: 4px 14px;              /* row-gap  column-gap */
+  gap: 2px 3px;              /* row-gap  column-gap — tight, natural Hebrew spacing */
   direction: rtl;
 }
 
@@ -451,7 +451,7 @@
 /* Clickable words — added by HebrewVerseRow when onWordClick is provided */
 .fc-word--clickable {
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 2px 3px;
   border: 1.5px solid transparent;
   border-radius: var(--radius);
   transition: background 0.2s, border-color 0.2s;
