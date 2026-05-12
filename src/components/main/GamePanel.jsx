@@ -234,6 +234,15 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const [haberSessions, setHaberSessions] = useState({})
   const [haberOpen, setHaberOpen] = useState(false)
   const [wordDefSheetOpen, setWordDefSheetOpen] = useState(false)
+
+  // Mobile Hebrew font size — persisted across sessions
+  const MOB_FONT_KEY = 'hbg-mob-font-size'
+  const [mobFontSize, setMobFontSize] = useState(() => {
+    const saved = parseInt(localStorage.getItem(MOB_FONT_KEY), 10)
+    return (saved >= 18 && saved <= 28) ? saved : 18
+  })
+  const incMobFont = () => setMobFontSize(s => { const v = Math.min(28, s + 2); localStorage.setItem(MOB_FONT_KEY, v); return v })
+  const decMobFont = () => setMobFontSize(s => { const v = Math.max(18, s - 2); localStorage.setItem(MOB_FONT_KEY, v); return v })
   const [customizeOpen, setCustomizeOpen] = useState(false)
 
   // Detect mobile viewport — updates on resize
@@ -412,7 +421,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   return (
     <div
       className={`game-panel${isTyping ? ' cursor-none' : ''}${isMobile ? ' game-panel--mobile' : ''}${transitionClass}`}
-      style={isMobile && mobileBottomH > 0 ? { paddingBottom: `${mobileBottomH}px` } : undefined}
+      style={{
+        ...(isMobile && mobileBottomH > 0 ? { paddingBottom: `${mobileBottomH}px` } : {}),
+        '--mob-heb-size': `${mobFontSize}px`,
+      }}
     >
 
       <div className="verse-header">
@@ -581,6 +593,19 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               >
                 Reset Verse
               </button>
+              <div className="mobile-pill-sep" aria-hidden="true" />
+              <button
+                className="mobile-pill mobile-pill--font"
+                onClick={decMobFont}
+                disabled={mobFontSize <= 18}
+                aria-label="Decrease font size"
+              >A−</button>
+              <button
+                className="mobile-pill mobile-pill--font"
+                onClick={incMobFont}
+                disabled={mobFontSize >= 28}
+                aria-label="Increase font size"
+              >A+</button>
             </div>
             <MobileHebrewKeyboard
               targetHeb={state.expertMode ? null : targetLetter}
