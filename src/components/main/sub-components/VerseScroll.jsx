@@ -149,9 +149,14 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     // Abort if clearly horizontal
     if (Math.abs(dx) > Math.abs(dy) + 10) return
 
-    // Move the wrapper live — no React re-render needed
+    // Move the wrapper live, clamped to ±80px from the centered base position
     if (wrapRef.current) {
-      wrapRef.current.style.transform = `translateY(${touchStartRef.current.baseY + dy}px)`
+      const raw     = touchStartRef.current.baseY + dy
+      const clamped = Math.max(
+        touchStartRef.current.baseY - 80,
+        Math.min(touchStartRef.current.baseY + 80, raw)
+      )
+      wrapRef.current.style.transform = `translateY(${clamped}px)`
     }
 
     // Update instantaneous velocity (px/ms)
@@ -171,9 +176,8 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     const velocity = touchStartRef.current.velocity
     touchStartRef.current = null
 
-    const VELOCITY_THRESHOLD = 0.4  // px/ms
-    const DIST_THRESHOLD     = 70   // px
-    const isFlick = Math.abs(velocity) > VELOCITY_THRESHOLD || Math.abs(dy) > DIST_THRESHOLD
+    const VELOCITY_THRESHOLD = 0.4  // px/ms — only a quick flick navigates verses
+    const isFlick = Math.abs(velocity) > VELOCITY_THRESHOLD
 
     // Re-enable CSS transition
     if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
