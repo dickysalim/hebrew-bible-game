@@ -1,0 +1,94 @@
+name: Fill Contextual Word Meanings
+
+# ── Triggers ─────────────────────────────────────────────────────────────────
+on:
+  # Manual trigger (run from the Actions tab)
+  workflow_dispatch:
+    inputs:
+      max_rows:
+        description: "Maximum rows to process this run (default: 100)"
+        required: false
+        default: "100"
+      rate_limit_ms:
+        description: "Milliseconds between DeepSeek calls (default: 500)"
+        required: false
+        default: "500"
+      book_filter:
+        description: "Book to process (default: Gen)"
+        required: false
+        default: "Gen"
+
+  # Scheduled: runs every 6 hours
+  schedule:
+    - cron: "0 */6 * * *"
+
+# ── Permissions ───────────────────────────────────────────────────────────────
+permissions:
+  contents: read
+
+# ── Job ───────────────────────────────────────────────────────────────────────
+jobs:
+  fill:
+    name: Fill contextual_meaning for non-particle words
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      # Cloudflare
+      CLOUDFLARE_ACCOUNT_ID:     ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
+      CLOUDFLARE_API_TOKEN:      ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # DeepSeek
+      DEEPSEEK_API_KEY:          ${{ secrets.DEEPSEEK_API_KEY }}
+      # Runtime config
+      MAX_ROWS:      ${{ github.event.inputs.max_rows     || '100' }}
+      RATE_LIMIT_MS: ${{ github.event.inputs.rate_limit_ms || '500' }}
+      BOOK_FILTER:   ${{ github.event.inputs.book_filter   || 'Gen' }}
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Node.js ───────────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # ── 3. Install dependencies ─────────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 4. Validate secrets ─────────────────────────────────────────────────
+      - name: Validate required secrets
+        run: |
+          missing=()
+          [[ -z "$CLOUDFLARE_ACCOUNT_ID"     ]] && missing+=(CLOUDFLARE_ACCOUNT_ID)
+          [[ -z "$CLOUDFLARE_D1_DATABASE_ID" ]] && missing+=(CLOUDFLARE_D1_DATABASE_ID)
+          [[ -z "$CLOUDFLARE_API_TOKEN"      ]] && missing+=(CLOUDFLARE_API_TOKEN)
+          [[ -z "$DEEPSEEK_API_KEY"          ]] && missing+=(DEEPSEEK_API_KEY)
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            echo "❌ Missing secrets: ${missing[*]}"
+            exit 1
+          fi
+          echo "✅ All required secrets are present."
+
+      # ── 5. Run the fill script ──────────────────────────────────────────────
+      - name: Run fill-deep-explanations
+        run: node scripts/fill-deep-explanations.mjs
+
+      # ── 6. Report ───────────────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          echo "## fill-deep-explanations run complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Setting | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| BOOK_FILTER | $BOOK_FILTER |" >> $GITHUB_STEP_SUMMARY
+          echo "| MAX_ROWS | $MAX_ROWS |" >> $GITHUB_STEP_SUMMARY
+          echo "| RATE_LIMIT_MS | ${RATE_LIMIT_MS}ms |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run at | $(date -u '+%Y-%m-%d %H:%M UTC') |" >> $GITHUB_STEP_SUMMARY
