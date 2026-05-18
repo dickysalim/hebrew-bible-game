@@ -1946,16 +1946,22 @@ export function useChapterLoader(initialStageIndex = 1) {
   }, [])
 
   const advanceToNext = useCallback(() => {
-    const next = stageIndex + 1
-    if (BY_STAGE[next]) setStageIndex(next)
-    else console.log('[useChapterLoader] No next chapter — end of canon reached!')
-  }, [stageIndex])
+    setStageIndex((cur) => {
+      const next = cur + 1
+      if (BY_STAGE[next]) return next
+      console.log('[useChapterLoader] No next chapter — end of canon reached!')
+      return cur
+    })
+  }, [])
 
   const goToPrev = useCallback(() => {
-    const prev = stageIndex - 1
-    if (BY_STAGE[prev]) setStageIndex(prev)
-    else console.log('[useChapterLoader] No previous chapter — already at beginning!')
-  }, [stageIndex])
+    setStageIndex((cur) => {
+      const prev = cur - 1
+      if (BY_STAGE[prev]) return prev
+      console.log('[useChapterLoader] No previous chapter — already at beginning!')
+      return cur
+    })
+  }, [])
 
   const chapterMeta = BY_STAGE[stageIndex] ?? null
   const hasNext = Boolean(BY_STAGE[stageIndex + 1])

@@ -137,10 +137,10 @@ const BOOK_ORDER = [
 console.log('Loading TAHOT files...');
 
 const TAHOT_FILES = [
-  'scripts/TAHOT/TAHOT-Gen-Deu.txt',
-  'scripts/TAHOT/TAHOT-Jos-Est.txt',
-  'scripts/TAHOT/TAHOT-Job-Sng.txt',
-  'scripts/TAHOT/TAHOT-Isa-Mal.txt',
+  'scripts/resources/TAHOT/TAHOT-Gen-Deu.txt',
+  'scripts/resources/TAHOT/TAHOT-Jos-Est.txt',
+  'scripts/resources/TAHOT/TAHOT-Job-Sng.txt',
+  'scripts/resources/TAHOT/TAHOT-Isa-Mal.txt',
 ];
 
 const tahotGloss    = {};
@@ -249,7 +249,7 @@ const booksToProcess = BOOK_ORDER;
 for (const book of booksToProcess) {
   console.log(`Processing ${book.name}...`);
 
-  const xmlPath = `scripts/wlc/${book.file}`;
+  const xmlPath = `scripts/resources/wlc/${book.file}`;
   let xml;
   try {
     xml = stripBom(readFileSync(xmlPath, 'utf8'));

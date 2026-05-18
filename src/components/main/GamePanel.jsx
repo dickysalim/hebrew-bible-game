@@ -212,7 +212,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
   // Auto-advance to next chapter (down arrow / space on last verse)
   useEffect(() => {
-    if (state.chapterEndSignal > 0 && hasNext) {
+    if (state.chapterEndSignal > 0 && hasNext && chapterTransition === 'idle') {
       setChapterTransition('fading-out')
       pendingNavRef.current = () => advanceToNext()
     }
@@ -220,7 +220,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
   // Go back to previous chapter (up arrow on first verse)
   useEffect(() => {
-    if (state.prevChapterSignal === 0 || !hasPrev) return
+    if (state.prevChapterSignal === 0 || !hasPrev || chapterTransition !== 'idle') return
     const prevSi = loaderStageIndex - 1
     const prevChProgress = state.chapters[prevSi]
     if (!prevChProgress || prevChProgress.highestVerse === 0) return
