@@ -2859,6 +2859,104 @@ html, body {
   font-size: 14px;
 }
 
+/* ─── Chapter select — completed / in-progress states ──── */
+.chapter-card--done {
+  border-color: rgba(13, 148, 136, 0.45);
+  background: rgba(13, 148, 136, 0.04);
+}
+
+.chapter-card--done:hover {
+  border-color: rgba(13, 148, 136, 0.7) !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.15) !important;
+}
+
+.chapter-card-done-badge {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal, #0d9488);
+  background: rgba(13, 148, 136, 0.12);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.chapter-card-progress {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Thin progress bar at the bottom of an in-progress card */
+.chapter-card-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--border);
+  border-radius: 0 0 calc(var(--radius-lg) - 1.5px) calc(var(--radius-lg) - 1.5px);
+  overflow: hidden;
+}
+
+.chapter-card-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-bright) 100%);
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+/* Make chapter-card position:relative so bar is positioned correctly */
+.chapter-card {
+  position: relative;
+}
+
+/* No chapters message */
+.chapter-none-msg {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 20px 0;
+  font-family: var(--font-body);
+}
+
+/* ─── Book tabs ───────────────────────────────────────────── */
+.chapter-book-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: -4px;
+}
+
+.chapter-book-tab {
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-mid);
+  background: var(--bg-surface);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.chapter-book-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-card);
+}
+
+.chapter-book-tab--active {
+  background: var(--gold-light, rgba(212,165,32,0.12));
+  border-color: rgba(212,165,32,0.4);
+  color: var(--gold-mid, #c9a227);
+  font-weight: 600;
+}
+
 /* Menu footer */
 .menu-footer {
   display: flex;

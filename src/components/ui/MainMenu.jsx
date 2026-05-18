@@ -1,39 +1,38 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import ProfileSettings from './ProfileSettings'
+import { CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
+import { useProgressCache } from '../../contexts/ProgressCacheContext'
+import { loadProgressFromStorage } from '../../utils/useProgressPersistence'
 
 const DEV_EMAIL = 'dickysal1506@gmail.com'
 
-// Chapter data — mirrors the verse files available in /data/verses/
-const CHAPTERS = [
-  {
-    id: 'genesis-1',
-    stageIndex: 1,
-    book: 'Genesis',
-    chapter: 1,
-    hebrewTitle: 'בראשית א',
-    description: 'In the beginning — Creation',
-    verseCount: 31,
-    available: true,
-  },
-  {
-    id: 'genesis-2',
-    stageIndex: 2,
-    book: 'Genesis',
-    chapter: 2,
-    hebrewTitle: 'בראשית ב',
-    description: 'The seventh day — The Garden',
-    verseCount: 25,
-    available: true,
-  },
-]
+// Hebrew titles for Genesis — extend as needed
+const HEBREW_TITLES = {
+  'genesis-1': 'בראשית א',
+  'genesis-2': 'בראשית ב',
+  'genesis-3': 'בראשית ג',
+  'genesis-4': 'בראשית ד',
+  'genesis-5': 'בראשית ה',
+}
+
+// Chapter descriptions for the first few chapters
+const DESCRIPTIONS = {
+  'genesis-1': 'In the beginning — Creation',
+  'genesis-2': 'The seventh day — The Garden',
+  'genesis-3': 'The Fall — Serpent and fruit',
+  'genesis-4': 'Cain and Abel',
+  'genesis-5': 'Genealogies — Adam to Noah',
+}
 
 export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut, onResetProgress }) {
   const [showChapterSelect, setShowChapterSelect] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [selectedBook, setSelectedBook] = useState('Genesis')
   const confirmTimerRef = useRef(null)
 
+  const { cachedProgress, cacheStatus } = useProgressCache()
   const isDev = session?.user?.email === DEV_EMAIL
 
   // Auto-cancel confirm state after 5s for safety
@@ -44,9 +43,71 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
     return () => clearTimeout(confirmTimerRef.current)
   }, [confirmReset])
 
-  const handleChapterClick = (chapter) => {
-    if (!chapter.available) return
-    onSelectChapter(chapter)
+  // Build a map of stageIndex -> { highestVerse, totalVerses } from progress
+  const chapterProgressMap = useMemo(() => {
+    let chapters = {}
+
+    // Try Supabase cache first (logged-in users), then localStorage (guests)
+    if (cacheStatus === 'ready' && cachedProgress?.chapters) {
+      chapters = cachedProgress.chapters
+    } else {
+      try {
+        const local = loadProgressFromStorage()
+        chapters = local.chapters || {}
+      } catch {
+        chapters = {}
+      }
+    }
+    return chapters
+  }, [cachedProgress, cacheStatus])
+
+  // A chapter is accessible if the user has any progress in it (highestVerse > 0)
+  // OR it's the very first chapter (always available)
+  const isAccessible = (entry) => {
+    if (entry.stageIndex === 1) return true
+    const prog = chapterProgressMap[entry.stageIndex]
+    return (prog?.highestVerse ?? 0) > 0
+  }
+
+  const isCompleted = (entry) => {
+    const prog = chapterProgressMap[entry.stageIndex]
+    return (prog?.highestVerse ?? 0) >= entry.totalVerses
+  }
+
+  const getVerseProgress = (entry) => {
+    const prog = chapterProgressMap[entry.stageIndex]
+    return prog?.highestVerse ?? 0
+  }
+
+  // All books that have at least one accessible chapter
+  const accessibleBooks = useMemo(() => {
+    const seen = new Set()
+    const books = []
+    CHAPTER_REGISTRY.forEach(e => {
+      if (!seen.has(e.book) && isAccessible(e)) {
+        seen.add(e.book)
+        books.push(e.book)
+      }
+    })
+    return books
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapterProgressMap])
+
+  // Chapters in the selected book that are accessible
+  const chaptersForBook = useMemo(() =>
+    CHAPTER_REGISTRY.filter(e => e.book === selectedBook && isAccessible(e)),
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [selectedBook, chapterProgressMap])
+
+  // When chapter select opens, default to first accessible book
+  useEffect(() => {
+    if (showChapterSelect && accessibleBooks.length > 0) {
+      setSelectedBook(accessibleBooks[0])
+    }
+  }, [showChapterSelect, accessibleBooks])
+
+  const handleChapterClick = (entry) => {
+    onSelectChapter({ id: entry.id, stageIndex: entry.stageIndex })
   }
 
   const handleResetClick = () => {
@@ -54,15 +115,10 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
       setConfirmReset(true)
       return
     }
-    // Second click — execute reset
     setResetting(true)
-    console.log('[handleResetClick] Starting reset...')
     Promise.resolve()
       .then(() => onResetProgress())
-      .then(() => {
-        console.log('[handleResetClick] ✅ Reset done — reloading')
-        window.location.reload()
-      })
+      .then(() => window.location.reload())
       .catch((err) => {
         console.error('[handleResetClick] ❌ Reset failed:', err?.message || err)
         setResetting(false)
@@ -72,7 +128,7 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
 
   return (
     <div className="main-menu-screen">
-      {/* Decorative Hebrew letters background — no nikud */}
+      {/* Decorative Hebrew letters background */}
       <div className="menu-bg-letters" aria-hidden="true">
         <span>בראשית</span>
         <span>אלהים</span>
@@ -90,7 +146,7 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           </p>
         </header>
 
-        {/* Chapter select panel — inline reveal */}
+        {/* Chapter select panel */}
         {showChapterSelect ? (
           <div className="chapter-select-panel">
             <button
@@ -101,41 +157,78 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               ← Back
             </button>
             <h2 className="chapter-select-title">Select Chapter</h2>
-            <p className="chapter-select-hint">Choose where to begin your study</p>
+            <p className="chapter-select-hint">Jump to any chapter you've reached</p>
+
+            {/* Book tabs */}
+            {accessibleBooks.length > 1 && (
+              <div className="chapter-book-tabs" role="tablist" aria-label="Select book">
+                {accessibleBooks.map(book => (
+                  <button
+                    key={book}
+                    role="tab"
+                    aria-selected={selectedBook === book}
+                    className={`chapter-book-tab${selectedBook === book ? ' chapter-book-tab--active' : ''}`}
+                    onClick={() => setSelectedBook(book)}
+                  >
+                    {book}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="chapter-list">
-              {CHAPTERS.map((ch) => (
-                <button
-                  key={ch.id}
-                  className={`chapter-card${ch.available ? '' : ' chapter-card--locked'}`}
-                  onClick={() => handleChapterClick(ch)}
-                  disabled={!ch.available}
-                  aria-label={`${ch.book} chapter ${ch.chapter}${!ch.available ? ' — locked' : ''}`}
-                >
-                  {/* No nikud on Hebrew titles */}
-                  <div className="chapter-card-hebrew" lang="he" dir="rtl">{ch.hebrewTitle}</div>
-                  <div className="chapter-card-main">
-                    <span className="chapter-card-name">
-                      {ch.book} {ch.chapter}
-                    </span>
-                    <span className="chapter-card-desc">{ch.description}</span>
-                  </div>
-                  <div className="chapter-card-meta">
-                    {ch.available ? (
-                      <>
-                        <span className="chapter-card-verses">{ch.verseCount} verses</span>
+              {chaptersForBook.length === 0 ? (
+                <p className="chapter-none-msg">No chapters unlocked in {selectedBook} yet.</p>
+              ) : (
+                chaptersForBook.map((entry) => {
+                  const completed = isCompleted(entry)
+                  const progress = getVerseProgress(entry)
+                  const pct = Math.min(100, Math.round((progress / entry.totalVerses) * 100))
+
+                  return (
+                    <button
+                      key={entry.id}
+                      className={`chapter-card${completed ? ' chapter-card--done' : ''}`}
+                      onClick={() => handleChapterClick(entry)}
+                      aria-label={`${entry.book} chapter ${entry.chapter}${completed ? ' — completed' : `, ${progress} of ${entry.totalVerses} verses`}`}
+                    >
+                      {/* Hebrew title if known */}
+                      {HEBREW_TITLES[entry.id] && (
+                        <div className="chapter-card-hebrew" lang="he" dir="rtl">
+                          {HEBREW_TITLES[entry.id]}
+                        </div>
+                      )}
+                      <div className="chapter-card-main">
+                        <span className="chapter-card-name">
+                          {entry.book} {entry.chapter}
+                        </span>
+                        <span className="chapter-card-desc">
+                          {DESCRIPTIONS[entry.id] ?? `${entry.totalVerses} verses`}
+                        </span>
+                      </div>
+                      <div className="chapter-card-meta">
+                        {completed ? (
+                          <span className="chapter-card-done-badge" aria-label="Completed">✓</span>
+                        ) : (
+                          <span className="chapter-card-progress">{progress}/{entry.totalVerses}</span>
+                        )}
                         <span className="chapter-card-arrow">→</span>
-                      </>
-                    ) : (
-                      <span className="chapter-card-lock">🔒</span>
-                    )}
-                  </div>
-                </button>
-              ))}
+                      </div>
+
+                      {/* Progress bar */}
+                      {!completed && (
+                        <div className="chapter-card-bar" aria-hidden="true">
+                          <div className="chapter-card-bar-fill" style={{ width: `${pct}%` }} />
+                        </div>
+                      )}
+                    </button>
+                  )
+                })
+              )}
             </div>
           </div>
         ) : (
-          /* Main option buttons — all uniform style */
+          /* Main option buttons */
           <nav className="menu-options" aria-label="Main menu options">
             {/* Enter Midrash */}
             <button
@@ -164,7 +257,7 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               </div>
               <div className="menu-option-text">
                 <span className="menu-option-title">Chapter Select</span>
-                <span className="menu-option-desc">Jump to the start of any chapter</span>
+                <span className="menu-option-desc">Jump to any chapter you've reached</span>
               </div>
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
@@ -243,7 +336,7 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           </nav>
         )}
 
-        {/* Footer — email + sign out */}
+        {/* Footer */}
         <footer className="menu-footer">
           <span className="menu-footer-note">Masoretic Text (BHS) · ESV Translation</span>
           {session && (

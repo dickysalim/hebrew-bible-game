@@ -1924,8 +1924,20 @@ export function useChapterLoader(initialStageIndex = 1) {
     }
 
     setIsLoading(true)
+
+    // Safety timeout — if the import never resolves (e.g. due to a rapid-flick
+    // race that leaves a cancelled request mid-flight), escape the loading screen
+    // after 10 seconds rather than hanging forever.
+    const timeout = setTimeout(() => {
+      if (!cancelled) {
+        console.warn('[useChapterLoader] Load timeout — resetting isLoading')
+        setIsLoading(false)
+      }
+    }, 10_000)
+
     importChapterById(meta.id)
       .then((data) => {
+        clearTimeout(timeout)
         if (!cancelled) {
           setChapterData(data)
           setIsLoading(false)
@@ -1933,11 +1945,12 @@ export function useChapterLoader(initialStageIndex = 1) {
         }
       })
       .catch((err) => {
+        clearTimeout(timeout)
         console.error('[useChapterLoader] Failed to load chapter:', err)
         if (!cancelled) setIsLoading(false)
       })
 
-    return () => { cancelled = true }
+    return () => { cancelled = true; clearTimeout(timeout) }
   }, [stageIndex])
 
   const jumpToStage = useCallback((si) => {

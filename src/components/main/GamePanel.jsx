@@ -1,4 +1,5 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getWord, getRoot } from '../../lib/lexiconCache'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useGameKeyboard } from '../../hooks/useGameKeyboard'
@@ -22,6 +23,36 @@ import MobileHebrewKeyboard from './sub-components/MobileHebrewKeyboard'
 import WordDefSheet from './sub-components/WordDefSheet'
 
 const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
+
+// Shows a "Back to Menu" button after 3s of loading — escape hatch for stuck state
+function LoadingEscapeButton() {
+  const [visible, setVisible] = useState(false)
+  const navigate = useNavigate()
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 3000)
+    return () => clearTimeout(t)
+  }, [])
+  if (!visible) return null
+  return (
+    <button
+      className="loading-escape-btn"
+      onClick={() => navigate('/')}
+      style={{
+        marginTop: '1.5rem',
+        padding: '0.5rem 1.25rem',
+        background: 'rgba(255,255,255,0.1)',
+        border: '1px solid rgba(255,255,255,0.25)',
+        borderRadius: '0.5rem',
+        color: 'rgba(255,255,255,0.7)',
+        cursor: 'pointer',
+        fontSize: '0.85rem',
+        letterSpacing: '0.03em',
+      }}
+    >
+      ← Back to Menu
+    </button>
+  )
+}
 
 // Load previously discovered root IDs from the lexicon localStorage key
 // so the reducer knows not to re-discover them on page refresh.
@@ -411,6 +442,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         <div className="loading-screen">
           <div className="loading-spinner"></div>
           <p>Loading {bookLabel} {chapterNum}...</p>
+          <LoadingEscapeButton />
         </div>
       </div>
     )

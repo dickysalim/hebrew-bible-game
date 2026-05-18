@@ -1,4 +1,10 @@
 import { checkRootCompletion } from '../../utils/rootDetection'
+import { CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
+
+// Lookup for total verse count by stageIndex
+const TOTAL_VERSES_BY_STAGE = Object.fromEntries(
+  CHAPTER_REGISTRY.map(e => [e.stageIndex, e.totalVerses])
+)
 
 // ─── Reducer helpers (take verses as first arg) ──────────────────────────────
 
@@ -251,12 +257,22 @@ export function reducer(state, action) {
         },
       }
       const targetSaved = updatedChapters[action.stageIndex]
+      const rawVerse = action.startAtVerse ?? (targetSaved?.currentVerse ?? 0)
+      // Clamp to valid range — protects against a saved currentVerse that is out-of-bounds
+      // for the target chapter (e.g. saved mid-transition after a rapid-flick race).
+      const safeVerse = verses.length > 0
+        ? Math.min(rawVerse, verses.length - 1)
+        : 0
+      const rawHighest = targetSaved?.highestVerse ?? (action.startAtVerse ?? 0)
+      const safeHighest = verses.length > 0
+        ? Math.min(rawHighest, verses.length - 1)
+        : rawHighest
       return {
         ...state,
         stageIndex: action.stageIndex,
-        currentVerse: action.startAtVerse ?? (targetSaved?.currentVerse ?? 0),
+        currentVerse: safeVerse,
         activeWordIdx: targetSaved?.activeWordIdx ?? 0,
-        highestVerse: targetSaved?.highestVerse ?? (action.startAtVerse ?? 0),
+        highestVerse: safeHighest,
         typedCounts: targetSaved?.typedCounts ?? {},
         wordEncounters: targetSaved?.wordEncounters ?? state.wordEncounters,
         carouselIdxMap: targetSaved?.carouselIdxMap ?? {},
@@ -386,13 +402,22 @@ export function buildInitialStateFromCache(cp) {
   const si = cp.stageIndex || 1
   const chaptersMap = cp.chapters || {}
   const chapterProgress = chaptersMap[si] || {}
+
+  // Clamp verse indices against the known chapter length to recover from any
+  // corrupted/out-of-bounds saved state (e.g. from a rapid-flick race condition).
+  const totalVerses = TOTAL_VERSES_BY_STAGE[si] ?? Infinity
+  const rawVerse   = chapterProgress.currentVerse ?? cp.currentVerseIndex ?? 0
+  const rawHighest = chapterProgress.highestVerse  ?? cp.highestVerse     ?? 0
+  const safeVerse   = Math.max(0, Math.min(rawVerse,   totalVerses - 1))
+  const safeHighest = Math.max(0, Math.min(rawHighest, totalVerses - 1))
+
   return {
     ...initialState,
     stageIndex:       si,
     typedCounts:      chapterProgress.typedCounts     || cp.typedCounts     || {},
     wordEncounters:   chapterProgress.wordEncounters  || cp.wordEncounters  || {},
-    highestVerse:     chapterProgress.highestVerse     ?? cp.highestVerse    ?? 0,
-    currentVerse:     chapterProgress.currentVerse     ?? cp.currentVerseIndex ?? 0,
+    highestVerse:     safeHighest,
+    currentVerse:     safeVerse,
     activeWordIdx:    chapterProgress.activeWordIdx    ?? cp.activeWordIdx   ?? 0,
     carouselIdxMap:   chapterProgress.carouselIdxMap   || cp.carouselIdxMap  || {},
     celebratedVerses: chapterProgress.celebratedVerses || cp.celebratedVerses || [],
