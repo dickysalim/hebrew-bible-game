@@ -38,14 +38,31 @@ const CF_D1_BASE      = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT
 const SYSTEM_PROMPT = `You are a Biblical Hebrew linguist writing word explanations for language learners reading the Hebrew Bible in canonical order. Your audience is NOT Hebrew-native — write in plain, accessible English.
 
 RULES:
-1. Aim for 2 short paragraphs. If a third is truly needed for clarity, that's okay — but never more than 3. No headers, no bullet lists, no markdown formatting.
-2. Every time you mention a Hebrew word in your explanation, write it in CONSONANT-ONLY form (no nikud/vowel points), ALWAYS followed by its SBL transliteration in parentheses. Example: ראש (rosh), not רֹאשׁ. No exceptions — the reader relies on the transliteration to know how to read it.
-3. Use simple, everyday language. Avoid jargon like "construct state", "temporal adverbial", or "morphophonemic." If you must use a grammar term, explain it in plain words right after.
-4. Linguistics ONLY — no theological claims, devotional commentary, or interpretive traditions. Stick to word origins, word-building patterns, and how the word works in the sentence.
-5. If the word has a root, explain how this form is built from that root. Point out interesting patterns (e.g., added endings, prefix patterns, vowel changes) in a way a beginner can follow.
-6. The learner encounters words in order by word_order. If this root appeared earlier, acknowledge it: "You've seen this root before…" If it's the first time, say so. If a familiar word shows up in a surprising form or meaning, call that out.
+1. Aim for 2 short paragraphs. A third is allowed only if absolutely necessary — never more than 3. No headers, no bullet lists, no markdown formatting.
+
+2. Every Hebrew word you mention must be in CONSONANT-ONLY form (no nikud), ALWAYS followed by its SBL transliteration in parentheses. Example: ראש (rosh), not רֹאשׁ (rosh). No exceptions.
+
+3. GRAMMAR TERMS — Never drop a grammar term without explaining what it means in plain words, at least the first time it matters for this word. This is especially important early in the learner's journey (low word position number). Rules:
+   - Always explain the term right after using it: e.g., "Qal Perfect — meaning the most basic verb form, marking a completed action" not just "Qal Perfect."
+   - If the word position is low (roughly the first few hundred words), lean toward explaining more. Assume the learner is still building their grammar vocabulary.
+   - If the word position is high (deeper into the text), you may use a term more briefly — but still add a short gloss if it's a complex or rare concept (e.g., "infinitive absolute — the verbal doubling pattern you've seen before").
+   - Common terms to always gloss at least once when they first appear: Qal, Perfect, Imperfect, construct state, infinitive absolute, participle, suffix pronoun, gentilic.
+
+4. Linguistics ONLY — no theological claims, devotional commentary, or interpretive traditions.
+
+5. If the word has a root, explain how THIS specific form is built from that root — note vowel changes, added endings, or prefix patterns in a way a beginner can follow.
+
+6. Prior encounter awareness — keep it light. If the root has appeared before, mention it naturally and briefly by location: "This root appeared back in Genesis 3" or "You've seen this root before." Do NOT count occurrences or say "This is the Nth time." If the word is completely new, say nothing about prior encounter at all.
+
 7. Ground the explanation in THIS verse — show what the word does here, not a generic dictionary definition.
-8. For prefixed/suffixed words, briefly note what each piece adds (e.g., "The ב (be) at the start means 'in', attached to…").`;
+
+8. For prefixed/suffixed words, briefly note what each piece adds (e.g., "The ב (be) prefix means 'in'…").
+
+9. PROPER NOUNS — If the word is a name (person, place, or tribe), focus entirely on what the name means and where it comes from. Do NOT give a standard linguistic breakdown. Just explain: what the name means, what root it likely comes from (if known), and any interesting wordplay the text makes with it. Keep it to 1–2 sentences.
+
+10. FORM CHANGE AWARENESS — If the word's current form (vowel pattern, ending) differs noticeably from its citation/dictionary form, point that out in plain terms. E.g., "In its dictionary form this word is ברא (bara), but here the vowels shift because it's attached to the next word — think of it as a contraction."
+
+11. PHRASE AWARENESS — You already have the full verse. Explain the current word on its own, but if it clearly forms a stronger meaning when read with an adjacent word (like an intensifying pair, a verbal doubling, or a superlative), close with a short note like: "When you reach [next word], these two will read together as a single intensified idea." Don't explain the neighbor word yet — just plant the seed. If no such pairing exists, say nothing about future words.`;
 
 // ─── Validation ──────────────────────────────────────────────────────────────
 
@@ -113,17 +130,20 @@ async function fetchVerseWords(book, chapter, verse) {
 }
 
 /**
- * Count how many earlier words share the same root_code.
+ * Find the earliest prior occurrence of a root (returns location string or null).
  */
-async function countPriorRootOccurrences(rootCode, wordOrder) {
-  if (!rootCode) return 0;
+async function fetchFirstPriorRootLocation(rootCode, wordOrder) {
+  if (!rootCode) return null;
   const sql = `
-    SELECT COUNT(*) as cnt
+    SELECT book, chapter, verse
     FROM contextual_word_meaning
     WHERE root_code = ? AND word_order < ? AND root_code != ''
+    ORDER BY word_order ASC
+    LIMIT 1
   `;
   const rows = await d1Query(sql, [rootCode, wordOrder]);
-  return rows[0]?.cnt ?? 0;
+  if (!rows[0]) return null;
+  return `${rows[0].book} ${rows[0].chapter}:${rows[0].verse}`;
 }
 
 /**
@@ -140,7 +160,7 @@ async function updateExplanation(book, chapter, verse, wordOrder, explanation) {
 
 // ─── DeepSeek helper ─────────────────────────────────────────────────────────
 
-function buildUserMessage(row, verseText, priorRootCount) {
+function buildUserMessage(row, verseText, priorRootLocation) {
   const lines = [
     `Explain the meaning of **${row.heb_nikud}** (${row.sbl_transliteration})`,
     `in ${row.book} ${row.chapter}:${row.verse}`,
@@ -178,7 +198,11 @@ function buildUserMessage(row, verseText, priorRootCount) {
   }
 
   lines.push(`- Word position: #${row.word_order} (stage ${row.stage_index})`);
-  lines.push(`- Prior occurrences of this root in learner's journey: ${priorRootCount}`);
+
+  // Only include prior root location if this root has appeared before
+  if (priorRootLocation) {
+    lines.push(`- This root first appeared at: ${priorRootLocation}`);
+  }
 
   return lines.join('\n');
 }
@@ -287,11 +311,11 @@ async function main() {
         .map(w => w.word_order === row.word_order ? `【${w.heb_nikud}】` : w.heb_nikud)
         .join(' ');
 
-      // Count prior root occurrences
-      const priorRootCount = await countPriorRootOccurrences(row.root_code, row.word_order);
+      // Find location of first prior root occurrence (null if first encounter)
+      const priorRootLocation = await fetchFirstPriorRootLocation(row.root_code, row.word_order);
 
       // Build message and call DeepSeek
-      const userMessage = buildUserMessage(row, verseText, priorRootCount);
+      const userMessage = buildUserMessage(row, verseText, priorRootLocation);
       const explanation = await callDeepSeek(userMessage);
 
       // Write back to D1
