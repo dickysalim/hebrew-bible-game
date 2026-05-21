@@ -1,33 +1,24 @@
 import { useState, useCallback } from 'react'
 
 /**
- * Normalize a Strong's number to match the DB format (no leading zeros after H).
- * H0430 → H430,  H7225 → H7225
+ * Collect all unique word_order integers from a chapter’s verse data.
  */
-export function normalizeStrongs(strongs) {
-  if (!strongs) return strongs
-  return strongs.replace(/^H0+/, 'H')
-}
-
-/**
- * Collect all unique normalized lemma_strongs from a chapter's verse data.
- */
-function collectStrongs(chapterData) {
-  const strongsSet = new Set()
+function collectWordOrders(chapterData) {
+  const orders = new Set()
   for (const verse of chapterData?.verses ?? []) {
     for (const word of verse.words ?? []) {
-      if (word.lemma_strongs) strongsSet.add(normalizeStrongs(word.lemma_strongs))
+      if (word.word_order != null) orders.add(word.word_order)
     }
   }
-  return strongsSet
+  return orders
 }
 
 /**
  * useLemmaCache
  *
  * Returns [lemmaMap, refreshLemmaCache].
- * - lemmaMap: the current chapter's lemma data (null = loading, {} = empty/error)
- * - refreshLemmaCache(chapterData): call imperatively whenever a new chapter loads
+ * - lemmaMap: keyed by word_order → contextual_word_meaning row (null = loading)
+ * - refreshLemmaCache(chapterData): call whenever a new chapter loads
  */
 export function useLemmaCache() {
   const [lemmaMap, setLemmaMap] = useState(null)
@@ -38,32 +29,28 @@ export function useLemmaCache() {
       return
     }
 
-    // Reset to loading state immediately
     setLemmaMap(null)
 
-    const strongsSet = collectStrongs(chapterData)
-    console.log('[LemmaCache] refresh called for stage', chapterData.stage_index, '— strongs:', strongsSet.size)
+    const orderSet = collectWordOrders(chapterData)
+    console.log('[CWMCache] refresh for stage', chapterData.stage_index, '— word_orders:', orderSet.size)
 
-    if (strongsSet.size === 0) {
+    if (orderSet.size === 0) {
       setLemmaMap({})
       return
     }
 
-    const strongsParam = [...strongsSet].join(',')
-    const url = `/api/lemma/batch?strongs=${encodeURIComponent(strongsParam)}`
-    console.log('[LemmaCache] fetching:', url.substring(0, 120) + '...')
-
-    fetch(url)
-      .then(r => {
-        console.log('[LemmaCache] response status:', r.status)
-        return r.ok ? r.json() : {}
-      })
+    fetch('/api/cwm/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word_orders: [...orderSet] }),
+    })
+      .then(r => r.ok ? r.json() : (console.warn('[CWMCache] non-ok response:', r.status), {}))
       .then(data => {
-        console.log('[LemmaCache] got', Object.keys(data).length, 'entries. Sample keys:', Object.keys(data).slice(0, 5))
+        console.log('[CWMCache] got', Object.keys(data).length, 'entries. Sample keys:', Object.keys(data).slice(0, 5))
         setLemmaMap(data)
       })
       .catch(err => {
-        console.error('[LemmaCache] fetch error:', err)
+        console.error('[CWMCache] fetch error:', err)
         setLemmaMap({})
       })
   }, [])

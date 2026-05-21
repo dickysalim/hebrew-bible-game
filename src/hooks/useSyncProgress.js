@@ -13,44 +13,27 @@ export function useSyncProgress({
   updateDiscoveredRoots,
   updateDiscoveredWordsByRoot,
 }) {
-  // Gates Supabase saves so we don't write empty state before initial load completes.
   const readyToSaveRef = useRef(!userId || cacheStatus === 'ready')
   const hasRestoredRootsRef = useRef(false)
 
-  // Save progress to localStorage when relevant state changes (anonymous users only)
   useEffect(() => {
     if (!isLoaded || userId) return
-    const si = state.stageIndex
-    const updatedChapters = {
-      ...state.chapters,
-      [si]: {
-        typedCounts: state.typedCounts,
-        wordEncounters: state.wordEncounters,
-        highestVerse: state.highestVerse,
-        currentVerse: state.currentVerse,
-        activeWordIdx: state.activeWordIdx,
-        carouselIdxMap: state.carouselIdxMap,
-        celebratedVerses: state.celebratedVerses,
-      },
-    }
-    saveProgress({ stageIndex: si, chapters: updatedChapters })
+    saveProgress({
+      currentStageIndex: state.currentStageIndex,
+      highestWordOrder: state.highestWordOrder,
+      currentWordOrder: state.currentWordOrder,
+      typedChars: state.typedChars,
+    })
   }, [
     isLoaded,
     userId,
-    state.stageIndex,
-    state.typedCounts,
-    state.wordEncounters,
-    state.highestVerse,
-    state.currentVerse,
-    state.activeWordIdx,
-    state.carouselIdxMap,
-    state.celebratedVerses,
-    state.chapters,
+    state.currentStageIndex,
+    state.highestWordOrder,
+    state.currentWordOrder,
+    state.typedChars,
     saveProgress,
   ])
 
-  // Sync RootDiscoveryContext from cache once when Supabase data arrives.
-  // Previously had [] deps — caused it to run at mount when cachedProgress was still null.
   useEffect(() => {
     if (!userId || cacheStatus !== 'ready') return
     readyToSaveRef.current = true
@@ -60,8 +43,6 @@ export function useSyncProgress({
     if (cachedProgress.discoveredWordsByRoot) updateDiscoveredWordsByRoot(cachedProgress.discoveredWordsByRoot)
   }, [cacheStatus, cachedProgress]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Save progress via cache whenever relevant state changes (authenticated users only).
-  // ProgressCacheContext debounces the actual Supabase write.
   useEffect(() => {
     if (!userId || !readyToSaveRef.current) return
     updateCache(
@@ -73,23 +54,21 @@ export function useSyncProgress({
         showSBLLetter: state.showSBLLetter,
         showGloss: state.showGloss,
         showTAHOT: state.showTAHOT,
+        showNikud: state.showNikud,
         expertMode: state.expertMode,
       }
     )
   }, [
     userId,
-    state.stageIndex,
-    state.typedCounts,
-    state.wordEncounters,
-    state.currentVerse,
-    state.highestVerse,
-    state.activeWordIdx,
-    state.carouselIdxMap,
-    state.celebratedVerses,
+    state.currentStageIndex,
+    state.highestWordOrder,
+    state.currentWordOrder,
+    state.typedChars,
     state.showSBLWord,
     state.showSBLLetter,
     state.showGloss,
     state.showTAHOT,
+    state.showNikud,
     state.expertMode,
     contextDiscoveredRoots,
     discoveredWordsByRoot,

@@ -166,7 +166,7 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
             showSBLLetter={showSBLLetter}
             showGloss={showGloss}
             onWordClick={onWordClick}
-            selectedWordId={selectedWord?.word?.id}
+            selectedWordId={selectedWord?.word?.heb_consonant}
           />
         ))}
         <div className="fc-right__footer">
@@ -217,7 +217,7 @@ export default function RightPanel({ verses, chapterMeta, selectedStageIndex, on
       {/* Mobile: word definition sheet */}
       {isMobile && (() => {
         const sw = selectedWord
-        const wordId = sw?.word?.id ?? ''
+        const wordId = sw?.word?.heb_consonant ?? ''
         const wordData = wordId ? getWord(wordId) : null
         return (
           <WordDefSheet

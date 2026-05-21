@@ -8,6 +8,36 @@ function stripNikud(str) {
   return str.replace(/[\u0591-\u05C7]/g, '').replace(/\//g, '');
 }
 
+// Flip trailing possessive pronoun to natural English order.
+// "breath my"      → "my breath"
+// "son his"        → "his son"
+// "and house his"  → "and his house"
+// "to call out my" → "to my call out"
+// Strategy: peel off any leading conjunction/preposition tokens one at a time,
+// then treat everything up to the trailing possessive as the noun phrase.
+function flipPossessive(gloss) {
+  const POSSESSIVES = /^(his|her|its|their|our|your|my)$/i;
+  const DETACHABLE  = /^(and|or|but|the|a|an|with|to|in|for|from|by|of|about|near|above|below|beside|under|over|at|on)$/i;
+
+  const tokens = gloss.trim().split(/\s+/);
+  if (tokens.length < 2) return gloss;
+
+  const last = tokens[tokens.length - 1];
+  if (!POSSESSIVES.test(last)) return gloss;
+
+  // Peel leading detachable tokens into a prefix
+  let prefixEnd = 0;
+  while (prefixEnd < tokens.length - 2 && DETACHABLE.test(tokens[prefixEnd])) {
+    prefixEnd++;
+  }
+
+  const prefix = prefixEnd > 0 ? tokens.slice(0, prefixEnd).join(' ') + ' ' : '';
+  const noun   = tokens.slice(prefixEnd, tokens.length - 1).join(' ');
+  const poss   = last;
+
+  return `${prefix}${poss} ${noun}`;
+}
+
 function stripBom(str) {
   return str.replace(/^\uFEFF/, '');
 }
@@ -28,65 +58,6 @@ function getText(node) {
   return result.replace(/\s+/g, ' ').trim();
 }
 
-// ── parse dStrongs from TAHOT column 4 ───────────────────────────────────────
-//
-// Format: H9003/{H7225G}          → prefix / lemma
-//         {H1254A}                → lemma only
-//         H9005/H4327/H9023       → prefix / lemma / suffix
-//         H2233G/H9023            → lemma / suffix
-//
-// Rules:
-//   - {curly brackets} = lemma (root word)
-//   - token BEFORE { with / separator = prefix
-//   - token AFTER } with / separator = suffix
-//
-// Returns: { prefix_strongs, lemma_strongs, suffix_strongs }
-
-function parseDStrongs(raw) {
-  if (!raw) return { prefix_strongs: null, lemma_strongs: null, suffix_strongs: null };
-
-  // strip backslash-separated punctuation tags (e.g. \H9014=־=link, \H9016=׃=verseEnd)
-  const cleaned = raw.split('\\')[0].trim();
-
-  // extract lemma — content inside first { }
-  const lemmaMatch = cleaned.match(/\{([^}]+)\}/);
-  const lemma_strongs = lemmaMatch ? lemmaMatch[1].replace(/[{}]/g, '').trim() : null;
-
-  let prefix_strongs = null;
-  let suffix_strongs = null;
-
-  if (lemmaMatch) {
-    // everything before the { is prefix candidates
-    const beforeLemma = cleaned.slice(0, cleaned.indexOf('{')).trim();
-    if (beforeLemma) {
-      // strip trailing slash and get last token
-      const prefixTokens = beforeLemma.replace(/\/$/, '').split('/').map(s => s.trim()).filter(Boolean);
-      // take the last prefix token (closest to lemma)
-      if (prefixTokens.length > 0) {
-        prefix_strongs = prefixTokens[prefixTokens.length - 1];
-      }
-    }
-
-    // everything after the } is suffix candidates
-    const afterLemma = cleaned.slice(cleaned.indexOf('}') + 1).trim();
-    if (afterLemma) {
-      // strip leading slash and get first token
-      const suffixTokens = afterLemma.replace(/^\//, '').split('/').map(s => s.trim()).filter(Boolean);
-      if (suffixTokens.length > 0) {
-        suffix_strongs = suffixTokens[0];
-      }
-    }
-  }
-
-  // clean up any trailing letters that are just occurrence markers (H7225G_A → H7225G)
-  const cleanId = (id) => id ? id.replace(/[A-Z]$/, '').replace(/_[A-Z]$/, '') : null;
-
-  return {
-    prefix_strongs: cleanId(prefix_strongs),
-    lemma_strongs:  cleanId(lemma_strongs),
-    suffix_strongs: cleanId(suffix_strongs),
-  };
-}
 
 // ── book order ────────────────────────────────────────────────────────────────
 
@@ -143,9 +114,8 @@ const TAHOT_FILES = [
   'scripts/resources/TAHOT/TAHOT-Isa-Mal.txt',
 ];
 
-const tahotGloss    = {};
-const tahotSbl      = {};
-const tahotDStrongs = {}; // NEW — stores raw dStrongs column per word ref
+const tahotGloss = {};
+const tahotSbl   = {};
 
 for (const file of TAHOT_FILES) {
   let content;
@@ -165,13 +135,12 @@ for (const file of TAHOT_FILES) {
     if (!trimmed.match(/^[A-Z1-9]/)) continue;
 
     const cols = trimmed.split('\t');
-    if (cols.length < 5) continue;
+    if (cols.length < 4) continue;
 
     // col 0: Gen.1.1#01=L
     // col 1: Hebrew text
     // col 2: transliteration
     // col 3: English gloss
-    // col 4: dStrongs  ← NEW
     const refRaw = cols[0].trim();
     const refMatch = refRaw.match(/^([A-Za-z0-9]+\.\d+\.\d+)(?:\([^)]+\))?(#\d+)/);
     if (!refMatch) continue;
@@ -194,16 +163,8 @@ for (const file of TAHOT_FILES) {
       .replace(/\s+/g, ' ')
       .trim();
 
-    // flip ownership suffixes to natural English order
-    // "host their" → "their host", "seed its" → "its seed"
-    gloss = gloss.replace(
-      /^(.+?)\s+(their|his|her|its|our|your)$/i,
-      '$2 $1'
-    );
-
-    tahotGloss[ref]    = gloss;
-    tahotSbl[ref]      = sbl;
-    tahotDStrongs[ref] = (cols[4] || '').trim(); // NEW
+    tahotGloss[ref] = gloss;
+    tahotSbl[ref]   = sbl;
   }
 }
 
@@ -243,6 +204,7 @@ const outDir = 'src/data/verses';
 mkdirSync(outDir, { recursive: true });
 
 let stageIndex = 0;
+let wordOrder  = 0;
 
 const booksToProcess = BOOK_ORDER;
 
@@ -282,10 +244,10 @@ for (const book of booksToProcess) {
     const words  = [];
 
     for (let w = 0; w < wNodes.length; w++) {
-      const wNode      = wNodes[w];
-      const hebrewText = getText(wNode);
-      const wordId     = stripNikud(hebrewText);
-      if (!wordId) continue;
+      const wNode         = wNodes[w];
+      const hebrewText    = getText(wNode);
+      const heb_consonant = stripNikud(hebrewText);
+      if (!heb_consonant) continue;
 
       const wordNum    = w + 1;
       const wordNumStr = String(wordNum).padStart(2, '0');
@@ -295,7 +257,7 @@ for (const book of booksToProcess) {
       let gloss = tahotGloss[tahotRef] || '';
 
       if (!gloss) {
-        const wordData = wordsExport[wordId];
+        const wordData = wordsExport[heb_consonant];
         if (wordData) {
           const fallbackParts = [
             wordData.word_prefix_gloss?.split(',')[0],
@@ -305,6 +267,9 @@ for (const book of booksToProcess) {
           gloss = fallbackParts.join(' ');
         }
       }
+
+      // flip trailing possessive pronoun to natural English order (covers both TAHOT and fallback sources)
+      gloss = flipPossessive(gloss);
 
       // verb gender marker
       const verbMorph = attr(wNodes[w], 'morph') || '';
@@ -322,33 +287,24 @@ for (const book of booksToProcess) {
       // ── SBL ────────────────────────────────────────────────────────────────
       let sbl = tahotSbl[tahotRef] || '';
       if (!sbl) {
-        const wordData = wordsExport[wordId];
+        const wordData = wordsExport[heb_consonant];
         sbl = wordData?.word_hebrew_sbl || '';
       }
 
-      // ── dStrongs → prefix / lemma / suffix ────────────────────────────────
-      const rawDStrongs = tahotDStrongs[tahotRef] || '';
-      const { prefix_strongs, lemma_strongs, suffix_strongs } = parseDStrongs(rawDStrongs);
-
       // ── build word entry ───────────────────────────────────────────────────
-      const wordEntry = {
-        id:    wordId,
+      wordOrder++;
+      words.push({
+        word_order: wordOrder,
+        heb_consonant,
+        heb_nikud:  hebrewText,
         sbl,
         gloss,
-        ...(prefix_strongs && { prefix_strongs }),
-        lemma_strongs,
-        ...(suffix_strongs && { suffix_strongs }),
-        // root_strongs will be resolved at runtime via lemma table lookup
-        // or you can add a lemma→root map here later
-      };
-
-      words.push(wordEntry);
+      });
     }
 
     chapters[chapterNum].push({
       verse: verseNum,
       words,
-      insights: [],
     });
   }
 

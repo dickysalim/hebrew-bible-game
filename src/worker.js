@@ -335,7 +335,7 @@ The Holy Spirit interprets it to the heart.
 
 ## CURRENT WORD CONTEXT
 
-Hebrew: ${word.id}
+Hebrew: ${word.heb_consonant}
 Transliteration (SBL): ${word.sbl}
 Gloss: ${word.gloss}
 Root: ${word.root} (${word.rootSbl})
@@ -383,6 +383,13 @@ export default {
       return handleLemmaBatch(url, request, env)
     }
 
+    // Contextual word meaning — POST /api/cwm/batch
+    // Body: { word_orders: [1, 2, 3, ...] }
+    // Returns: { [word_order]: contextual_word_meaning row }
+    if (url.pathname === '/api/cwm/batch' && request.method === 'POST') {
+      return handleCwmBatch(request, env)
+    }
+
     // CORS preflight for POST endpoints
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -406,6 +413,46 @@ export default {
 
     return new Response('Not found', { status: 404 })
   }
+}
+
+// ---------------------------------------------------------------------------
+// POST /api/cwm/batch
+// Batch fetch contextual_word_meaning rows by word_order integers.
+// Body: { word_orders: [1, 2, 3, ...] }
+// Returns: { [word_order]: { ...full row } }
+// ---------------------------------------------------------------------------
+async function handleCwmBatch(request, env) {
+  let word_orders
+  try {
+    const body = await request.json()
+    word_orders = Array.isArray(body.word_orders) ? body.word_orders.map(Number).filter(n => !isNaN(n)) : []
+  } catch {
+    return Response.json({ error: 'Invalid JSON' }, { status: 400, headers: corsHeaders() })
+  }
+
+  if (word_orders.length === 0) return Response.json({}, { headers: corsHeaders() })
+
+  const CHUNK_SIZE = 50
+  const allResults = []
+  const chunks = []
+  for (let i = 0; i < word_orders.length; i += CHUNK_SIZE) {
+    chunks.push(word_orders.slice(i, i + CHUNK_SIZE))
+  }
+
+  await Promise.all(chunks.map(async (chunk) => {
+    const placeholders = chunk.map(() => '?').join(',')
+    const rows = await env.DB.prepare(
+      `SELECT * FROM contextual_word_meaning WHERE word_order IN (${placeholders})`
+    ).bind(...chunk).all()
+    allResults.push(...rows.results)
+  }))
+
+  const result = {}
+  for (const row of allResults) {
+    result[row.word_order] = row
+  }
+
+  return Response.json(result, { headers: corsHeaders() })
 }
 
 // ---------------------------------------------------------------------------

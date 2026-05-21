@@ -23,6 +23,33 @@ export function getLetterTypes(wordId) {
   return types.slice(0, wordId.length)
 }
 
+// ─── Nikud display splitter ────────────────────────────────────────────────────
+// Splits a vocalized (nikud) Hebrew string into one group per consonant.
+// Each group = base consonant + any attached diacritics/cantillation marks.
+// Returns an array that matches 1:1 with heb_consonant.split('').
+export function splitNikudGroups(nikud) {
+  if (!nikud) return []
+  // Strip slashes that appear in WLC transcription as morpheme boundaries
+  const cleaned = nikud.replace(/\//g, '')
+  // U+05D0–U+05EA = Hebrew letters (alef–tav)
+  // U+05F0–U+05F4 = Hebrew ligatures
+  // Everything else in the Hebrew block (U+0591–U+05C7) = diacritics/cantillation
+  const groups = []
+  let current = ''
+  for (const ch of cleaned) {
+    const cp = ch.codePointAt(0)
+    const isConsonant = (cp >= 0x05D0 && cp <= 0x05EA) || (cp >= 0x05F0 && cp <= 0x05F4)
+    if (isConsonant) {
+      if (current) groups.push(current)
+      current = ch
+    } else {
+      current += ch
+    }
+  }
+  if (current) groups.push(current)
+  return groups
+}
+
 
 // ─── Israeli QWERTY keyboard layout ──────────────────────────────────────────
 export const KEYBOARD_ROWS = [

@@ -314,6 +314,12 @@
   padding: 2px 2px 4px;
 }
 
+.wd-bdb--unavailable {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.65;
+}
+
 /* ── New badge (inherited from the wrapper — kept here for reference) ────── */
 .new-badge {
   position: absolute;

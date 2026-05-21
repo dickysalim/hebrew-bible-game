@@ -12,14 +12,14 @@ function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss
       {/* RTL word container — wraps independently of the verse number */}
       <div className="fc-verse-content" dir="rtl" lang="he">
         {verse.words.map((word, wi) => {
-          const letters = word.id.split('')
-          const isSelected = selectedWordId === word.id
+          const letters = word.heb_consonant.split('')
+          const isSelected = selectedWordId === word.heb_consonant
           return (
             <button
               key={wi}
               className={`fc-word fc-word--done fc-word--clickable${isSelected ? ' fc-word--selected' : ''}`}
               onClick={() => onWordClick?.(word, verse)}
-              aria-label={`${word.id} — ${word.gloss || ''}`}
+              aria-label={`${word.heb_consonant} — ${word.gloss || ''}`}
               type="button"
             >
               {/* Letter columns — Hebrew char + optional SBL Letter below */}
@@ -44,7 +44,7 @@ function HebrewVerseRow({ verse, verseIdx, showSBLWord, showSBLLetter, showGloss
               {/* Inline TAHOT gloss — shown under each word when toggle is on */}
               {showGloss && (
                 <span className="fc-word__gloss fc-word__gloss--done">
-                  {word.gloss || word.id}
+                  {word.gloss || word.heb_consonant}
                 </span>
               )}
             </button>

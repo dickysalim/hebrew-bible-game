@@ -63,7 +63,7 @@ export default function ConcordancePanel({ wordKey, onBack }) {
       for (let vi = 0; vi < verses.length; vi++) {
         const verse = verses[vi]
         const matchIndices = verse.words.reduce((acc, w, wi) => {
-          if (w.id === wordKey) acc.push(wi)
+          if (w.heb_consonant === wordKey) acc.push(wi)
           return acc
         }, [])
         if (matchIndices.length === 0) continue
@@ -189,7 +189,7 @@ function VerseEntry({ entry, wordKey }) {
               key={wi}
               className={`concordance__word-token ${isMatch ? 'concordance__word-token--match' : ''}`}
             >
-              {w.id}
+              {w.heb_consonant}
             </span>
           )
         })}
@@ -204,7 +204,7 @@ function VerseEntry({ entry, wordKey }) {
               key={wi}
               className={`concordance__word-token ${isMatch ? 'concordance__word-token--match concordance__word-token--match-sbl' : ''}`}
             >
-              {w.sbl ?? w.id}
+              {w.sbl ?? w.heb_consonant}
             </span>
           )
         })}
@@ -214,7 +214,7 @@ function VerseEntry({ entry, wordKey }) {
       <div className="concordance__line concordance__line--tahot">
         {verse.words.map((w, wi) => {
           const isMatch = matchIndices.includes(wi)
-          const gloss = w.gloss || w.id
+          const gloss = w.gloss || w.heb_consonant
           return isMatch
             ? <mark key={wi} className="concordance__tahot-highlight">{gloss}</mark>
             : <span key={wi}>{gloss}</span>

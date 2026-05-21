@@ -39,31 +39,6 @@ function removeSessionCache(userId) {
   } catch {}
 }
 
-function ensurePerChapterCache(formatted) {
-  if (!formatted) return null
-  if (formatted.chapters) return formatted
-  const si = formatted.stageIndex || 1
-  return {
-    ...formatted,
-    stageIndex: si,
-    chapters: {
-      [si]: {
-        typedCounts: formatted.typedCounts || {},
-        wordEncounters: formatted.wordEncounters || {},
-        highestVerse: formatted.highestVerse || 0,
-        currentVerse: formatted.currentVerseIndex ?? formatted.currentVerse ?? 0,
-        activeWordIdx: formatted.activeWordIdx ?? 0,
-        carouselIdxMap: formatted.carouselIdxMap || {},
-        celebratedVerses: formatted.celebratedVerses || [],
-      },
-    },
-    // Carry forward new fields if present, otherwise defaults
-    settings: formatted.settings || { showSBLWord: true, showSBLLetter: true, showGloss: true, showTAHOT: true, expertMode: false },
-    alphabetProgress: formatted.alphabetProgress || {},
-    fcSettings: formatted.fcSettings || {},
-  }
-}
-
 const ProgressCacheContext = createContext(null)
 
 export function ProgressCacheProvider({ children, userId }) {
@@ -87,25 +62,19 @@ export function ProgressCacheProvider({ children, userId }) {
 
     cacheUserIdRef.current = userId
 
-    // sessionStorage is the fast-path cache for this browser session only.
-    // It's cleared when the tab/browser closes, so every new session always
-    // fetches the latest progress from Supabase — ensuring cross-device sync.
-
     const loadForUser = async () => {
       const sessionCached = loadFromSessionCache(userId)
       if (sessionCached) {
-        // Fast path: already fetched from Supabase this session
-        setCachedProgress(ensurePerChapterCache(sessionCached))
+        setCachedProgress(sessionCached)
         setCacheStatus('ready')
         return
       }
 
-      // No session cache — always fetch from Supabase
       setCacheStatus('loading')
       try {
         const supabaseProgress = await loadProgress(userId)
         const formatted = supabaseProgress
-          ? ensurePerChapterCache(formatProgressFromSupabase(supabaseProgress))
+          ? formatProgressFromSupabase(supabaseProgress)
           : null
 
         setCachedProgress(formatted)
@@ -121,47 +90,25 @@ export function ProgressCacheProvider({ children, userId }) {
     loadForUser()
   }, [userId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-
-  /**
-   * updateCache — called by GamePanel on every state change.
-   * Persists game settings (showSBLWord / showSBLLetter / showGloss / showTAHOT / expertMode).
-   *
-   * @param {object} rawGameState
-   * @param {array}  discoveredRoots
-   * @param {object} discoveredWordsByRoot
-   * @param {object} settings — { showSBLWord, showSBLLetter, showGloss, showTAHOT, expertMode }
-   * @param {object} [fcSettings] — Full Chapter prefs { showGloss, showSBLWord, showSBLLetter, fontSize }
-   */
   const updateCache = useCallback((rawGameState, discoveredRoots, discoveredWordsByRoot, settings = {}, fcSettings = null) => {
     if (!userId) return
 
-    const si = rawGameState.stageIndex || 1
-
-    const chapterEntry = {
-      typedCounts: rawGameState.typedCounts || {},
-      wordEncounters: rawGameState.wordEncounters || {},
-      highestVerse: rawGameState.highestVerse || 0,
-      currentVerse: rawGameState.currentVerse || 0,
-      activeWordIdx: rawGameState.activeWordIdx ?? 0,
-      carouselIdxMap: rawGameState.carouselIdxMap || {},
-      celebratedVerses: rawGameState.celebratedVerses || [],
-    }
-
     setCachedProgress(prev => {
-      const prevChapters = prev?.chapters || {}
       const updated = {
         discoveredRoots: discoveredRoots || [],
         discoveredWordsByRoot: discoveredWordsByRoot || {},
-        stageIndex: si,
-        chapters: { ...prevChapters, [si]: chapterEntry },
+        currentStageIndex: rawGameState.currentStageIndex ?? 1,
+        highestWordOrder: rawGameState.highestWordOrder ?? 0,
+        currentWordOrder: rawGameState.currentWordOrder ?? 1,
+        typedChars: rawGameState.typedChars ?? 0,
         settings: {
           showSBLWord: settings.showSBLWord ?? prev?.settings?.showSBLWord ?? true,
           showSBLLetter: settings.showSBLLetter ?? prev?.settings?.showSBLLetter ?? true,
           showGloss: settings.showGloss ?? prev?.settings?.showGloss ?? true,
           showTAHOT: settings.showTAHOT ?? prev?.settings?.showTAHOT ?? true,
+          showNikud: settings.showNikud ?? prev?.settings?.showNikud ?? false,
           expertMode: settings.expertMode ?? prev?.settings?.expertMode ?? false,
         },
-        // Preserve existing alphabet + full-chapter settings
         alphabetProgress: prev?.alphabetProgress || {},
         fcSettings: fcSettings !== null ? fcSettings : (prev?.fcSettings || {}),
       }
@@ -172,20 +119,16 @@ export function ProgressCacheProvider({ children, userId }) {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        // Read from sessionStorage — this is where writeToSessionCache writes
         const latestRaw = sessionStorage.getItem(cacheKey(userId))
         let latestData = {}
         if (latestRaw) {
           try { latestData = JSON.parse(latestRaw)?.data || {} } catch {}
         }
-        // Merge the freshest chapter entry into all known chapters
-        const latestChapters = { ...(latestData.chapters || {}), [si]: chapterEntry }
 
         const progressForSupabase = formatProgressForSupabase(
           rawGameState,
           discoveredRoots,
           discoveredWordsByRoot,
-          latestChapters,
           latestData.settings || {},
           latestData.alphabetProgress || {},
           latestData.fcSettings || {}
@@ -197,10 +140,6 @@ export function ProgressCacheProvider({ children, userId }) {
     }, SAVE_DEBOUNCE_MS)
   }, [userId])
 
-  /**
-   * updateFcSettings — called by the Full Chapter panel.
-   * Only patches the fcSettings field; game progress is untouched.
-   */
   const updateFcSettings = useCallback((patch) => {
     if (!userId) return
 
@@ -228,10 +167,6 @@ export function ProgressCacheProvider({ children, userId }) {
     }, SAVE_DEBOUNCE_MS)
   }, [userId])
 
-  /**
-   * updateAlphabetProgress — called by AlphabetHub when a level is completed.
-   * Does a targeted upsert of only the alphabet_progress column.
-   */
   const updateAlphabetProgress = useCallback((alphabetProgress) => {
     if (!userId) return
 
@@ -258,7 +193,6 @@ export function ProgressCacheProvider({ children, userId }) {
     setCacheStatus('idle')
   }, [userId])
 
-  /** Hard reset — deletes Supabase row + clears session cache. Dev-only. */
   const resetProgress = useCallback(async () => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     removeSessionCache(userId)

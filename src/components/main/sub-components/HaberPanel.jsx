@@ -154,7 +154,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
 
-  const wordId = currentWordContext?.id
+  const wordId = currentWordContext?.heb_consonant
   const messages = haberSessions[wordId] || []
   const thinkingText = useThinkingAnimation(haberLoading)
 
@@ -203,7 +203,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
       const data = await response.json()
       setHaberSessions(prev => ({
         ...prev,
-        [wordCtx.id]: [...msgs, { role: 'assistant', content: data.message }]
+        [wordCtx.heb_consonant]: [...msgs, { role: 'assistant', content: data.message }]
       }))
     } catch (error) {
       console.error('Haber unavailable:', error)
@@ -260,7 +260,7 @@ export default function HaberPanel({ currentWordContext, haberSessions, setHaber
       <div className="haber-panel haber-invite">
         {closeBtn}
         <div className="haber-invite-content">
-          <div className="haber-invite-hebrew">{currentWordContext.id}</div>
+          <div className="haber-invite-hebrew">{currentWordContext.heb_consonant}</div>
           <div className="haber-invite-sbl">{currentWordContext.sbl}</div>
           <p className="haber-invite-text">Invite Haber to wrestle this word with you</p>
           {haberError && <p className="haber-error">{haberError}</p>}

@@ -455,6 +455,12 @@ html, body {
   opacity: 0.85;
 }
 
+/* Nikud mode: extra vertical space so vowel points & cantillation don't clip */
+.word-letter-col--nikud .word-char {
+  line-height: 1.7;
+  min-width: 26px;
+}
+
 /* Per-letter SBL sound label */
 .word-sbl-ch {
   font-size: 12px; /* Increased from 11px */

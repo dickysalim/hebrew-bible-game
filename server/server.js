@@ -119,6 +119,86 @@ app.get('/api/lexicon', (req, res) => {
   })
 })
 
+// ---------------------------------------------------------------------------
+// POST /api/cwm/batch  — batch fetch contextual_word_meaning by word_order
+// Body: { word_orders: [1, 2, 3, ...] }
+// Returns: { [word_order]: { ...full row } }
+// Falls back to Cloudflare D1 REST API when local SQLite has no CWM data.
+// ---------------------------------------------------------------------------
+app.post('/api/cwm/batch', async (req, res) => {
+  const rawOrders = req.body?.word_orders
+  const word_orders = Array.isArray(rawOrders)
+    ? rawOrders.map(Number).filter(n => !isNaN(n))
+    : []
+
+  if (word_orders.length === 0) return res.json({})
+
+  // 1. Try local SQLite first
+  const db = openLocalDB()
+  if (db) {
+    try {
+      const placeholders = word_orders.map(() => '?').join(',')
+      const rows = db.prepare(
+        `SELECT * FROM contextual_word_meaning WHERE word_order IN (${placeholders})`
+      ).all(...word_orders)
+      db.close()
+
+      if (rows.length > 0) {
+        const result = {}
+        for (const row of rows) result[row.word_order] = row
+        return res.json(result)
+      }
+    } catch {
+      try { db.close() } catch {}
+    }
+  }
+
+  // 2. Fall back to Cloudflare D1 REST API (remote production DB)
+  const accountId  = process.env.CLOUDFLARE_ACCOUNT_ID
+  const databaseId = process.env.CLOUDFLARE_D1_DATABASE_ID
+  const apiToken   = process.env.CLOUDFLARE_API_TOKEN
+
+  if (!accountId || !databaseId || !apiToken) {
+    return res.status(503).json({ error: 'No local CWM data and Cloudflare credentials not configured.' })
+  }
+
+  try {
+    const CHUNK_SIZE = 50
+    const allRows = []
+
+    for (let i = 0; i < word_orders.length; i += CHUNK_SIZE) {
+      const chunk = word_orders.slice(i, i + CHUNK_SIZE)
+      const placeholders = chunk.map((_, j) => `?${j + 1}`).join(',')
+
+      const cfRes = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sql: `SELECT * FROM contextual_word_meaning WHERE word_order IN (${placeholders})`,
+            params: chunk,
+          }),
+        }
+      )
+
+      const json = await cfRes.json()
+      const rows = json?.result?.[0]?.results ?? []
+      allRows.push(...rows)
+    }
+
+    const result = {}
+    for (const row of allRows) result[row.word_order] = row
+    console.log(`[CWM] Cloudflare D1 returned ${allRows.length} rows for ${word_orders.length} word_orders`)
+    return res.json(result)
+  } catch (err) {
+    console.error('[CWM] Cloudflare D1 REST error:', err.message, err.cause || '')
+    return res.status(502).json({ error: 'Failed to fetch from Cloudflare D1.' })
+  }
+})
 
 
 function buildSystemPrompt(word) {

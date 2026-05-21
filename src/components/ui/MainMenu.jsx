@@ -6,22 +6,24 @@ import { loadProgressFromStorage } from '../../utils/useProgressPersistence'
 
 const DEV_EMAIL = 'dickysal1506@gmail.com'
 
-// Hebrew titles for Genesis — extend as needed
-const HEBREW_TITLES = {
-  'genesis-1': 'בראשית א',
-  'genesis-2': 'בראשית ב',
-  'genesis-3': 'בראשית ג',
-  'genesis-4': 'בראשית ד',
-  'genesis-5': 'בראשית ה',
-}
 
-// Chapter descriptions for the first few chapters
-const DESCRIPTIONS = {
-  'genesis-1': 'In the beginning — Creation',
-  'genesis-2': 'The seventh day — The Garden',
-  'genesis-3': 'The Fall — Serpent and fruit',
-  'genesis-4': 'Cain and Abel',
-  'genesis-5': 'Genealogies — Adam to Noah',
+
+function readProgress(cachedProgress, cacheStatus) {
+  if (cacheStatus === 'ready' && cachedProgress) {
+    return {
+      highestWordOrder: cachedProgress.highestWordOrder ?? 0,
+      currentStageIndex: cachedProgress.currentStageIndex ?? 1,
+    }
+  }
+  try {
+    const local = loadProgressFromStorage()
+    return {
+      highestWordOrder: local.highestWordOrder ?? 0,
+      currentStageIndex: local.currentStageIndex ?? 1,
+    }
+  } catch {
+    return { highestWordOrder: 0, currentStageIndex: 1 }
+  }
 }
 
 export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlphabet, session, onSignOut, onResetProgress }) {
@@ -29,13 +31,12 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
   const [showProfile, setShowProfile] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [resetting, setResetting] = useState(false)
-  const [selectedBook, setSelectedBook] = useState('Genesis')
+  const [selectedBook, setSelectedBook] = useState(null)
   const confirmTimerRef = useRef(null)
 
   const { cachedProgress, cacheStatus } = useProgressCache()
   const isDev = session?.user?.email === DEV_EMAIL
 
-  // Auto-cancel confirm state after 5s for safety
   useEffect(() => {
     if (confirmReset) {
       confirmTimerRef.current = setTimeout(() => setConfirmReset(false), 5000)
@@ -43,43 +44,18 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
     return () => clearTimeout(confirmTimerRef.current)
   }, [confirmReset])
 
-  // Build a map of stageIndex -> { highestVerse, totalVerses } from progress
-  const chapterProgressMap = useMemo(() => {
-    let chapters = {}
+  const { highestWordOrder, currentStageIndex } = useMemo(
+    () => readProgress(cachedProgress, cacheStatus),
+    [cachedProgress, cacheStatus],
+  )
 
-    // Try Supabase cache first (logged-in users), then localStorage (guests)
-    if (cacheStatus === 'ready' && cachedProgress?.chapters) {
-      chapters = cachedProgress.chapters
-    } else {
-      try {
-        const local = loadProgressFromStorage()
-        chapters = local.chapters || {}
-      } catch {
-        chapters = {}
-      }
-    }
-    return chapters
-  }, [cachedProgress, cacheStatus])
+  const isCompleted = (entry) => highestWordOrder >= entry.lastWordOrder
 
-  // A chapter is accessible if the user has any progress in it (highestVerse > 0)
-  // OR it's the very first chapter (always available)
-  const isAccessible = (entry) => {
-    if (entry.stageIndex === 1) return true
-    const prog = chapterProgressMap[entry.stageIndex]
-    return (prog?.highestVerse ?? 0) > 0
-  }
+  const isAccessible = (entry) =>
+    entry.stageIndex === 1 ||
+    isCompleted(entry) ||
+    entry.stageIndex === currentStageIndex
 
-  const isCompleted = (entry) => {
-    const prog = chapterProgressMap[entry.stageIndex]
-    return (prog?.highestVerse ?? 0) >= entry.totalVerses
-  }
-
-  const getVerseProgress = (entry) => {
-    const prog = chapterProgressMap[entry.stageIndex]
-    return prog?.highestVerse ?? 0
-  }
-
-  // All books that have at least one accessible chapter
   const accessibleBooks = useMemo(() => {
     const seen = new Set()
     const books = []
@@ -91,23 +67,17 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
     })
     return books
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapterProgressMap])
+  }, [highestWordOrder, currentStageIndex])
 
-  // Chapters in the selected book that are accessible
   const chaptersForBook = useMemo(() =>
     CHAPTER_REGISTRY.filter(e => e.book === selectedBook && isAccessible(e)),
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [selectedBook, chapterProgressMap])
+  [selectedBook, highestWordOrder, currentStageIndex])
 
-  // When chapter select opens, default to first accessible book
-  useEffect(() => {
-    if (showChapterSelect && accessibleBooks.length > 0) {
-      setSelectedBook(accessibleBooks[0])
-    }
-  }, [showChapterSelect, accessibleBooks])
+
 
   const handleChapterClick = (entry) => {
-    onSelectChapter({ id: entry.id, stageIndex: entry.stageIndex })
+    onSelectChapter({ stageIndex: entry.stageIndex, firstWordOrder: entry.firstWordOrder })
   }
 
   const handleResetClick = () => {
@@ -128,7 +98,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
 
   return (
     <div className="main-menu-screen">
-      {/* Decorative Hebrew letters background */}
       <div className="menu-bg-letters" aria-hidden="true">
         <span>בראשית</span>
         <span>אלהים</span>
@@ -137,7 +106,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
       </div>
 
       <div className="menu-content">
-        {/* Title block */}
         <header className="menu-header">
           <div className="menu-hebrew-title" lang="he" dir="rtl">מדרש</div>
           <h1 className="menu-title">Midrash</h1>
@@ -146,91 +114,100 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           </p>
         </header>
 
-        {/* Chapter select panel */}
         {showChapterSelect ? (
           <div className="chapter-select-panel">
             <button
               className="chapter-back-btn"
-              onClick={() => setShowChapterSelect(false)}
-              aria-label="Back to main menu"
+              onClick={() => {
+                if (selectedBook) setSelectedBook(null)
+                else setShowChapterSelect(false)
+              }}
+              aria-label={selectedBook ? `Back to book list` : 'Back to main menu'}
             >
-              ← Back
+              ← {selectedBook || 'Back'}
             </button>
-            <h2 className="chapter-select-title">Select Chapter</h2>
-            <p className="chapter-select-hint">Jump to any chapter you've reached</p>
 
-            {/* Book tabs */}
-            {accessibleBooks.length > 1 && (
-              <div className="chapter-book-tabs" role="tablist" aria-label="Select book">
-                {accessibleBooks.map(book => (
-                  <button
-                    key={book}
-                    role="tab"
-                    aria-selected={selectedBook === book}
-                    className={`chapter-book-tab${selectedBook === book ? ' chapter-book-tab--active' : ''}`}
-                    onClick={() => setSelectedBook(book)}
-                  >
-                    {book}
-                  </button>
-                ))}
-              </div>
+            {!selectedBook ? (
+              <>
+                <h2 className="chapter-select-title">Select Book</h2>
+                <p className="chapter-select-hint">Jump to any book you've reached</p>
+                <div className="chapter-list">
+                  {accessibleBooks.map(book => {
+                    const bookChapters = CHAPTER_REGISTRY.filter(e => e.book === book)
+                    const completedCount = bookChapters.filter(e => isCompleted(e)).length
+                    const totalCount = bookChapters.length
+                    const allDone = completedCount === totalCount
+                    const isCurrent = bookChapters.some(e => e.stageIndex === currentStageIndex)
+
+                    return (
+                      <button
+                        key={book}
+                        className={`chapter-card${allDone ? ' chapter-card--done' : ''}${isCurrent && !allDone ? ' chapter-card--current' : ''}`}
+                        onClick={() => setSelectedBook(book)}
+                        aria-label={`${book}${allDone ? ' — completed' : isCurrent ? ' — in progress' : ''}`}
+                      >
+                        <div className="chapter-card-main">
+                          <span className="chapter-card-name">{book}</span>
+                          <span className="chapter-card-desc">
+                            {allDone
+                              ? `${totalCount} chapters · completed`
+                              : `${completedCount} / ${totalCount} chapters`}
+                          </span>
+                        </div>
+                        <div className="chapter-card-meta">
+                          {allDone ? (
+                            <span className="chapter-card-done-badge" aria-label="Completed">✓</span>
+                          ) : isCurrent ? (
+                            <span className="chapter-card-progress">Current</span>
+                          ) : null}
+                          <span className="chapter-card-arrow">→</span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="chapter-select-title">{selectedBook}</h2>
+                <p className="chapter-select-hint">Select a chapter</p>
+                <div className="chapter-list">
+                  {chaptersForBook.length === 0 ? (
+                    <p className="chapter-none-msg">No chapters unlocked in {selectedBook} yet.</p>
+                  ) : (
+                    chaptersForBook.map((entry) => {
+                      const completed = isCompleted(entry)
+                      const isCurrent = entry.stageIndex === currentStageIndex
+
+                      return (
+                        <button
+                          key={entry.id}
+                          className={`chapter-card${completed ? ' chapter-card--done' : ''}${isCurrent && !completed ? ' chapter-card--current' : ''}`}
+                          onClick={() => handleChapterClick(entry)}
+                          aria-label={`Chapter ${entry.chapter}${completed ? ' — completed' : isCurrent ? ' — in progress' : ''}`}
+                        >
+                          <div className="chapter-card-main">
+                            <span className="chapter-card-name">Chapter {entry.chapter}</span>
+                            <span className="chapter-card-desc">{entry.totalVerses} verses</span>
+                          </div>
+                          <div className="chapter-card-meta">
+                            {completed ? (
+                              <span className="chapter-card-done-badge" aria-label="Completed">✓</span>
+                            ) : isCurrent ? (
+                              <span className="chapter-card-progress">Current</span>
+                            ) : null}
+                            <span className="chapter-card-arrow">→</span>
+                          </div>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              </>
             )}
-
-            <div className="chapter-list">
-              {chaptersForBook.length === 0 ? (
-                <p className="chapter-none-msg">No chapters unlocked in {selectedBook} yet.</p>
-              ) : (
-                chaptersForBook.map((entry) => {
-                  const completed = isCompleted(entry)
-                  const progress = getVerseProgress(entry)
-                  const pct = Math.min(100, Math.round((progress / entry.totalVerses) * 100))
-
-                  return (
-                    <button
-                      key={entry.id}
-                      className={`chapter-card${completed ? ' chapter-card--done' : ''}`}
-                      onClick={() => handleChapterClick(entry)}
-                      aria-label={`${entry.book} chapter ${entry.chapter}${completed ? ' — completed' : `, ${progress} of ${entry.totalVerses} verses`}`}
-                    >
-                      {/* Hebrew title if known */}
-                      {HEBREW_TITLES[entry.id] && (
-                        <div className="chapter-card-hebrew" lang="he" dir="rtl">
-                          {HEBREW_TITLES[entry.id]}
-                        </div>
-                      )}
-                      <div className="chapter-card-main">
-                        <span className="chapter-card-name">
-                          {entry.book} {entry.chapter}
-                        </span>
-                        <span className="chapter-card-desc">
-                          {DESCRIPTIONS[entry.id] ?? `${entry.totalVerses} verses`}
-                        </span>
-                      </div>
-                      <div className="chapter-card-meta">
-                        {completed ? (
-                          <span className="chapter-card-done-badge" aria-label="Completed">✓</span>
-                        ) : (
-                          <span className="chapter-card-progress">{progress}/{entry.totalVerses}</span>
-                        )}
-                        <span className="chapter-card-arrow">→</span>
-                      </div>
-
-                      {/* Progress bar */}
-                      {!completed && (
-                        <div className="chapter-card-bar" aria-hidden="true">
-                          <div className="chapter-card-bar-fill" style={{ width: `${pct}%` }} />
-                        </div>
-                      )}
-                    </button>
-                  )
-                })
-              )}
-            </div>
           </div>
         ) : (
-          /* Main option buttons */
           <nav className="menu-options" aria-label="Main menu options">
-            {/* Enter Midrash */}
             <button
               id="btn-enter-midrash"
               className="menu-option"
@@ -246,7 +223,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
 
-            {/* Chapter Select */}
             <button
               id="btn-chapter-select"
               className="menu-option"
@@ -262,7 +238,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
 
-            {/* Learn Hebrew Alphabet */}
             <button
               id="btn-learn-alphabet"
               className="menu-option"
@@ -279,7 +254,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               <span className="menu-option-chevron" aria-hidden="true">›</span>
             </button>
 
-            {/* Profile Settings */}
             {session && (
               <button
                 id="btn-profile-settings"
@@ -298,7 +272,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
               </button>
             )}
 
-            {/* Reset Progress — dev account only */}
             {isDev && (
               <div className="menu-reset-wrap">
                 {confirmReset && (
@@ -336,7 +309,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
           </nav>
         )}
 
-        {/* Footer */}
         <footer className="menu-footer">
           <span className="menu-footer-note">Masoretic Text (BHS) · ESV Translation</span>
           {session && (
@@ -357,7 +329,6 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
         </footer>
       </div>
 
-      {/* Profile Settings modal */}
       {showProfile && session && (
         <ProfileSettings
           session={session}
@@ -367,3 +338,4 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
     </div>
   )
 }
+

@@ -7,2444 +7,2592 @@
       "verse": 1,
       "words": [
         {
-          "id": "וידבר",
+          "word_order": 62007,
+          "heb_consonant": "וידבר",
+          "heb_nikud": "וַ/יְדַבֵּ֥ר",
           "sbl": "vay.da.Ber",
-          "gloss": "and spoke(m)",
-          "prefix_strongs": "H9001",
-          "lemma_strongs": "H1696"
+          "gloss": "and spoke(m)"
         },
         {
-          "id": "יהוה",
+          "word_order": 62008,
+          "heb_consonant": "יהוה",
+          "heb_nikud": "יְהוָ֖ה",
           "sbl": "Yah.weh",
-          "gloss": "Yahweh",
-          "lemma_strongs": "H3068"
+          "gloss": "Yahweh"
         },
         {
-          "id": "אל",
+          "word_order": 62009,
+          "heb_consonant": "אל",
+          "heb_nikud": "אֶל",
           "sbl": "'el-",
-          "gloss": "to",
-          "lemma_strongs": "H0413"
+          "gloss": "to"
         },
         {
-          "id": "משה",
+          "word_order": 62010,
+          "heb_consonant": "משה",
+          "heb_nikud": "מֹשֶׁ֥ה",
           "sbl": "mo.Sheh",
-          "gloss": "Moses",
-          "lemma_strongs": "H4872"
+          "gloss": "Moses"
         },
         {
-          "id": "לאמר",
+          "word_order": 62011,
+          "heb_consonant": "לאמר",
+          "heb_nikud": "לֵּ/אמֹֽר",
           "sbl": "le.Mor",
-          "gloss": "[to] saying",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0559"
+          "gloss": "[to] saying"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 2,
       "words": [
         {
-          "id": "צו",
+          "word_order": 62012,
+          "heb_consonant": "צו",
+          "heb_nikud": "צַ֚ו",
           "sbl": "tzav",
-          "gloss": "command",
-          "lemma_strongs": "H6680"
+          "gloss": "command"
         },
         {
-          "id": "את",
+          "word_order": 62013,
+          "heb_consonant": "את",
+          "heb_nikud": "אֶת",
           "sbl": "'et-",
-          "gloss": "[obj]",
-          "lemma_strongs": "H0853"
+          "gloss": "[obj]"
         },
         {
-          "id": "בני",
+          "word_order": 62014,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵ֣י",
           "sbl": "be.Nei",
-          "gloss": "[the] people of",
-          "lemma_strongs": "H1121"
+          "gloss": "[the] people of"
         },
         {
-          "id": "ישראל",
+          "word_order": 62015,
+          "heb_consonant": "ישראל",
+          "heb_nikud": "יִשְׂרָאֵ֔ל",
           "sbl": "Yis.ra.'El",
-          "gloss": "Israel",
-          "lemma_strongs": "H3478"
+          "gloss": "Israel"
         },
         {
-          "id": "ואמרת",
+          "word_order": 62016,
+          "heb_consonant": "ואמרת",
+          "heb_nikud": "וְ/אָמַרְתָּ֖",
           "sbl": "ve.'a.mar.Ta",
-          "gloss": "and you will say",
-          "prefix_strongs": "H9001",
-          "lemma_strongs": "H0559"
+          "gloss": "and you will say"
         },
         {
-          "id": "אלהם",
+          "word_order": 62017,
+          "heb_consonant": "אלהם",
+          "heb_nikud": "אֲלֵ/הֶ֑ם",
           "sbl": "'a.le.Hem",
-          "gloss": "to them",
-          "lemma_strongs": "H0413",
-          "suffix_strongs": "H9038"
+          "gloss": "to them"
         },
         {
-          "id": "את",
+          "word_order": 62018,
+          "heb_consonant": "את",
+          "heb_nikud": "אֶת",
           "sbl": "'et-",
-          "gloss": "[obj]",
-          "lemma_strongs": "H0853"
+          "gloss": "[obj]"
         },
         {
-          "id": "קרבני",
+          "word_order": 62019,
+          "heb_consonant": "קרבני",
+          "heb_nikud": "קָרְבָּנִ֨/י",
           "sbl": "ka.re.ba.Ni",
-          "gloss": "offering my",
-          "lemma_strongs": "H7133",
-          "suffix_strongs": "H9020"
+          "gloss": "my offering"
         },
         {
-          "id": "לחמי",
+          "word_order": 62020,
+          "heb_consonant": "לחמי",
+          "heb_nikud": "לַחְמִ֜/י",
           "sbl": "lach.Mi",
-          "gloss": "food my",
-          "lemma_strongs": "H3899",
-          "suffix_strongs": "H9020"
+          "gloss": "my food"
         },
         {
-          "id": "לאשי",
+          "word_order": 62021,
+          "heb_consonant": "לאשי",
+          "heb_nikud": "לְ/אִשַּׁ֗/י",
           "sbl": "le.'i.Shai",
-          "gloss": "for fire offerings my",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0801",
-          "suffix_strongs": "H9020"
+          "gloss": "for my fire offerings"
         },
         {
-          "id": "ריח",
+          "word_order": 62022,
+          "heb_consonant": "ריח",
+          "heb_nikud": "רֵ֚יחַ",
           "sbl": "Rei.ach",
-          "gloss": "[the] odor of",
-          "lemma_strongs": "H7381"
+          "gloss": "[the] odor of"
         },
         {
-          "id": "ניחחי",
+          "word_order": 62023,
+          "heb_consonant": "ניחחי",
+          "heb_nikud": "נִֽיחֹחִ֔/י",
           "sbl": "ni.cho.Chi",
-          "gloss": "soothing my",
-          "lemma_strongs": "H5207",
-          "suffix_strongs": "H9020"
+          "gloss": "my soothing"
         },
         {
-          "id": "תשמרו",
+          "word_order": 62024,
+          "heb_consonant": "תשמרו",
+          "heb_nikud": "תִּשְׁמְר֕וּ",
           "sbl": "tish.me.Ru",
-          "gloss": "you will take care",
-          "lemma_strongs": "H8104"
+          "gloss": "you will take care"
         },
         {
-          "id": "להקריב",
+          "word_order": 62025,
+          "heb_consonant": "להקריב",
+          "heb_nikud": "לְ/הַקְרִ֥יב",
           "sbl": "le.hak.Riv",
-          "gloss": "to bring near",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H7126"
+          "gloss": "to bring near"
         },
         {
-          "id": "לי",
+          "word_order": 62026,
+          "heb_consonant": "לי",
+          "heb_nikud": "לִ֖/י",
           "sbl": "li",
-          "gloss": "to [the] me",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9030"
+          "gloss": "to [the] me"
         },
         {
-          "id": "במועדו",
+          "word_order": 62027,
+          "heb_consonant": "במועדו",
+          "heb_nikud": "בְּ/מוֹעֲדֽ/וֹ",
           "sbl": "be.mo.'a.Do",
-          "gloss": "its at appointed time",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H4150",
-          "suffix_strongs": "H9023"
+          "gloss": "at its appointed time"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 3,
       "words": [
         {
-          "id": "ואמרת",
+          "word_order": 62028,
+          "heb_consonant": "ואמרת",
+          "heb_nikud": "וְ/אָמַרְתָּ֣",
           "sbl": "ve.'a.mar.Ta",
-          "gloss": "and you will say",
-          "prefix_strongs": "H9001",
-          "lemma_strongs": "H0559"
+          "gloss": "and you will say"
         },
         {
-          "id": "להם",
+          "word_order": 62029,
+          "heb_consonant": "להם",
+          "heb_nikud": "לָ/הֶ֔ם",
           "sbl": "la.Hem",
-          "gloss": "to [the] them",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9038"
+          "gloss": "to [the] them"
         },
         {
-          "id": "זה",
+          "word_order": 62030,
+          "heb_consonant": "זה",
+          "heb_nikud": "זֶ֚ה",
           "sbl": "zeh",
-          "gloss": "this",
-          "lemma_strongs": "H2088"
+          "gloss": "this"
         },
         {
-          "id": "האשה",
+          "word_order": 62031,
+          "heb_consonant": "האשה",
+          "heb_nikud": "הָֽ/אִשֶּׁ֔ה",
           "sbl": "ha.'i.Sheh",
-          "gloss": "[is] the fire offering",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0801"
+          "gloss": "[is] the fire offering"
         },
         {
-          "id": "אשר",
+          "word_order": 62032,
+          "heb_consonant": "אשר",
+          "heb_nikud": "אֲשֶׁ֥ר",
           "sbl": "'a.Sher",
-          "gloss": "which",
-          "lemma_strongs": "H0834"
+          "gloss": "which"
         },
         {
-          "id": "תקריבו",
+          "word_order": 62033,
+          "heb_consonant": "תקריבו",
+          "heb_nikud": "תַּקְרִ֖יבוּ",
           "sbl": "tak.Ri.vu",
-          "gloss": "you will bring near",
-          "lemma_strongs": "H7126"
+          "gloss": "you will bring near"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62034,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָ֑ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "כבשים",
+          "word_order": 62035,
+          "heb_consonant": "כבשים",
+          "heb_nikud": "כְּבָשִׂ֨ים",
           "sbl": "ke.va.Sim",
-          "gloss": "lambs",
-          "lemma_strongs": "H3532"
+          "gloss": "lambs"
         },
         {
-          "id": "בני",
+          "word_order": 62036,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵֽי",
           "sbl": "be.nei-",
-          "gloss": "sons of",
-          "lemma_strongs": "H1121"
+          "gloss": "sons of"
         },
         {
-          "id": "שנה",
+          "word_order": 62037,
+          "heb_consonant": "שנה",
+          "heb_nikud": "שָׁנָ֧ה",
           "sbl": "sha.Nah",
-          "gloss": "a year",
-          "lemma_strongs": "H8141"
+          "gloss": "a year"
         },
         {
-          "id": "תמימם",
+          "word_order": 62038,
+          "heb_consonant": "תמימם",
+          "heb_nikud": "תְמִימִ֛ם",
           "sbl": "te.mi.Mim",
-          "gloss": "unblemished",
-          "lemma_strongs": "H8549"
+          "gloss": "unblemished"
         },
         {
-          "id": "שנים",
+          "word_order": 62039,
+          "heb_consonant": "שנים",
+          "heb_nikud": "שְׁנַ֥יִם",
           "sbl": "she.Na.yim",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "ליום",
+          "word_order": 62040,
+          "heb_consonant": "ליום",
+          "heb_nikud": "לַ/יּ֖וֹם",
           "sbl": "lai.Yom",
-          "gloss": "for the day",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3117"
+          "gloss": "for the day"
         },
         {
-          "id": "עלה",
+          "word_order": 62041,
+          "heb_consonant": "עלה",
+          "heb_nikud": "עֹלָ֥ה",
           "sbl": "'o.Lah",
-          "gloss": "a burnt offering",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering"
         },
         {
-          "id": "תמיד",
+          "word_order": 62042,
+          "heb_consonant": "תמיד",
+          "heb_nikud": "תָמִֽיד",
           "sbl": "ta.Mid",
-          "gloss": "continually",
-          "lemma_strongs": "H8548"
+          "gloss": "continually"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 4,
       "words": [
         {
-          "id": "את",
+          "word_order": 62043,
+          "heb_consonant": "את",
+          "heb_nikud": "אֶת",
           "sbl": "'et-",
-          "gloss": "[obj]",
-          "lemma_strongs": "H0853"
+          "gloss": "[obj]"
         },
         {
-          "id": "הכבש",
+          "word_order": 62044,
+          "heb_consonant": "הכבש",
+          "heb_nikud": "הַ/כֶּ֥בֶשׂ",
           "sbl": "ha.Ke.ves",
-          "gloss": "the lamb",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H3532"
+          "gloss": "the lamb"
         },
         {
-          "id": "אחד",
+          "word_order": 62045,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֖ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "תעשה",
+          "word_order": 62046,
+          "heb_consonant": "תעשה",
+          "heb_nikud": "תַּעֲשֶׂ֣ה",
           "sbl": "ta.'a.Seh",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "בבקר",
+          "word_order": 62047,
+          "heb_consonant": "בבקר",
+          "heb_nikud": "בַ/בֹּ֑קֶר",
           "sbl": "va.Bo.ker",
-          "gloss": "in the morning",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H1242"
+          "gloss": "in the morning"
         },
         {
-          "id": "ואת",
+          "word_order": 62048,
+          "heb_consonant": "ואת",
+          "heb_nikud": "וְ/אֵת֙",
           "sbl": "ve.'Et",
-          "gloss": "and [obj]",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H0853"
+          "gloss": "and [obj]"
         },
         {
-          "id": "הכבש",
+          "word_order": 62049,
+          "heb_consonant": "הכבש",
+          "heb_nikud": "הַ/כֶּ֣בֶשׂ",
           "sbl": "ha.Ke.ves",
-          "gloss": "the lamb",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H3532"
+          "gloss": "the lamb"
         },
         {
-          "id": "השני",
+          "word_order": 62050,
+          "heb_consonant": "השני",
+          "heb_nikud": "הַ/שֵּׁנִ֔י",
           "sbl": "ha.she.Ni",
-          "gloss": "[the] second",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8145"
+          "gloss": "[the] second"
         },
         {
-          "id": "תעשה",
+          "word_order": 62051,
+          "heb_consonant": "תעשה",
+          "heb_nikud": "תַּעֲשֶׂ֖ה",
           "sbl": "ta.'a.Seh",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "בין",
+          "word_order": 62052,
+          "heb_consonant": "בין",
+          "heb_nikud": "בֵּ֥ין",
           "sbl": "bein",
-          "gloss": "between",
-          "lemma_strongs": "H0996"
+          "gloss": "between"
         },
         {
-          "id": "הערבים",
+          "word_order": 62053,
+          "heb_consonant": "הערבים",
+          "heb_nikud": "הָֽ/עַרְבָּֽיִם",
           "sbl": "Ha.'ar.Ba.yim",
-          "gloss": "the evenings",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H6153"
+          "gloss": "the evenings"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 5,
       "words": [
         {
-          "id": "ועשירית",
+          "word_order": 62054,
+          "heb_consonant": "ועשירית",
+          "heb_nikud": "וַ/עֲשִׂירִ֧ית",
           "sbl": "va.'a.si.Rit",
-          "gloss": "and [the] tenth of",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H6224"
+          "gloss": "and [the] tenth of"
         },
         {
-          "id": "האיפה",
+          "word_order": 62055,
+          "heb_consonant": "האיפה",
+          "heb_nikud": "הָ/אֵיפָ֛ה",
           "sbl": "ha.'ei.Fah",
-          "gloss": "[the] ephah",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0374"
+          "gloss": "[the] ephah"
         },
         {
-          "id": "סלת",
+          "word_order": 62056,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֖לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "למנחה",
+          "word_order": 62057,
+          "heb_consonant": "למנחה",
+          "heb_nikud": "לְ/מִנְחָ֑ה",
           "sbl": "le.min.Chah",
-          "gloss": "to a grain offering",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H4503"
+          "gloss": "to a grain offering"
         },
         {
-          "id": "בלולה",
+          "word_order": 62058,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֛ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62059,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בְּ/שֶׁ֥מֶן",
           "sbl": "be.She.men",
-          "gloss": "with oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with oil"
         },
         {
-          "id": "כתית",
+          "word_order": 62060,
+          "heb_consonant": "כתית",
+          "heb_nikud": "כָּתִ֖ית",
           "sbl": "ka.Tit",
-          "gloss": "pressed",
-          "lemma_strongs": "H3795"
+          "gloss": "pressed"
         },
         {
-          "id": "רביעת",
+          "word_order": 62061,
+          "heb_consonant": "רביעת",
+          "heb_nikud": "רְבִיעִ֥ת",
           "sbl": "re.vi.'It",
-          "gloss": "[the] fourth of",
-          "lemma_strongs": "H7243"
+          "gloss": "[the] fourth of"
         },
         {
-          "id": "ההין",
+          "word_order": 62062,
+          "heb_consonant": "ההין",
+          "heb_nikud": "הַ/הִֽין",
           "sbl": "ha.Hin",
-          "gloss": "[the] hin",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1969"
+          "gloss": "[the] hin"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 6,
       "words": [
         {
-          "id": "עלת",
+          "word_order": 62063,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֖ת",
           "sbl": "'o.Lat",
-          "gloss": "a burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering of"
         },
         {
-          "id": "תמיד",
+          "word_order": 62064,
+          "heb_consonant": "תמיד",
+          "heb_nikud": "תָּמִ֑יד",
           "sbl": "ta.Mid",
-          "gloss": "continuity",
-          "lemma_strongs": "H8548"
+          "gloss": "continuity"
         },
         {
-          "id": "העשיה",
+          "word_order": 62065,
+          "heb_consonant": "העשיה",
+          "heb_nikud": "הָ/עֲשֻׂיָה֙",
           "sbl": "ha.'a.su.Yah",
-          "gloss": "which was instituted",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H6213"
+          "gloss": "which was instituted"
         },
         {
-          "id": "בהר",
+          "word_order": 62066,
+          "heb_consonant": "בהר",
+          "heb_nikud": "בְּ/הַ֣ר",
           "sbl": "be.Har",
-          "gloss": "at [the] mountain of",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H2022"
+          "gloss": "at [the] mountain of"
         },
         {
-          "id": "סיני",
+          "word_order": 62067,
+          "heb_consonant": "סיני",
+          "heb_nikud": "סִינַ֔י",
           "sbl": "si.Nai",
-          "gloss": "Sinai",
-          "lemma_strongs": "H5514"
+          "gloss": "Sinai"
         },
         {
-          "id": "לריח",
+          "word_order": 62068,
+          "heb_consonant": "לריח",
+          "heb_nikud": "לְ/רֵ֣יחַ",
           "sbl": "le.Rei.ach",
-          "gloss": "to an odor of",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H7381"
+          "gloss": "to an odor of"
         },
         {
-          "id": "ניחח",
+          "word_order": 62069,
+          "heb_consonant": "ניחח",
+          "heb_nikud": "נִיחֹ֔חַ",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing",
-          "lemma_strongs": "H5207"
+          "gloss": "soothing"
         },
         {
-          "id": "אשה",
+          "word_order": 62070,
+          "heb_consonant": "אשה",
+          "heb_nikud": "אִשֶּׁ֖ה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering",
-          "lemma_strongs": "H0801"
+          "gloss": "a fire offering"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62071,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַֽ/יהוָֽה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 7,
       "words": [
         {
-          "id": "ונסכו",
+          "word_order": 62072,
+          "heb_consonant": "ונסכו",
+          "heb_nikud": "וְ/נִסְכּ/וֹ֙",
           "sbl": "ve.nis.Ko",
-          "gloss": "its and drink offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9023"
+          "gloss": "and its drink offering"
         },
         {
-          "id": "רביעת",
+          "word_order": 62073,
+          "heb_consonant": "רביעת",
+          "heb_nikud": "רְבִיעִ֣ת",
           "sbl": "re.vi.'It",
-          "gloss": "[will be] [the] fourth of",
-          "lemma_strongs": "H7243"
+          "gloss": "[will be] [the] fourth of"
         },
         {
-          "id": "ההין",
+          "word_order": 62074,
+          "heb_consonant": "ההין",
+          "heb_nikud": "הַ/הִ֔ין",
           "sbl": "ha.Hin",
-          "gloss": "[the] hin",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1969"
+          "gloss": "[the] hin"
         },
         {
-          "id": "לכבש",
+          "word_order": 62075,
+          "heb_consonant": "לכבש",
+          "heb_nikud": "לַ/כֶּ֖בֶשׂ",
           "sbl": "la.Ke.ves",
-          "gloss": "for the lamb",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3532"
+          "gloss": "for the lamb"
         },
         {
-          "id": "האחד",
+          "word_order": 62076,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָ֑ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "בקדש",
+          "word_order": 62077,
+          "heb_consonant": "בקדש",
+          "heb_nikud": "בַּ/קֹּ֗דֶשׁ",
           "sbl": "ba.Ko.desh",
-          "gloss": "in the holy place",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H6944"
+          "gloss": "in the holy place"
         },
         {
-          "id": "הסך",
+          "word_order": 62078,
+          "heb_consonant": "הסך",
+          "heb_nikud": "הַסֵּ֛ךְ",
           "sbl": "ha.Sekh",
-          "gloss": "pour out",
-          "lemma_strongs": "H5258"
+          "gloss": "pour out"
         },
         {
-          "id": "נסך",
+          "word_order": 62079,
+          "heb_consonant": "נסך",
+          "heb_nikud": "נֶ֥סֶךְ",
           "sbl": "Ne.sekh",
-          "gloss": "a drink offering of",
-          "lemma_strongs": "H5262"
+          "gloss": "a drink offering of"
         },
         {
-          "id": "שכר",
+          "word_order": 62080,
+          "heb_consonant": "שכר",
+          "heb_nikud": "שֵׁכָ֖ר",
           "sbl": "she.Khar",
-          "gloss": "strong drink",
-          "lemma_strongs": "H7941"
+          "gloss": "strong drink"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62081,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָֽה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 8,
       "words": [
         {
-          "id": "ואת",
+          "word_order": 62082,
+          "heb_consonant": "ואת",
+          "heb_nikud": "וְ/אֵת֙",
           "sbl": "ve.'Et",
-          "gloss": "and [obj]",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H0853"
+          "gloss": "and [obj]"
         },
         {
-          "id": "הכבש",
+          "word_order": 62083,
+          "heb_consonant": "הכבש",
+          "heb_nikud": "הַ/כֶּ֣בֶשׂ",
           "sbl": "ha.Ke.ves",
-          "gloss": "the lamb",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H3532"
+          "gloss": "the lamb"
         },
         {
-          "id": "השני",
+          "word_order": 62084,
+          "heb_consonant": "השני",
+          "heb_nikud": "הַ/שֵּׁנִ֔י",
           "sbl": "ha.she.Ni",
-          "gloss": "[the] second",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8145"
+          "gloss": "[the] second"
         },
         {
-          "id": "תעשה",
+          "word_order": 62085,
+          "heb_consonant": "תעשה",
+          "heb_nikud": "תַּעֲשֶׂ֖ה",
           "sbl": "ta.'a.Seh",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "בין",
+          "word_order": 62086,
+          "heb_consonant": "בין",
+          "heb_nikud": "בֵּ֣ין",
           "sbl": "bein",
-          "gloss": "between",
-          "lemma_strongs": "H0996"
+          "gloss": "between"
         },
         {
-          "id": "הערבים",
+          "word_order": 62087,
+          "heb_consonant": "הערבים",
+          "heb_nikud": "הָֽ/עַרְבָּ֑יִם",
           "sbl": "ha.'ar.Ba.yim",
-          "gloss": "the evenings",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H6153"
+          "gloss": "the evenings"
         },
         {
-          "id": "כמנחת",
+          "word_order": 62088,
+          "heb_consonant": "כמנחת",
+          "heb_nikud": "כְּ/מִנְחַ֨ת",
           "sbl": "ke.min.Chat",
-          "gloss": "like [the] grain offering of",
-          "prefix_strongs": "H9004",
-          "lemma_strongs": "H4503"
+          "gloss": "like [the] grain offering of"
         },
         {
-          "id": "הבקר",
+          "word_order": 62089,
+          "heb_consonant": "הבקר",
+          "heb_nikud": "הַ/בֹּ֤קֶר",
           "sbl": "ha.Bo.ker",
-          "gloss": "the morning",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1242"
+          "gloss": "the morning"
         },
         {
-          "id": "וכנסכו",
+          "word_order": 62090,
+          "heb_consonant": "וכנסכו",
+          "heb_nikud": "וּ/כְ/נִסְכּ/וֹ֙",
           "sbl": "u.khe.nis.Ko",
-          "gloss": "its and like drink offering",
-          "prefix_strongs": "H9004",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9023"
+          "gloss": "and its like drink offering"
         },
         {
-          "id": "תעשה",
+          "word_order": 62091,
+          "heb_consonant": "תעשה",
+          "heb_nikud": "תַּעֲשֶׂ֔ה",
           "sbl": "ta.'a.Seh",
-          "gloss": "you will offer [it]",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer [it]"
         },
         {
-          "id": "אשה",
+          "word_order": 62092,
+          "heb_consonant": "אשה",
+          "heb_nikud": "אִשֵּׁ֛ה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering of",
-          "lemma_strongs": "H0801"
+          "gloss": "a fire offering of"
         },
         {
-          "id": "ריח",
+          "word_order": 62093,
+          "heb_consonant": "ריח",
+          "heb_nikud": "רֵ֥יחַ",
           "sbl": "Rei.ach",
-          "gloss": "an odor of",
-          "lemma_strongs": "H7381"
+          "gloss": "an odor of"
         },
         {
-          "id": "ניחח",
+          "word_order": 62094,
+          "heb_consonant": "ניחח",
+          "heb_nikud": "נִיחֹ֖חַ",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing",
-          "lemma_strongs": "H5207"
+          "gloss": "soothing"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62095,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָֽה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 9,
       "words": [
         {
-          "id": "וביום",
+          "word_order": 62096,
+          "heb_consonant": "וביום",
+          "heb_nikud": "וּ/בְ/יוֹם֙",
           "sbl": "u.ve.yOm",
-          "gloss": "and on [the] day of",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H3117"
+          "gloss": "and on [the] day of"
         },
         {
-          "id": "השבת",
+          "word_order": 62097,
+          "heb_consonant": "השבת",
+          "heb_nikud": "הַ/שַּׁבָּ֔ת",
           "sbl": "ha.sha.Bat",
-          "gloss": "the sabbath",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H7676"
+          "gloss": "the sabbath"
         },
         {
-          "id": "שני",
+          "word_order": 62098,
+          "heb_consonant": "שני",
+          "heb_nikud": "שְׁנֵֽי",
           "sbl": "she.nei-",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "כבשים",
+          "word_order": 62099,
+          "heb_consonant": "כבשים",
+          "heb_nikud": "כְבָשִׂ֥ים",
           "sbl": "khe.va.Sim",
-          "gloss": "lambs",
-          "lemma_strongs": "H3532"
+          "gloss": "lambs"
         },
         {
-          "id": "בני",
+          "word_order": 62100,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵֽי",
           "sbl": "be.nei-",
-          "gloss": "sons of",
-          "lemma_strongs": "H1121"
+          "gloss": "sons of"
         },
         {
-          "id": "שנה",
+          "word_order": 62101,
+          "heb_consonant": "שנה",
+          "heb_nikud": "שָׁנָ֖ה",
           "sbl": "sha.Nah",
-          "gloss": "a year",
-          "lemma_strongs": "H8141"
+          "gloss": "a year"
         },
         {
-          "id": "תמימם",
+          "word_order": 62102,
+          "heb_consonant": "תמימם",
+          "heb_nikud": "תְּמִימִ֑ם",
           "sbl": "te.mi.Mim",
-          "gloss": "unblemished",
-          "lemma_strongs": "H8549"
+          "gloss": "unblemished"
         },
         {
-          "id": "ושני",
+          "word_order": 62103,
+          "heb_consonant": "ושני",
+          "heb_nikud": "וּ/שְׁנֵ֣י",
           "sbl": "u.she.Nei",
-          "gloss": "and two",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H8147"
+          "gloss": "and two"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62104,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֗ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "סלת",
+          "word_order": 62105,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֧לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "מנחה",
+          "word_order": 62106,
+          "heb_consonant": "מנחה",
+          "heb_nikud": "מִנְחָ֛ה",
           "sbl": "min.Chah",
-          "gloss": "a grain offering",
-          "lemma_strongs": "H4503"
+          "gloss": "a grain offering"
         },
         {
-          "id": "בלולה",
+          "word_order": 62107,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֥ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62108,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שֶּׁ֖מֶן",
           "sbl": "va.She.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "ונסכו",
+          "word_order": 62109,
+          "heb_consonant": "ונסכו",
+          "heb_nikud": "וְ/נִסְכּֽ/וֹ",
           "sbl": "ve.nis.Ko",
-          "gloss": "its and drink offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9023"
+          "gloss": "and its drink offering"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 10,
       "words": [
         {
-          "id": "עלת",
+          "word_order": 62110,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֥ת",
           "sbl": "'o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "שבת",
+          "word_order": 62111,
+          "heb_consonant": "שבת",
+          "heb_nikud": "שַׁבַּ֖ת",
           "sbl": "sha.Bat",
-          "gloss": "[the] sabbath",
-          "lemma_strongs": "H7676"
+          "gloss": "[the] sabbath"
         },
         {
-          "id": "בשבתו",
+          "word_order": 62112,
+          "heb_consonant": "בשבתו",
+          "heb_nikud": "בְּ/שַׁבַּתּ֑/וֹ",
           "sbl": "be.shab.ba.To",
-          "gloss": "its on sabbath",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H7676",
-          "suffix_strongs": "H9023"
+          "gloss": "on its sabbath"
         },
         {
-          "id": "על",
+          "word_order": 62113,
+          "heb_consonant": "על",
+          "heb_nikud": "עַל",
           "sbl": "'al-",
-          "gloss": "[is] to",
-          "lemma_strongs": "H5921"
+          "gloss": "[is] to"
         },
         {
-          "id": "עלת",
+          "word_order": 62114,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֥ת",
           "sbl": "'o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "התמיד",
+          "word_order": 62115,
+          "heb_consonant": "התמיד",
+          "heb_nikud": "הַ/תָּמִ֖יד",
           "sbl": "ha.ta.Mid",
-          "gloss": "[the] continuity",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8548"
+          "gloss": "[the] continuity"
         },
         {
-          "id": "ונסכה",
+          "word_order": 62116,
+          "heb_consonant": "ונסכה",
+          "heb_nikud": "וְ/נִסְכָּֽ/הּ",
           "sbl": "ve.nis.Kah",
-          "gloss": "its and drink offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9024"
+          "gloss": "and its drink offering"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 11,
       "words": [
         {
-          "id": "ובראשי",
+          "word_order": 62117,
+          "heb_consonant": "ובראשי",
+          "heb_nikud": "וּ/בְ/רָאשֵׁי֙",
           "sbl": "u.ve.ra.Shei",
-          "gloss": "and at [the] beginnings of",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H7218"
+          "gloss": "and at [the] beginnings of"
         },
         {
-          "id": "חדשיכם",
+          "word_order": 62118,
+          "heb_consonant": "חדשיכם",
+          "heb_nikud": "חָדְשֵׁי/כֶ֔ם",
           "sbl": "cha.de.shei.Khem",
-          "gloss": "your months",
-          "lemma_strongs": "H2320",
-          "suffix_strongs": "H9026"
+          "gloss": "your months"
         },
         {
-          "id": "תקריבו",
+          "word_order": 62119,
+          "heb_consonant": "תקריבו",
+          "heb_nikud": "תַּקְרִ֥יבוּ",
           "sbl": "tak.Ri.vu",
-          "gloss": "you will bring near",
-          "lemma_strongs": "H7126"
+          "gloss": "you will bring near"
         },
         {
-          "id": "עלה",
+          "word_order": 62120,
+          "heb_consonant": "עלה",
+          "heb_nikud": "עֹלָ֖ה",
           "sbl": "'o.Lah",
-          "gloss": "a burnt offering",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62121,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָ֑ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "פרים",
+          "word_order": 62122,
+          "heb_consonant": "פרים",
+          "heb_nikud": "פָּרִ֨ים",
           "sbl": "pa.Rim",
-          "gloss": "young bulls",
-          "lemma_strongs": "H6499"
+          "gloss": "young bulls"
         },
         {
-          "id": "בני",
+          "word_order": 62123,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵֽי",
           "sbl": "be.nei-",
-          "gloss": "young ones of",
-          "lemma_strongs": "H1121"
+          "gloss": "young ones of"
         },
         {
-          "id": "בקר",
+          "word_order": 62124,
+          "heb_consonant": "בקר",
+          "heb_nikud": "בָקָ֤ר",
           "sbl": "va.Kar",
-          "gloss": "cattle",
-          "lemma_strongs": "H1241"
+          "gloss": "cattle"
         },
         {
-          "id": "שנים",
+          "word_order": 62125,
+          "heb_consonant": "שנים",
+          "heb_nikud": "שְׁנַ֨יִם֙",
           "sbl": "she.Na.yim",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "ואיל",
+          "word_order": 62126,
+          "heb_consonant": "ואיל",
+          "heb_nikud": "וְ/אַ֣יִל",
           "sbl": "ve.'A.yil",
-          "gloss": "and a ram",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H0352"
+          "gloss": "and a ram"
         },
         {
-          "id": "אחד",
+          "word_order": 62127,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֔ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "כבשים",
+          "word_order": 62128,
+          "heb_consonant": "כבשים",
+          "heb_nikud": "כְּבָשִׂ֧ים",
           "sbl": "ke.va.Sim",
-          "gloss": "lambs",
-          "lemma_strongs": "H3532"
+          "gloss": "lambs"
         },
         {
-          "id": "בני",
+          "word_order": 62129,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵי",
           "sbl": "be.nei-",
-          "gloss": "sons of",
-          "lemma_strongs": "H1121"
+          "gloss": "sons of"
         },
         {
-          "id": "שנה",
+          "word_order": 62130,
+          "heb_consonant": "שנה",
+          "heb_nikud": "שָׁנָ֛ה",
           "sbl": "sha.Nah",
-          "gloss": "a year",
-          "lemma_strongs": "H8141"
+          "gloss": "a year"
         },
         {
-          "id": "שבעה",
+          "word_order": 62131,
+          "heb_consonant": "שבעה",
+          "heb_nikud": "שִׁבְעָ֖ה",
           "sbl": "shiv.'Ah",
-          "gloss": "seven",
-          "lemma_strongs": "H7651"
+          "gloss": "seven"
         },
         {
-          "id": "תמימם",
+          "word_order": 62132,
+          "heb_consonant": "תמימם",
+          "heb_nikud": "תְּמִימִֽם",
           "sbl": "te.mi.Mim",
-          "gloss": "unblemished",
-          "lemma_strongs": "H8549"
+          "gloss": "unblemished"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 12,
       "words": [
         {
-          "id": "ושלשה",
+          "word_order": 62133,
+          "heb_consonant": "ושלשה",
+          "heb_nikud": "וּ/שְׁלֹשָׁ֣ה",
           "sbl": "u.she.lo.Shah",
-          "gloss": "and three",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H7969"
+          "gloss": "and three"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62134,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֗ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "סלת",
+          "word_order": 62135,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֤לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "מנחה",
+          "word_order": 62136,
+          "heb_consonant": "מנחה",
+          "heb_nikud": "מִנְחָה֙",
           "sbl": "min.Chah",
-          "gloss": "a grain offering",
-          "lemma_strongs": "H4503"
+          "gloss": "a grain offering"
         },
         {
-          "id": "בלולה",
+          "word_order": 62137,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֣ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62138,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שֶּׁ֔מֶן",
           "sbl": "va.She.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "לפר",
+          "word_order": 62139,
+          "heb_consonant": "לפר",
+          "heb_nikud": "לַ/פָּ֖ר",
           "sbl": "la.Par",
-          "gloss": "for the young bull",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H6499"
+          "gloss": "for the young bull"
         },
         {
-          "id": "האחד",
+          "word_order": 62140,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָ֑ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "ושני",
+          "word_order": 62141,
+          "heb_consonant": "ושני",
+          "heb_nikud": "וּ/שְׁנֵ֣י",
           "sbl": "u.she.Nei",
-          "gloss": "and two",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H8147"
+          "gloss": "and two"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62142,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֗ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "סלת",
+          "word_order": 62143,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֤לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "מנחה",
+          "word_order": 62144,
+          "heb_consonant": "מנחה",
+          "heb_nikud": "מִנְחָה֙",
           "sbl": "min.Chah",
-          "gloss": "a grain offering",
-          "lemma_strongs": "H4503"
+          "gloss": "a grain offering"
         },
         {
-          "id": "בלולה",
+          "word_order": 62145,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֣ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62146,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שֶּׁ֔מֶן",
           "sbl": "va.She.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "לאיל",
+          "word_order": 62147,
+          "heb_consonant": "לאיל",
+          "heb_nikud": "לָ/אַ֖יִל",
           "sbl": "la.'A.yil",
-          "gloss": "for the ram",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0352"
+          "gloss": "for the ram"
         },
         {
-          "id": "האחד",
+          "word_order": 62148,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָֽ/אֶחָֽד",
           "sbl": "Ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 13,
       "words": [
         {
-          "id": "ועשרן",
+          "word_order": 62149,
+          "heb_consonant": "ועשרן",
+          "heb_nikud": "וְ/עִשָּׂרֹ֣ן",
           "sbl": "ve.'i.sa.Ron",
-          "gloss": "and a tenth [of an ephah]",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H6241"
+          "gloss": "and a tenth [of an ephah]"
         },
         {
-          "id": "עשרון",
+          "word_order": 62150,
+          "heb_consonant": "עשרון",
+          "heb_nikud": "עִשָּׂר֗וֹן",
           "sbl": "i.sa.Ron",
-          "gloss": "a tenth [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "a tenth [of an ephah]"
         },
         {
-          "id": "סלת",
+          "word_order": 62151,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֤לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "מנחה",
+          "word_order": 62152,
+          "heb_consonant": "מנחה",
+          "heb_nikud": "מִנְחָה֙",
           "sbl": "min.Chah",
-          "gloss": "a grain offering",
-          "lemma_strongs": "H4503"
+          "gloss": "a grain offering"
         },
         {
-          "id": "בלולה",
+          "word_order": 62153,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֣ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62154,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שֶּׁ֔מֶן",
           "sbl": "va.She.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "לכבש",
+          "word_order": 62155,
+          "heb_consonant": "לכבש",
+          "heb_nikud": "לַ/כֶּ֖בֶשׂ",
           "sbl": "la.Ke.ves",
-          "gloss": "for the lamb",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3532"
+          "gloss": "for the lamb"
         },
         {
-          "id": "האחד",
+          "word_order": 62156,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָ֑ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "עלה",
+          "word_order": 62157,
+          "heb_consonant": "עלה",
+          "heb_nikud": "עֹלָה֙",
           "sbl": "'o.Lah",
-          "gloss": "a burnt offering",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering"
         },
         {
-          "id": "ריח",
+          "word_order": 62158,
+          "heb_consonant": "ריח",
+          "heb_nikud": "רֵ֣יחַ",
           "sbl": "Rei.ach",
-          "gloss": "an odor of",
-          "lemma_strongs": "H7381"
+          "gloss": "an odor of"
         },
         {
-          "id": "ניחח",
+          "word_order": 62159,
+          "heb_consonant": "ניחח",
+          "heb_nikud": "נִיחֹ֔חַ",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing",
-          "lemma_strongs": "H5207"
+          "gloss": "soothing"
         },
         {
-          "id": "אשה",
+          "word_order": 62160,
+          "heb_consonant": "אשה",
+          "heb_nikud": "אִשֶּׁ֖ה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering",
-          "lemma_strongs": "H0801"
+          "gloss": "a fire offering"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62161,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָֽה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 14,
       "words": [
         {
-          "id": "ונסכיהם",
+          "word_order": 62162,
+          "heb_consonant": "ונסכיהם",
+          "heb_nikud": "וְ/נִסְכֵּי/הֶ֗ם",
           "sbl": "ve.nis.kei.Hem",
-          "gloss": "their and drink offerings",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9028"
+          "gloss": "and their drink offerings"
         },
         {
-          "id": "חצי",
+          "word_order": 62163,
+          "heb_consonant": "חצי",
+          "heb_nikud": "חֲצִ֣י",
           "sbl": "cha.Tzi",
-          "gloss": "[the] half of",
-          "lemma_strongs": "H2677"
+          "gloss": "[the] half of"
         },
         {
-          "id": "ההין",
+          "word_order": 62164,
+          "heb_consonant": "ההין",
+          "heb_nikud": "הַ/הִין֩",
           "sbl": "ha.Hin",
-          "gloss": "[the] hin",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1969"
+          "gloss": "[the] hin"
         },
         {
-          "id": "יהיה",
+          "word_order": 62165,
+          "heb_consonant": "יהיה",
+          "heb_nikud": "יִהְיֶ֨ה",
           "sbl": "yih.Yeh",
-          "gloss": "will belong(m)",
-          "lemma_strongs": "H1961"
+          "gloss": "will belong(m)"
         },
         {
-          "id": "לפר",
+          "word_order": 62166,
+          "heb_consonant": "לפר",
+          "heb_nikud": "לַ/פָּ֜ר",
           "sbl": "la.Par",
-          "gloss": "for the young bull",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H6499"
+          "gloss": "for the young bull"
         },
         {
-          "id": "ושלישת",
+          "word_order": 62167,
+          "heb_consonant": "ושלישת",
+          "heb_nikud": "וּ/שְׁלִישִׁ֧ת",
           "sbl": "u.she.li.Shit",
-          "gloss": "and [the] third of",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H7992"
+          "gloss": "and [the] third of"
         },
         {
-          "id": "ההין",
+          "word_order": 62168,
+          "heb_consonant": "ההין",
+          "heb_nikud": "הַ/הִ֣ין",
           "sbl": "ha.Hin",
-          "gloss": "[the] hin",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1969"
+          "gloss": "[the] hin"
         },
         {
-          "id": "לאיל",
+          "word_order": 62169,
+          "heb_consonant": "לאיל",
+          "heb_nikud": "לָ/אַ֗יִל",
           "sbl": "la.'A.yil",
-          "gloss": "for the ram",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0352"
+          "gloss": "for the ram"
         },
         {
-          "id": "ורביעת",
+          "word_order": 62170,
+          "heb_consonant": "ורביעת",
+          "heb_nikud": "וּ/רְבִיעִ֥ת",
           "sbl": "u.re.vi.'It",
-          "gloss": "and [the] fourth of",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H7243"
+          "gloss": "and [the] fourth of"
         },
         {
-          "id": "ההין",
+          "word_order": 62171,
+          "heb_consonant": "ההין",
+          "heb_nikud": "הַ/הִ֛ין",
           "sbl": "ha.Hin",
-          "gloss": "[the] hin",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1969"
+          "gloss": "[the] hin"
         },
         {
-          "id": "לכבש",
+          "word_order": 62172,
+          "heb_consonant": "לכבש",
+          "heb_nikud": "לַ/כֶּ֖בֶשׂ",
           "sbl": "la.Ke.ves",
-          "gloss": "for the lamb",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3532"
+          "gloss": "for the lamb"
         },
         {
-          "id": "יין",
+          "word_order": 62173,
+          "heb_consonant": "יין",
+          "heb_nikud": "יָ֑יִן",
           "sbl": "Ya.yin",
-          "gloss": "wine",
-          "lemma_strongs": "H3196"
+          "gloss": "wine"
         },
         {
-          "id": "זאת",
+          "word_order": 62174,
+          "heb_consonant": "זאת",
+          "heb_nikud": "זֹ֣את",
           "sbl": "zot",
-          "gloss": "this",
-          "lemma_strongs": "H2063"
+          "gloss": "this"
         },
         {
-          "id": "עלת",
+          "word_order": 62175,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֥ת",
           "sbl": "'o.Lat",
-          "gloss": "[is the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[is the] burnt offering of"
         },
         {
-          "id": "חדש",
+          "word_order": 62176,
+          "heb_consonant": "חדש",
+          "heb_nikud": "חֹ֨דֶשׁ֙",
           "sbl": "cho.desh",
-          "gloss": "a month",
-          "lemma_strongs": "H2320"
+          "gloss": "a month"
         },
         {
-          "id": "בחדשו",
+          "word_order": 62177,
+          "heb_consonant": "בחדשו",
+          "heb_nikud": "בְּ/חָדְשׁ֔/וֹ",
           "sbl": "be.cha.de.Sho",
-          "gloss": "its in month",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H2320",
-          "suffix_strongs": "H9023"
+          "gloss": "in its month"
         },
         {
-          "id": "לחדשי",
+          "word_order": 62178,
+          "heb_consonant": "לחדשי",
+          "heb_nikud": "לְ/חָדְשֵׁ֖י",
           "sbl": "le.cha.de.Shei",
-          "gloss": "for [the] months of",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H2320"
+          "gloss": "for [the] months of"
         },
         {
-          "id": "השנה",
+          "word_order": 62179,
+          "heb_consonant": "השנה",
+          "heb_nikud": "הַ/שָּׁנָֽה",
           "sbl": "ha.sha.Nah",
-          "gloss": "the year",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8141"
+          "gloss": "the year"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 15,
       "words": [
         {
-          "id": "ושעיר",
+          "word_order": 62180,
+          "heb_consonant": "ושעיר",
+          "heb_nikud": "וּ/שְׂעִ֨יר",
           "sbl": "u.se.'Ir",
-          "gloss": "and a male goat of",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H8163"
+          "gloss": "and a male goat of"
         },
         {
-          "id": "עזים",
+          "word_order": 62181,
+          "heb_consonant": "עזים",
+          "heb_nikud": "עִזִּ֥ים",
           "sbl": "'i.Zim",
-          "gloss": "goats",
-          "lemma_strongs": "H5795"
+          "gloss": "goats"
         },
         {
-          "id": "אחד",
+          "word_order": 62182,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֛ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "לחטאת",
+          "word_order": 62183,
+          "heb_consonant": "לחטאת",
+          "heb_nikud": "לְ/חַטָּ֖את",
           "sbl": "le.cha.Tat",
-          "gloss": "to a sin offering",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H2403"
+          "gloss": "to a sin offering"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62184,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָ֑ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "על",
+          "word_order": 62185,
+          "heb_consonant": "על",
+          "heb_nikud": "עַל",
           "sbl": "'al-",
-          "gloss": "to",
-          "lemma_strongs": "H5921"
+          "gloss": "to"
         },
         {
-          "id": "עלת",
+          "word_order": 62186,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֧ת",
           "sbl": "'o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "התמיד",
+          "word_order": 62187,
+          "heb_consonant": "התמיד",
+          "heb_nikud": "הַ/תָּמִ֛יד",
           "sbl": "ha.ta.Mid",
-          "gloss": "[the] continuity",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8548"
+          "gloss": "[the] continuity"
         },
         {
-          "id": "יעשה",
+          "word_order": 62188,
+          "heb_consonant": "יעשה",
+          "heb_nikud": "יֵעָשֶׂ֖ה",
           "sbl": "ye.'a.Seh",
-          "gloss": "will be offered(m)",
-          "lemma_strongs": "H6213"
+          "gloss": "will be offered(m)"
         },
         {
-          "id": "ונסכו",
+          "word_order": 62189,
+          "heb_consonant": "ונסכו",
+          "heb_nikud": "וְ/נִסְכּֽ/וֹ",
           "sbl": "ve.nis.Ko",
-          "gloss": "its and drink offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9023"
+          "gloss": "and its drink offering"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 16,
       "words": [
         {
-          "id": "ובחדש",
+          "word_order": 62190,
+          "heb_consonant": "ובחדש",
+          "heb_nikud": "וּ/בַ/חֹ֣דֶשׁ",
           "sbl": "u.va.Cho.desh",
-          "gloss": "and [will be] in the month",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H2320"
+          "gloss": "and [will be] in the month"
         },
         {
-          "id": "הראשון",
+          "word_order": 62191,
+          "heb_consonant": "הראשון",
+          "heb_nikud": "הָ/רִאשׁ֗וֹן",
           "sbl": "ha.ri.Shon",
-          "gloss": "[the] first",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H7223"
+          "gloss": "[the] first"
         },
         {
-          "id": "בארבעה",
+          "word_order": 62192,
+          "heb_consonant": "בארבעה",
+          "heb_nikud": "בְּ/אַרְבָּעָ֥ה",
           "sbl": "be.'ar.ba.'Ah",
-          "gloss": "on [the] four-",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H0702"
+          "gloss": "on [the] four-"
         },
         {
-          "id": "עשר",
+          "word_order": 62193,
+          "heb_consonant": "עשר",
+          "heb_nikud": "עָשָׂ֛ר",
           "sbl": "'a.Sar",
-          "gloss": "teen",
-          "lemma_strongs": "H6240"
+          "gloss": "teen"
         },
         {
-          "id": "יום",
+          "word_order": 62194,
+          "heb_consonant": "יום",
+          "heb_nikud": "י֖וֹם",
           "sbl": "Yom",
-          "gloss": "day",
-          "lemma_strongs": "H3117"
+          "gloss": "day"
         },
         {
-          "id": "לחדש",
+          "word_order": 62195,
+          "heb_consonant": "לחדש",
+          "heb_nikud": "לַ/חֹ֑דֶשׁ",
           "sbl": "la.Cho.desh",
-          "gloss": "of the month",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H2320"
+          "gloss": "of the month"
         },
         {
-          "id": "פסח",
+          "word_order": 62196,
+          "heb_consonant": "פסח",
+          "heb_nikud": "פֶּ֖סַח",
           "sbl": "Pe.sach",
-          "gloss": "a passover",
-          "lemma_strongs": "H6453"
+          "gloss": "a passover"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62197,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָֽה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 17,
       "words": [
         {
-          "id": "ובחמשה",
+          "word_order": 62198,
+          "heb_consonant": "ובחמשה",
+          "heb_nikud": "וּ/בַ/חֲמִשָּׁ֨ה",
           "sbl": "u.va.cha.mi.Shah",
-          "gloss": "and [will be] on [the] fif-",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H2568"
+          "gloss": "and [will be] on [the] fif-"
         },
         {
-          "id": "עשר",
+          "word_order": 62199,
+          "heb_consonant": "עשר",
+          "heb_nikud": "עָשָׂ֥ר",
           "sbl": "'a.Sar",
-          "gloss": "teen",
-          "lemma_strongs": "H6240"
+          "gloss": "teen"
         },
         {
-          "id": "יום",
+          "word_order": 62200,
+          "heb_consonant": "יום",
+          "heb_nikud": "י֛וֹם",
           "sbl": "Yom",
-          "gloss": "day",
-          "lemma_strongs": "H3117"
+          "gloss": "day"
         },
         {
-          "id": "לחדש",
+          "word_order": 62201,
+          "heb_consonant": "לחדש",
+          "heb_nikud": "לַ/חֹ֥דֶשׁ",
           "sbl": "la.Cho.desh",
-          "gloss": "of the month",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H2320"
+          "gloss": "of the month"
         },
         {
-          "id": "הזה",
+          "word_order": 62202,
+          "heb_consonant": "הזה",
+          "heb_nikud": "הַ/זֶּ֖ה",
           "sbl": "ha.Zeh",
-          "gloss": "[the] this",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H2088"
+          "gloss": "[the] this"
         },
         {
-          "id": "חג",
+          "word_order": 62203,
+          "heb_consonant": "חג",
+          "heb_nikud": "חָ֑ג",
           "sbl": "Chag",
-          "gloss": "a festival",
-          "lemma_strongs": "H2282"
+          "gloss": "a festival"
         },
         {
-          "id": "שבעת",
+          "word_order": 62204,
+          "heb_consonant": "שבעת",
+          "heb_nikud": "שִׁבְעַ֣ת",
           "sbl": "shiv.'At",
-          "gloss": "seven",
-          "lemma_strongs": "H7651"
+          "gloss": "seven"
         },
         {
-          "id": "ימים",
+          "word_order": 62205,
+          "heb_consonant": "ימים",
+          "heb_nikud": "יָמִ֔ים",
           "sbl": "ya.Mim",
-          "gloss": "days",
-          "lemma_strongs": "H3117"
+          "gloss": "days"
         },
         {
-          "id": "מצות",
+          "word_order": 62206,
+          "heb_consonant": "מצות",
+          "heb_nikud": "מַצּ֖וֹת",
           "sbl": "ma.Tzot",
-          "gloss": "unleavened bread[s]",
-          "lemma_strongs": "H4682"
+          "gloss": "unleavened bread[s]"
         },
         {
-          "id": "יאכל",
+          "word_order": 62207,
+          "heb_consonant": "יאכל",
+          "heb_nikud": "יֵאָכֵֽל",
           "sbl": "ye.'a.Khel",
-          "gloss": "will be eaten(m)",
-          "lemma_strongs": "H0398"
+          "gloss": "will be eaten(m)"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 18,
       "words": [
         {
-          "id": "ביום",
+          "word_order": 62208,
+          "heb_consonant": "ביום",
+          "heb_nikud": "בַּ/יּ֥וֹם",
           "sbl": "bai.Yom",
-          "gloss": "[will be] on the day",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H3117"
+          "gloss": "[will be] on the day"
         },
         {
-          "id": "הראשון",
+          "word_order": 62209,
+          "heb_consonant": "הראשון",
+          "heb_nikud": "הָ/רִאשׁ֖וֹן",
           "sbl": "ha.ri.Shon",
-          "gloss": "[the] first",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H7223"
+          "gloss": "[the] first"
         },
         {
-          "id": "מקרא",
+          "word_order": 62210,
+          "heb_consonant": "מקרא",
+          "heb_nikud": "מִקְרָא",
           "sbl": "mik.ra'-",
-          "gloss": "a convocation of",
-          "lemma_strongs": "H4744"
+          "gloss": "a convocation of"
         },
         {
-          "id": "קדש",
+          "word_order": 62211,
+          "heb_consonant": "קדש",
+          "heb_nikud": "קֹ֑דֶשׁ",
           "sbl": "Ko.desh",
-          "gloss": "holiness",
-          "lemma_strongs": "H6944"
+          "gloss": "holiness"
         },
         {
-          "id": "כל",
+          "word_order": 62212,
+          "heb_consonant": "כל",
+          "heb_nikud": "כָּל",
           "sbl": "kol-",
-          "gloss": "any",
-          "lemma_strongs": "H3605"
+          "gloss": "any"
         },
         {
-          "id": "מלאכת",
+          "word_order": 62213,
+          "heb_consonant": "מלאכת",
+          "heb_nikud": "מְלֶ֥אכֶת",
           "sbl": "me.Le.khet",
-          "gloss": "work of",
-          "lemma_strongs": "H4399"
+          "gloss": "work of"
         },
         {
-          "id": "עבדה",
+          "word_order": 62214,
+          "heb_consonant": "עבדה",
+          "heb_nikud": "עֲבֹדָ֖ה",
           "sbl": "'a.vo.Dah",
-          "gloss": "servitude",
-          "lemma_strongs": "H5656"
+          "gloss": "servitude"
         },
         {
-          "id": "לא",
+          "word_order": 62215,
+          "heb_consonant": "לא",
+          "heb_nikud": "לֹ֥א",
           "sbl": "lo'",
-          "gloss": "not",
-          "lemma_strongs": "H3808"
+          "gloss": "not"
         },
         {
-          "id": "תעשו",
+          "word_order": 62216,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַעֲשֽׂוּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will do",
-          "lemma_strongs": "H6213"
+          "gloss": "you will do"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 19,
       "words": [
         {
-          "id": "והקרבתם",
+          "word_order": 62217,
+          "heb_consonant": "והקרבתם",
+          "heb_nikud": "וְ/הִקְרַבְתֶּ֨ם",
           "sbl": "ve.hik.rav.Tem",
-          "gloss": "and you will bring near",
-          "prefix_strongs": "H9001",
-          "lemma_strongs": "H7126"
+          "gloss": "and you will bring near"
         },
         {
-          "id": "אשה",
+          "word_order": 62218,
+          "heb_consonant": "אשה",
+          "heb_nikud": "אִשֶּׁ֤ה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering",
-          "lemma_strongs": "H0801"
+          "gloss": "a fire offering"
         },
         {
-          "id": "עלה",
+          "word_order": 62219,
+          "heb_consonant": "עלה",
+          "heb_nikud": "עֹלָה֙",
           "sbl": "'o.Lah",
-          "gloss": "a burnt offering",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62220,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַֽ/יהוָ֔ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "פרים",
+          "word_order": 62221,
+          "heb_consonant": "פרים",
+          "heb_nikud": "פָּרִ֧ים",
           "sbl": "pa.Rim",
-          "gloss": "young bulls",
-          "lemma_strongs": "H6499"
+          "gloss": "young bulls"
         },
         {
-          "id": "בני",
+          "word_order": 62222,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵי",
           "sbl": "be.nei-",
-          "gloss": "young ones of",
-          "lemma_strongs": "H1121"
+          "gloss": "young ones of"
         },
         {
-          "id": "בקר",
+          "word_order": 62223,
+          "heb_consonant": "בקר",
+          "heb_nikud": "בָקָ֛ר",
           "sbl": "va.Kar",
-          "gloss": "cattle",
-          "lemma_strongs": "H1241"
+          "gloss": "cattle"
         },
         {
-          "id": "שנים",
+          "word_order": 62224,
+          "heb_consonant": "שנים",
+          "heb_nikud": "שְׁנַ֖יִם",
           "sbl": "she.Na.yim",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "ואיל",
+          "word_order": 62225,
+          "heb_consonant": "ואיל",
+          "heb_nikud": "וְ/אַ֣יִל",
           "sbl": "ve.'A.yil",
-          "gloss": "and a ram",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H0352"
+          "gloss": "and a ram"
         },
         {
-          "id": "אחד",
+          "word_order": 62226,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֑ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "ושבעה",
+          "word_order": 62227,
+          "heb_consonant": "ושבעה",
+          "heb_nikud": "וְ/שִׁבְעָ֤ה",
           "sbl": "ve.shiv.'Ah",
-          "gloss": "and seven",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H7651"
+          "gloss": "and seven"
         },
         {
-          "id": "כבשים",
+          "word_order": 62228,
+          "heb_consonant": "כבשים",
+          "heb_nikud": "כְבָשִׂים֙",
           "sbl": "khe.va.Sim",
-          "gloss": "lambs",
-          "lemma_strongs": "H3532"
+          "gloss": "lambs"
         },
         {
-          "id": "בני",
+          "word_order": 62229,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵ֣י",
           "sbl": "be.Nei",
-          "gloss": "sons of",
-          "lemma_strongs": "H1121"
+          "gloss": "sons of"
         },
         {
-          "id": "שנה",
+          "word_order": 62230,
+          "heb_consonant": "שנה",
+          "heb_nikud": "שָׁנָ֔ה",
           "sbl": "sha.Nah",
-          "gloss": "a year",
-          "lemma_strongs": "H8141"
+          "gloss": "a year"
         },
         {
-          "id": "תמימם",
+          "word_order": 62231,
+          "heb_consonant": "תמימם",
+          "heb_nikud": "תְּמִימִ֖ם",
           "sbl": "te.mi.Mim",
-          "gloss": "unblemished",
-          "lemma_strongs": "H8549"
+          "gloss": "unblemished"
         },
         {
-          "id": "יהיו",
+          "word_order": 62232,
+          "heb_consonant": "יהיו",
+          "heb_nikud": "יִהְי֥וּ",
           "sbl": "yih.Yu",
-          "gloss": "will be(m)",
-          "lemma_strongs": "H1961"
+          "gloss": "will be(m)"
         },
         {
-          "id": "לכם",
+          "word_order": 62233,
+          "heb_consonant": "לכם",
+          "heb_nikud": "לָ/כֶֽם",
           "sbl": "la.Khem",
-          "gloss": "to [the] you",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9036"
+          "gloss": "to [the] you"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 20,
       "words": [
         {
-          "id": "ומנחתם",
+          "word_order": 62234,
+          "heb_consonant": "ומנחתם",
+          "heb_nikud": "וּ/מִ֨נְחָתָ֔/ם",
           "sbl": "u.Min.cha.Tam",
-          "gloss": "their and grain offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H4503",
-          "suffix_strongs": "H9028"
+          "gloss": "and their grain offering"
         },
         {
-          "id": "סלת",
+          "word_order": 62235,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֖לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "בלולה",
+          "word_order": 62236,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֣ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62237,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שָּׁ֑מֶן",
           "sbl": "va.Sha.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "שלשה",
+          "word_order": 62238,
+          "heb_consonant": "שלשה",
+          "heb_nikud": "שְׁלֹשָׁ֨ה",
           "sbl": "she.lo.Shah",
-          "gloss": "three",
-          "lemma_strongs": "H7969"
+          "gloss": "three"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62239,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֜ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "לפר",
+          "word_order": 62240,
+          "heb_consonant": "לפר",
+          "heb_nikud": "לַ/פָּ֗ר",
           "sbl": "la.Par",
-          "gloss": "for the young bull",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H6499"
+          "gloss": "for the young bull"
         },
         {
-          "id": "ושני",
+          "word_order": 62241,
+          "heb_consonant": "ושני",
+          "heb_nikud": "וּ/שְׁנֵ֧י",
           "sbl": "u.she.Nei",
-          "gloss": "and two",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H8147"
+          "gloss": "and two"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62242,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֛ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "לאיל",
+          "word_order": 62243,
+          "heb_consonant": "לאיל",
+          "heb_nikud": "לָ/אַ֖יִל",
           "sbl": "la.'A.yil",
-          "gloss": "for the ram",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0352"
+          "gloss": "for the ram"
         },
         {
-          "id": "תעשו",
+          "word_order": 62244,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַּעֲשֽׂוּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 21,
       "words": [
         {
-          "id": "עשרון",
+          "word_order": 62245,
+          "heb_consonant": "עשרון",
+          "heb_nikud": "עִשָּׂר֤וֹן",
           "sbl": "i.sa.Ron",
-          "gloss": "a tenth",
-          "lemma_strongs": "H6241"
+          "gloss": "a tenth"
         },
         {
-          "id": "עשרון",
+          "word_order": 62246,
+          "heb_consonant": "עשרון",
+          "heb_nikud": "עִשָּׂרוֹן֙",
           "sbl": "'i.sa.rOn",
-          "gloss": "a tenth",
-          "lemma_strongs": "H6241"
+          "gloss": "a tenth"
         },
         {
-          "id": "תעשה",
+          "word_order": 62247,
+          "heb_consonant": "תעשה",
+          "heb_nikud": "תַּעֲשֶׂ֔ה",
           "sbl": "ta.'a.Seh",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "לכבש",
+          "word_order": 62248,
+          "heb_consonant": "לכבש",
+          "heb_nikud": "לַ/כֶּ֖בֶשׂ",
           "sbl": "la.Ke.ves",
-          "gloss": "for the lamb",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3532"
+          "gloss": "for the lamb"
         },
         {
-          "id": "האחד",
+          "word_order": 62249,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָ֑ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "לשבעת",
+          "word_order": 62250,
+          "heb_consonant": "לשבעת",
+          "heb_nikud": "לְ/שִׁבְעַ֖ת",
           "sbl": "le.shiv.'At",
-          "gloss": "for [the] seven",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H7651"
+          "gloss": "for [the] seven"
         },
         {
-          "id": "הכבשים",
+          "word_order": 62251,
+          "heb_consonant": "הכבשים",
+          "heb_nikud": "הַ/כְּבָשִֽׂים",
           "sbl": "ha.ke.va.Sim",
-          "gloss": "the lambs",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H3532"
+          "gloss": "the lambs"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 22,
       "words": [
         {
-          "id": "ושעיר",
+          "word_order": 62252,
+          "heb_consonant": "ושעיר",
+          "heb_nikud": "וּ/שְׂעִ֥יר",
           "sbl": "u.se.'Ir",
-          "gloss": "and a male goat of",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H8163"
+          "gloss": "and a male goat of"
         },
         {
-          "id": "חטאת",
+          "word_order": 62253,
+          "heb_consonant": "חטאת",
+          "heb_nikud": "חַטָּ֖את",
           "sbl": "cha.Tat",
-          "gloss": "a sin offering",
-          "lemma_strongs": "H2403"
+          "gloss": "a sin offering"
         },
         {
-          "id": "אחד",
+          "word_order": 62254,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֑ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "לכפר",
+          "word_order": 62255,
+          "heb_consonant": "לכפר",
+          "heb_nikud": "לְ/כַפֵּ֖ר",
           "sbl": "le.kha.Per",
-          "gloss": "to make atonement",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3722"
+          "gloss": "to make atonement"
         },
         {
-          "id": "עליכם",
+          "word_order": 62256,
+          "heb_consonant": "עליכם",
+          "heb_nikud": "עֲלֵי/כֶֽם",
           "sbl": "'a.lei.Khem",
-          "gloss": "on you",
-          "lemma_strongs": "H5921",
-          "suffix_strongs": "H9036"
+          "gloss": "on you"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 23,
       "words": [
         {
-          "id": "מלבד",
+          "word_order": 62257,
+          "heb_consonant": "מלבד",
+          "heb_nikud": "מִ/לְּ/בַד֙",
           "sbl": "mi.le.Vad",
-          "gloss": "[from] [to] besides",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0905"
+          "gloss": "[from] [to] besides"
         },
         {
-          "id": "עלת",
+          "word_order": 62258,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֣ת",
           "sbl": "'o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "הבקר",
+          "word_order": 62259,
+          "heb_consonant": "הבקר",
+          "heb_nikud": "הַ/בֹּ֔קֶר",
           "sbl": "ha.Bo.ker",
-          "gloss": "the morning",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1242"
+          "gloss": "the morning"
         },
         {
-          "id": "אשר",
+          "word_order": 62260,
+          "heb_consonant": "אשר",
+          "heb_nikud": "אֲשֶׁ֖ר",
           "sbl": "'a.Sher",
-          "gloss": "which",
-          "lemma_strongs": "H0834"
+          "gloss": "which"
         },
         {
-          "id": "לעלת",
+          "word_order": 62261,
+          "heb_consonant": "לעלת",
+          "heb_nikud": "לְ/עֹלַ֣ת",
           "sbl": "le.'o.Lat",
-          "gloss": "[is] for [the] burnt offering of",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H5930"
+          "gloss": "[is] for [the] burnt offering of"
         },
         {
-          "id": "התמיד",
+          "word_order": 62262,
+          "heb_consonant": "התמיד",
+          "heb_nikud": "הַ/תָּמִ֑יד",
           "sbl": "ha.ta.Mid",
-          "gloss": "[the] continuity",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8548"
+          "gloss": "[the] continuity"
         },
         {
-          "id": "תעשו",
+          "word_order": 62263,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַּעֲשׂ֖וּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "את",
+          "word_order": 62264,
+          "heb_consonant": "את",
+          "heb_nikud": "אֶת",
           "sbl": "'et-",
-          "gloss": "[obj]",
-          "lemma_strongs": "H0853"
+          "gloss": "[obj]"
         },
         {
-          "id": "אלה",
+          "word_order": 62265,
+          "heb_consonant": "אלה",
+          "heb_nikud": "אֵֽלֶּה",
           "sbl": "'E.leh",
-          "gloss": "these [things]",
-          "lemma_strongs": "H0428"
+          "gloss": "these [things]"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 24,
       "words": [
         {
-          "id": "כאלה",
+          "word_order": 62266,
+          "heb_consonant": "כאלה",
+          "heb_nikud": "כָּ/אֵ֜לֶּה",
           "sbl": "ka.'E.leh",
-          "gloss": "like these [things]",
-          "prefix_strongs": "H9004",
-          "lemma_strongs": "H0428"
+          "gloss": "like these [things]"
         },
         {
-          "id": "תעשו",
+          "word_order": 62267,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַּעֲשׂ֤וּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will offer",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer"
         },
         {
-          "id": "ליום",
+          "word_order": 62268,
+          "heb_consonant": "ליום",
+          "heb_nikud": "לַ/יּוֹם֙",
           "sbl": "lai.yOm",
-          "gloss": "for the day",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3117"
+          "gloss": "for the day"
         },
         {
-          "id": "שבעת",
+          "word_order": 62269,
+          "heb_consonant": "שבעת",
+          "heb_nikud": "שִׁבְעַ֣ת",
           "sbl": "shiv.'At",
-          "gloss": "seven",
-          "lemma_strongs": "H7651"
+          "gloss": "seven"
         },
         {
-          "id": "ימים",
+          "word_order": 62270,
+          "heb_consonant": "ימים",
+          "heb_nikud": "יָמִ֔ים",
           "sbl": "ya.Mim",
-          "gloss": "days",
-          "lemma_strongs": "H3117"
+          "gloss": "days"
         },
         {
-          "id": "לחם",
+          "word_order": 62271,
+          "heb_consonant": "לחם",
+          "heb_nikud": "לֶ֛חֶם",
           "sbl": "Le.chem",
-          "gloss": "food of",
-          "lemma_strongs": "H3899"
+          "gloss": "food of"
         },
         {
-          "id": "אשה",
+          "word_order": 62272,
+          "heb_consonant": "אשה",
+          "heb_nikud": "אִשֵּׁ֥ה",
           "sbl": "'i.Sheh",
-          "gloss": "a fire offering of",
-          "lemma_strongs": "H0801"
+          "gloss": "a fire offering of"
         },
         {
-          "id": "ריח",
+          "word_order": 62273,
+          "heb_consonant": "ריח",
+          "heb_nikud": "רֵֽיחַ",
           "sbl": "rei.ach-",
-          "gloss": "an odor of",
-          "lemma_strongs": "H7381"
+          "gloss": "an odor of"
         },
         {
-          "id": "ניחח",
+          "word_order": 62274,
+          "heb_consonant": "ניחח",
+          "heb_nikud": "נִיחֹ֖חַ",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing",
-          "lemma_strongs": "H5207"
+          "gloss": "soothing"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62275,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַ/יהוָ֑ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "על",
+          "word_order": 62276,
+          "heb_consonant": "על",
+          "heb_nikud": "עַל",
           "sbl": "'al-",
-          "gloss": "to",
-          "lemma_strongs": "H5921"
+          "gloss": "to"
         },
         {
-          "id": "עולת",
+          "word_order": 62277,
+          "heb_consonant": "עולת",
+          "heb_nikud": "עוֹלַ֧ת",
           "sbl": "o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "התמיד",
+          "word_order": 62278,
+          "heb_consonant": "התמיד",
+          "heb_nikud": "הַ/תָּמִ֛יד",
           "sbl": "ha.ta.Mid",
-          "gloss": "[the] continuity",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8548"
+          "gloss": "[the] continuity"
         },
         {
-          "id": "יעשה",
+          "word_order": 62279,
+          "heb_consonant": "יעשה",
+          "heb_nikud": "יֵעָשֶׂ֖ה",
           "sbl": "ye.'a.Seh",
-          "gloss": "will be offered(m)",
-          "lemma_strongs": "H6213"
+          "gloss": "will be offered(m)"
         },
         {
-          "id": "ונסכו",
+          "word_order": 62280,
+          "heb_consonant": "ונסכו",
+          "heb_nikud": "וְ/נִסְכּֽ/וֹ",
           "sbl": "ve.nis.Ko",
-          "gloss": "its and drink offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9023"
+          "gloss": "and its drink offering"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 25,
       "words": [
         {
-          "id": "וביום",
+          "word_order": 62281,
+          "heb_consonant": "וביום",
+          "heb_nikud": "וּ/בַ/יּוֹם֙",
           "sbl": "u.vai.yOm",
-          "gloss": "and on the day",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H3117"
+          "gloss": "and on the day"
         },
         {
-          "id": "השביעי",
+          "word_order": 62282,
+          "heb_consonant": "השביעי",
+          "heb_nikud": "הַ/שְּׁבִיעִ֔י",
           "sbl": "ha.she.vi.'I",
-          "gloss": "[the] seventh",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H7637"
+          "gloss": "[the] seventh"
         },
         {
-          "id": "מקרא",
+          "word_order": 62283,
+          "heb_consonant": "מקרא",
+          "heb_nikud": "מִקְרָא",
           "sbl": "mik.ra'-",
-          "gloss": "a convocation of",
-          "lemma_strongs": "H4744"
+          "gloss": "a convocation of"
         },
         {
-          "id": "קדש",
+          "word_order": 62284,
+          "heb_consonant": "קדש",
+          "heb_nikud": "קֹ֖דֶשׁ",
           "sbl": "Ko.desh",
-          "gloss": "holiness",
-          "lemma_strongs": "H6944"
+          "gloss": "holiness"
         },
         {
-          "id": "יהיה",
+          "word_order": 62285,
+          "heb_consonant": "יהיה",
+          "heb_nikud": "יִהְיֶ֣ה",
           "sbl": "yih.Yeh",
-          "gloss": "will be(m)",
-          "lemma_strongs": "H1961"
+          "gloss": "will be(m)"
         },
         {
-          "id": "לכם",
+          "word_order": 62286,
+          "heb_consonant": "לכם",
+          "heb_nikud": "לָ/כֶ֑ם",
           "sbl": "la.Khem",
-          "gloss": "to [the] you",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9036"
+          "gloss": "to [the] you"
         },
         {
-          "id": "כל",
+          "word_order": 62287,
+          "heb_consonant": "כל",
+          "heb_nikud": "כָּל",
           "sbl": "kol-",
-          "gloss": "any",
-          "lemma_strongs": "H3605"
+          "gloss": "any"
         },
         {
-          "id": "מלאכת",
+          "word_order": 62288,
+          "heb_consonant": "מלאכת",
+          "heb_nikud": "מְלֶ֥אכֶת",
           "sbl": "me.Le.khet",
-          "gloss": "work of",
-          "lemma_strongs": "H4399"
+          "gloss": "work of"
         },
         {
-          "id": "עבדה",
+          "word_order": 62289,
+          "heb_consonant": "עבדה",
+          "heb_nikud": "עֲבֹדָ֖ה",
           "sbl": "'a.vo.Dah",
-          "gloss": "servitude",
-          "lemma_strongs": "H5656"
+          "gloss": "servitude"
         },
         {
-          "id": "לא",
+          "word_order": 62290,
+          "heb_consonant": "לא",
+          "heb_nikud": "לֹ֥א",
           "sbl": "lo'",
-          "gloss": "not",
-          "lemma_strongs": "H3808"
+          "gloss": "not"
         },
         {
-          "id": "תעשו",
+          "word_order": 62291,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַעֲשֽׂוּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will do",
-          "lemma_strongs": "H6213"
+          "gloss": "you will do"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 26,
       "words": [
         {
-          "id": "וביום",
+          "word_order": 62292,
+          "heb_consonant": "וביום",
+          "heb_nikud": "וּ/בְ/י֣וֹם",
           "sbl": "u.ve.Yom",
-          "gloss": "and on [the] day of",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H3117"
+          "gloss": "and on [the] day of"
         },
         {
-          "id": "הבכורים",
+          "word_order": 62293,
+          "heb_consonant": "הבכורים",
+          "heb_nikud": "הַ/בִּכּוּרִ֗ים",
           "sbl": "ha.bi.ku.Rim",
-          "gloss": "the first-fruits",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H1061"
+          "gloss": "the first-fruits"
         },
         {
-          "id": "בהקריבכם",
+          "word_order": 62294,
+          "heb_consonant": "בהקריבכם",
+          "heb_nikud": "בְּ/הַקְרִ֨יבְ/כֶ֜ם",
           "sbl": "be.hak.Ri.ve.Khem",
-          "gloss": "when bring near you",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H7126",
-          "suffix_strongs": "H9046"
+          "gloss": "when bring near you"
         },
         {
-          "id": "מנחה",
+          "word_order": 62295,
+          "heb_consonant": "מנחה",
+          "heb_nikud": "מִנְחָ֤ה",
           "sbl": "min.Chah",
-          "gloss": "a grain offering",
-          "lemma_strongs": "H4503"
+          "gloss": "a grain offering"
         },
         {
-          "id": "חדשה",
+          "word_order": 62296,
+          "heb_consonant": "חדשה",
+          "heb_nikud": "חֲדָשָׁה֙",
           "sbl": "cha.da.Shah",
-          "gloss": "new",
-          "lemma_strongs": "H2319"
+          "gloss": "new"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62297,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַֽ/יהוָ֔ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "בשבעתיכם",
+          "word_order": 62298,
+          "heb_consonant": "בשבעתיכם",
+          "heb_nikud": "בְּ/שָׁבֻעֹ֖תֵי/כֶ֑ם",
           "sbl": "be.sha.vu.'O.tei.Khem",
-          "gloss": "your at weeks",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H7620",
-          "suffix_strongs": "H9026"
+          "gloss": "at your weeks"
         },
         {
-          "id": "מקרא",
+          "word_order": 62299,
+          "heb_consonant": "מקרא",
+          "heb_nikud": "מִֽקְרָא",
           "sbl": "mik.ra'-",
-          "gloss": "a convocation of",
-          "lemma_strongs": "H4744"
+          "gloss": "a convocation of"
         },
         {
-          "id": "קדש",
+          "word_order": 62300,
+          "heb_consonant": "קדש",
+          "heb_nikud": "קֹ֨דֶשׁ֙",
           "sbl": "ko.desh",
-          "gloss": "holiness",
-          "lemma_strongs": "H6944"
+          "gloss": "holiness"
         },
         {
-          "id": "יהיה",
+          "word_order": 62301,
+          "heb_consonant": "יהיה",
+          "heb_nikud": "יִהְיֶ֣ה",
           "sbl": "yih.Yeh",
-          "gloss": "will be(m)",
-          "lemma_strongs": "H1961"
+          "gloss": "will be(m)"
         },
         {
-          "id": "לכם",
+          "word_order": 62302,
+          "heb_consonant": "לכם",
+          "heb_nikud": "לָ/כֶ֔ם",
           "sbl": "la.Khem",
-          "gloss": "to [the] you",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9036"
+          "gloss": "to [the] you"
         },
         {
-          "id": "כל",
+          "word_order": 62303,
+          "heb_consonant": "כל",
+          "heb_nikud": "כָּל",
           "sbl": "kol-",
-          "gloss": "any",
-          "lemma_strongs": "H3605"
+          "gloss": "any"
         },
         {
-          "id": "מלאכת",
+          "word_order": 62304,
+          "heb_consonant": "מלאכת",
+          "heb_nikud": "מְלֶ֥אכֶת",
           "sbl": "me.Le.khet",
-          "gloss": "work of",
-          "lemma_strongs": "H4399"
+          "gloss": "work of"
         },
         {
-          "id": "עבדה",
+          "word_order": 62305,
+          "heb_consonant": "עבדה",
+          "heb_nikud": "עֲבֹדָ֖ה",
           "sbl": "'a.vo.Dah",
-          "gloss": "servitude",
-          "lemma_strongs": "H5656"
+          "gloss": "servitude"
         },
         {
-          "id": "לא",
+          "word_order": 62306,
+          "heb_consonant": "לא",
+          "heb_nikud": "לֹ֥א",
           "sbl": "lo'",
-          "gloss": "not",
-          "lemma_strongs": "H3808"
+          "gloss": "not"
         },
         {
-          "id": "תעשו",
+          "word_order": 62307,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַעֲשֽׂוּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will do",
-          "lemma_strongs": "H6213"
+          "gloss": "you will do"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 27,
       "words": [
         {
-          "id": "והקרבתם",
+          "word_order": 62308,
+          "heb_consonant": "והקרבתם",
+          "heb_nikud": "וְ/הִקְרַבְתֶּ֨ם",
           "sbl": "ve.hik.rav.Tem",
-          "gloss": "and you will bring near",
-          "prefix_strongs": "H9001",
-          "lemma_strongs": "H7126"
+          "gloss": "and you will bring near"
         },
         {
-          "id": "עולה",
+          "word_order": 62309,
+          "heb_consonant": "עולה",
+          "heb_nikud": "עוֹלָ֜ה",
           "sbl": "o.Lah",
-          "gloss": "a burnt offering",
-          "lemma_strongs": "H5930"
+          "gloss": "a burnt offering"
         },
         {
-          "id": "לריח",
+          "word_order": 62310,
+          "heb_consonant": "לריח",
+          "heb_nikud": "לְ/רֵ֤יחַ",
           "sbl": "le.Rei.ach",
-          "gloss": "to an odor of",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H7381"
+          "gloss": "to an odor of"
         },
         {
-          "id": "ניחח",
+          "word_order": 62311,
+          "heb_consonant": "ניחח",
+          "heb_nikud": "נִיחֹ֨חַ֙",
           "sbl": "ni.Cho.ach",
-          "gloss": "soothing",
-          "lemma_strongs": "H5207"
+          "gloss": "soothing"
         },
         {
-          "id": "ליהוה",
+          "word_order": 62312,
+          "heb_consonant": "ליהוה",
+          "heb_nikud": "לַֽ/יהוָ֔ה",
           "sbl": "la.Yah.weh",
-          "gloss": "to Yahweh",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3068"
+          "gloss": "to Yahweh"
         },
         {
-          "id": "פרים",
+          "word_order": 62313,
+          "heb_consonant": "פרים",
+          "heb_nikud": "פָּרִ֧ים",
           "sbl": "pa.Rim",
-          "gloss": "young bulls",
-          "lemma_strongs": "H6499"
+          "gloss": "young bulls"
         },
         {
-          "id": "בני",
+          "word_order": 62314,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵי",
           "sbl": "be.nei-",
-          "gloss": "young ones of",
-          "lemma_strongs": "H1121"
+          "gloss": "young ones of"
         },
         {
-          "id": "בקר",
+          "word_order": 62315,
+          "heb_consonant": "בקר",
+          "heb_nikud": "בָקָ֛ר",
           "sbl": "va.Kar",
-          "gloss": "cattle",
-          "lemma_strongs": "H1241"
+          "gloss": "cattle"
         },
         {
-          "id": "שנים",
+          "word_order": 62316,
+          "heb_consonant": "שנים",
+          "heb_nikud": "שְׁנַ֖יִם",
           "sbl": "she.Na.yim",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "איל",
+          "word_order": 62317,
+          "heb_consonant": "איל",
+          "heb_nikud": "אַ֣יִל",
           "sbl": "'A.yil",
-          "gloss": "a ram",
-          "lemma_strongs": "H0352"
+          "gloss": "a ram"
         },
         {
-          "id": "אחד",
+          "word_order": 62318,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֑ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "שבעה",
+          "word_order": 62319,
+          "heb_consonant": "שבעה",
+          "heb_nikud": "שִׁבְעָ֥ה",
           "sbl": "shiv.'Ah",
-          "gloss": "seven",
-          "lemma_strongs": "H7651"
+          "gloss": "seven"
         },
         {
-          "id": "כבשים",
+          "word_order": 62320,
+          "heb_consonant": "כבשים",
+          "heb_nikud": "כְבָשִׂ֖ים",
           "sbl": "khe.va.Sim",
-          "gloss": "lambs",
-          "lemma_strongs": "H3532"
+          "gloss": "lambs"
         },
         {
-          "id": "בני",
+          "word_order": 62321,
+          "heb_consonant": "בני",
+          "heb_nikud": "בְּנֵ֥י",
           "sbl": "be.Nei",
-          "gloss": "sons of",
-          "lemma_strongs": "H1121"
+          "gloss": "sons of"
         },
         {
-          "id": "שנה",
+          "word_order": 62322,
+          "heb_consonant": "שנה",
+          "heb_nikud": "שָׁנָֽה",
           "sbl": "sha.Nah",
-          "gloss": "a year",
-          "lemma_strongs": "H8141"
+          "gloss": "a year"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 28,
       "words": [
         {
-          "id": "ומנחתם",
+          "word_order": 62323,
+          "heb_consonant": "ומנחתם",
+          "heb_nikud": "וּ/מִנְחָתָ֔/ם",
           "sbl": "u.min.cha.Tam",
-          "gloss": "their and grain offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H4503",
-          "suffix_strongs": "H9028"
+          "gloss": "and their grain offering"
         },
         {
-          "id": "סלת",
+          "word_order": 62324,
+          "heb_consonant": "סלת",
+          "heb_nikud": "סֹ֖לֶת",
           "sbl": "So.let",
-          "gloss": "fine flour",
-          "lemma_strongs": "H5560"
+          "gloss": "fine flour"
         },
         {
-          "id": "בלולה",
+          "word_order": 62325,
+          "heb_consonant": "בלולה",
+          "heb_nikud": "בְּלוּלָ֣ה",
           "sbl": "be.lu.Lah",
-          "gloss": "mixed",
-          "lemma_strongs": "H1101"
+          "gloss": "mixed"
         },
         {
-          "id": "בשמן",
+          "word_order": 62326,
+          "heb_consonant": "בשמן",
+          "heb_nikud": "בַ/שָּׁ֑מֶן",
           "sbl": "va.Sha.men",
-          "gloss": "with [the] oil",
-          "prefix_strongs": "H9003",
-          "lemma_strongs": "H8081"
+          "gloss": "with [the] oil"
         },
         {
-          "id": "שלשה",
+          "word_order": 62327,
+          "heb_consonant": "שלשה",
+          "heb_nikud": "שְׁלֹשָׁ֤ה",
           "sbl": "she.lo.Shah",
-          "gloss": "three",
-          "lemma_strongs": "H7969"
+          "gloss": "three"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62328,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִים֙",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "לפר",
+          "word_order": 62329,
+          "heb_consonant": "לפר",
+          "heb_nikud": "לַ/פָּ֣ר",
           "sbl": "la.Par",
-          "gloss": "for the young bull",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H6499"
+          "gloss": "for the young bull"
         },
         {
-          "id": "האחד",
+          "word_order": 62330,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָֽ/אֶחָ֔ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "שני",
+          "word_order": 62331,
+          "heb_consonant": "שני",
+          "heb_nikud": "שְׁנֵי֙",
           "sbl": "she.Nei",
-          "gloss": "two",
-          "lemma_strongs": "H8147"
+          "gloss": "two"
         },
         {
-          "id": "עשרנים",
+          "word_order": 62332,
+          "heb_consonant": "עשרנים",
+          "heb_nikud": "עֶשְׂרֹנִ֔ים",
           "sbl": "'es.ro.Nim",
-          "gloss": "tenths [of an ephah]",
-          "lemma_strongs": "H6241"
+          "gloss": "tenths [of an ephah]"
         },
         {
-          "id": "לאיל",
+          "word_order": 62333,
+          "heb_consonant": "לאיל",
+          "heb_nikud": "לָ/אַ֖יִל",
           "sbl": "la.'A.yil",
-          "gloss": "for the ram",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0352"
+          "gloss": "for the ram"
         },
         {
-          "id": "האחד",
+          "word_order": 62334,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָֽד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 29,
       "words": [
         {
-          "id": "עשרון",
+          "word_order": 62335,
+          "heb_consonant": "עשרון",
+          "heb_nikud": "עִשָּׂרוֹן֙",
           "sbl": "'i.sa.rOn",
-          "gloss": "a tenth",
-          "lemma_strongs": "H6241"
+          "gloss": "a tenth"
         },
         {
-          "id": "עשרון",
+          "word_order": 62336,
+          "heb_consonant": "עשרון",
+          "heb_nikud": "עִשָּׂר֔וֹן",
           "sbl": "i.sa.Ron",
-          "gloss": "a tenth",
-          "lemma_strongs": "H6241"
+          "gloss": "a tenth"
         },
         {
-          "id": "לכבש",
+          "word_order": 62337,
+          "heb_consonant": "לכבש",
+          "heb_nikud": "לַ/כֶּ֖בֶשׂ",
           "sbl": "la.Ke.ves",
-          "gloss": "for the lamb",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3532"
+          "gloss": "for the lamb"
         },
         {
-          "id": "האחד",
+          "word_order": 62338,
+          "heb_consonant": "האחד",
+          "heb_nikud": "הָ/אֶחָ֑ד",
           "sbl": "ha.'e.Chad",
-          "gloss": "[the] one",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H0259"
+          "gloss": "[the] one"
         },
         {
-          "id": "לשבעת",
+          "word_order": 62339,
+          "heb_consonant": "לשבעת",
+          "heb_nikud": "לְ/שִׁבְעַ֖ת",
           "sbl": "le.shiv.'At",
-          "gloss": "for [the] seven",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H7651"
+          "gloss": "for [the] seven"
         },
         {
-          "id": "הכבשים",
+          "word_order": 62340,
+          "heb_consonant": "הכבשים",
+          "heb_nikud": "הַ/כְּבָשִֽׂים",
           "sbl": "ha.ke.va.Sim",
-          "gloss": "the lambs",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H3532"
+          "gloss": "the lambs"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 30,
       "words": [
         {
-          "id": "שעיר",
+          "word_order": 62341,
+          "heb_consonant": "שעיר",
+          "heb_nikud": "שְׂעִ֥יר",
           "sbl": "se.'Ir",
-          "gloss": "a male goat of",
-          "lemma_strongs": "H8163"
+          "gloss": "a male goat of"
         },
         {
-          "id": "עזים",
+          "word_order": 62342,
+          "heb_consonant": "עזים",
+          "heb_nikud": "עִזִּ֖ים",
           "sbl": "'i.Zim",
-          "gloss": "goats",
-          "lemma_strongs": "H5795"
+          "gloss": "goats"
         },
         {
-          "id": "אחד",
+          "word_order": 62343,
+          "heb_consonant": "אחד",
+          "heb_nikud": "אֶחָ֑ד",
           "sbl": "'e.Chad",
-          "gloss": "one",
-          "lemma_strongs": "H0259"
+          "gloss": "one"
         },
         {
-          "id": "לכפר",
+          "word_order": 62344,
+          "heb_consonant": "לכפר",
+          "heb_nikud": "לְ/כַפֵּ֖ר",
           "sbl": "le.kha.Per",
-          "gloss": "to make atonement",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H3722"
+          "gloss": "to make atonement"
         },
         {
-          "id": "עליכם",
+          "word_order": 62345,
+          "heb_consonant": "עליכם",
+          "heb_nikud": "עֲלֵי/כֶֽם",
           "sbl": "'a.lei.Khem",
-          "gloss": "on you",
-          "lemma_strongs": "H5921",
-          "suffix_strongs": "H9036"
+          "gloss": "on you"
         }
-      ],
-      "insights": []
+      ]
     },
     {
       "verse": 31,
       "words": [
         {
-          "id": "מלבד",
+          "word_order": 62346,
+          "heb_consonant": "מלבד",
+          "heb_nikud": "מִ/לְּ/בַ֞ד",
           "sbl": "mi.le.Vad",
-          "gloss": "[from] [to] besides",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H0905"
+          "gloss": "[from] [to] besides"
         },
         {
-          "id": "עלת",
+          "word_order": 62347,
+          "heb_consonant": "עלת",
+          "heb_nikud": "עֹלַ֧ת",
           "sbl": "'o.Lat",
-          "gloss": "[the] burnt offering of",
-          "lemma_strongs": "H5930"
+          "gloss": "[the] burnt offering of"
         },
         {
-          "id": "התמיד",
+          "word_order": 62348,
+          "heb_consonant": "התמיד",
+          "heb_nikud": "הַ/תָּמִ֛יד",
           "sbl": "ha.ta.Mid",
-          "gloss": "[the] continuity",
-          "prefix_strongs": "H9009",
-          "lemma_strongs": "H8548"
+          "gloss": "[the] continuity"
         },
         {
-          "id": "ומנחתו",
+          "word_order": 62349,
+          "heb_consonant": "ומנחתו",
+          "heb_nikud": "וּ/מִנְחָת֖/וֹ",
           "sbl": "u.min.cha.To",
-          "gloss": "its and grain offering",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H4503",
-          "suffix_strongs": "H9023"
+          "gloss": "and its grain offering"
         },
         {
-          "id": "תעשו",
+          "word_order": 62350,
+          "heb_consonant": "תעשו",
+          "heb_nikud": "תַּעֲשׂ֑וּ",
           "sbl": "ta.'a.Su",
-          "gloss": "you will offer [them]",
-          "lemma_strongs": "H6213"
+          "gloss": "you will offer [them]"
         },
         {
-          "id": "תמימם",
+          "word_order": 62351,
+          "heb_consonant": "תמימם",
+          "heb_nikud": "תְּמִימִ֥ם",
           "sbl": "te.mi.Mim",
-          "gloss": "unblemished",
-          "lemma_strongs": "H8549"
+          "gloss": "unblemished"
         },
         {
-          "id": "יהיו",
+          "word_order": 62352,
+          "heb_consonant": "יהיו",
+          "heb_nikud": "יִהְיוּ",
           "sbl": "yih.yu-",
-          "gloss": "will be(m)",
-          "lemma_strongs": "H1961"
+          "gloss": "will be(m)"
         },
         {
-          "id": "לכם",
+          "word_order": 62353,
+          "heb_consonant": "לכם",
+          "heb_nikud": "לָ/כֶ֖ם",
           "sbl": "la.Khem",
-          "gloss": "to [the] you",
-          "prefix_strongs": "H9005",
-          "lemma_strongs": "H9036"
+          "gloss": "to [the] you"
         },
         {
-          "id": "ונסכיהם",
+          "word_order": 62354,
+          "heb_consonant": "ונסכיהם",
+          "heb_nikud": "וְ/נִסְכֵּי/הֶֽם",
           "sbl": "ve.nis.kei.Hem",
-          "gloss": "their and drink offerings",
-          "prefix_strongs": "H9002",
-          "lemma_strongs": "H5262",
-          "suffix_strongs": "H9028"
+          "gloss": "and their drink offerings"
         }
-      ],
-      "insights": []
+      ]
     }
   ]
 }

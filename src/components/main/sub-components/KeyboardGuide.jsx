@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, showTAHOT, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleTAHOT, onToggleExpertMode, onResetVerse }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, showTAHOT, showNikud, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleTAHOT, onToggleNikud, onToggleExpertMode }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
@@ -80,6 +80,14 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
           />
           <span>TAHOT Strip</span>
         </label>
+        <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
+          <input
+            type="checkbox"
+            checked={showNikud}
+            onChange={onToggleNikud}
+          />
+          <span>Nikud</span>
+        </label>
         <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`} onMouseDown={e => e.preventDefault()}>
           <input
             type="checkbox"
@@ -126,13 +134,7 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
         ))}
       </div>
 
-      <div className="kb-right">
-        <button
-          className="sbl-reset-btn"
-          onMouseDown={e => e.preventDefault()}
-          onClick={() => { if (window.confirm('Reset this verse? Your progress on the current verse will be cleared.')) onResetVerse() }}
-        >↻ Reset</button>
-      </div>
+
     </div>
   )
 }

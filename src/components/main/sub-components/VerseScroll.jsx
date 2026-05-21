@@ -1,54 +1,40 @@
-import { getLetterTypes, LETTER_SBL } from '../../../utils/hebrewData'
-import RootFlag from './RootFlag'
+import { getLetterTypes, LETTER_SBL, splitNikudGroups } from '../../../utils/hebrewData'
 import { useRef, useState, useEffect, useLayoutEffect } from 'react'
 
-/**
- * VerseScroll
- *
- * Two independent behaviours:
- *
- * 1. VERSE TRANSITION — quick slide-out / slide-in animation when currentVerse
- *    changes. A "displayedVerse" state lags behind so the old content exits
- *    before the new content enters.
- *
- * 2. WORD-ROW CENTERING — the row that contains the active word is always
- *    centred vertically inside the scroll viewport. We measure the active
- *    word-block's offsetTop relative to the scroll-track, then apply a
- *    translateY on verse-inner-wrap so that word line sits at 50% height.
- */
+const EXIT_MS  = 140
+const ENTER_MS = 220
 
-const EXIT_MS  = 140   // exit animation duration
-const ENTER_MS = 220   // enter animation duration
+export default function VerseScroll({ verses, currentWordOrder, highestWordOrder, typedChars, dispatch, showSBLWord, showSBLLetter, showGloss, showNikud, expertMode }) {
+  const currentVerseIdx = verses.findIndex(v => v.words.some(w => w.word_order === currentWordOrder))
+  const activeWordIdx = currentVerseIdx >= 0
+    ? verses[currentVerseIdx].words.findIndex(w => w.word_order === currentWordOrder)
+    : -1
 
-export default function VerseScroll({ verses, currentVerse, activeWordIdx, typedCounts, activeRootFlags, dispatch, showSBLWord, showSBLLetter, showGloss, expertMode }) {
   // --- verse transition state ---
-  const [displayedVerse, setDisplayedVerse] = useState(currentVerse)
+  const [displayedVerse, setDisplayedVerse] = useState(currentVerseIdx)
   const [animState, setAnimState]           = useState('')
-  const prevVerseRef = useRef(currentVerse)
+  const prevVerseRef = useRef(currentVerseIdx)
   const timerRef     = useRef(null)
 
   // --- centering refs ---
-  const trackRef = useRef(null)   // .scroll-track — the clipping viewport
-  const wrapRef  = useRef(null)   // .verse-inner-wrap — the element we translate
-  const wordRefs = useRef([])     // individual word-block refs
-  // True on first layout after mount or verse change — suppresses the CSS transition
-  // so the initial position snaps in instead of animating from y=0.
+  const trackRef = useRef(null)
+  const wrapRef  = useRef(null)
+  const wordRefs = useRef([])
   const isFirstLayoutRef = useRef(true)
 
   // ── Verse transition ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (currentVerse === prevVerseRef.current) return
+    if (currentVerseIdx === prevVerseRef.current) return
 
-    const dir = currentVerse > prevVerseRef.current ? 'up' : 'down'
-    prevVerseRef.current = currentVerse
+    const dir = currentVerseIdx > prevVerseRef.current ? 'up' : 'down'
+    prevVerseRef.current = currentVerseIdx
 
     clearTimeout(timerRef.current)
     setAnimState(`exit-${dir}`)
 
     timerRef.current = setTimeout(() => {
-      // New verse — next centering layout should also snap instantly
       isFirstLayoutRef.current = true
-      setDisplayedVerse(currentVerse)
+      setDisplayedVerse(currentVerseIdx)
       setAnimState(`enter-${dir}`)
 
       timerRef.current = setTimeout(() => {
@@ -57,11 +43,9 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     }, EXIT_MS)
 
     return () => clearTimeout(timerRef.current)
-  }, [currentVerse])
+  }, [currentVerseIdx])
 
   // ── Word-row centering ────────────────────────────────────────────────────
-  // Tracks the scroll-track's measured height so the centering re-runs
-  // whenever it changes (e.g. when the mobile keyboard panel is added).
   const [trackHeight, setTrackHeight] = useState(0)
   useEffect(() => {
     if (!trackRef.current) return
@@ -72,53 +56,44 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     return () => obs.disconnect()
   }, [])
 
-  // useLayoutEffect so the transform is applied before paint (no visible jump)
+  const derivedActiveWordIdx = displayedVerse === currentVerseIdx ? activeWordIdx : -1
+
   useLayoutEffect(() => {
     if (!trackRef.current || !wrapRef.current) return
 
     const trackH = trackRef.current.offsetHeight
     if (trackH === 0) return
 
-    // Snap without transition on first layout after mount or verse change
     if (isFirstLayoutRef.current) {
       wrapRef.current.classList.add('verse-inner-wrap--instant')
     }
 
-    // If nothing selected, center the top of the wrap
-    if (activeWordIdx === null) {
+    if (derivedActiveWordIdx === -1) {
       wrapRef.current.style.transform = `translateY(0px)`
     } else {
-      const wordEl = wordRefs.current[activeWordIdx]
+      const wordEl = wordRefs.current[derivedActiveWordIdx]
       if (wordEl) {
-        // offsetTop is measured from the nearest positioned ancestor.
-        // .scroll-track has position:relative, so offsetTop is relative to it.
         const wordTop    = wordEl.offsetTop
         const wordHeight = wordEl.offsetHeight
-
-        // Desired: centre of word row == centre of track
-        // On mobile, nudge 20px upward so the word doesn't feel too low
         const mobileOffset = window.matchMedia('(max-width: 640px)').matches ? 45 : 0
         const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2) - mobileOffset)
         wrapRef.current.style.transform = `translateY(${ty}px)`
       }
     }
 
-    // Remove the instant class after one frame so future movements animate
     if (isFirstLayoutRef.current) {
       isFirstLayoutRef.current = false
       requestAnimationFrame(() => {
         if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
       })
     }
-  }, [activeWordIdx, displayedVerse, typedCounts, trackHeight])
+  }, [derivedActiveWordIdx, displayedVerse, typedChars, highestWordOrder, trackHeight])
 
-  const verse = verses[displayedVerse]
-  const currentVerseFlags = activeRootFlags?.filter(f => f.verseIndex === displayedVerse) || []
+  const verse = verses[displayedVerse] ?? verses[currentVerseIdx] ?? null
 
   // ── Mobile drag-to-read + flick-to-navigate ──────────────────────────────
   const touchStartRef = useRef(null)
 
-  // Read the current translateY from the wrapper's inline style
   const getWrapY = () => {
     if (!wrapRef.current) return 0
     const m = wrapRef.current.style.transform.match(/translateY\((-?[\d.]+)px\)/)
@@ -128,7 +103,6 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   const handleTouchStart = (e) => {
     if (e.touches.length !== 1) return
     const t = e.touches[0]
-    // Freeze position — disable CSS transition during drag
     if (wrapRef.current) wrapRef.current.classList.add('verse-inner-wrap--instant')
     touchStartRef.current = {
       x:        t.clientX,
@@ -146,10 +120,8 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     const dx = t.clientX - touchStartRef.current.x
     const dy = t.clientY - touchStartRef.current.y
 
-    // Abort if clearly horizontal
     if (Math.abs(dx) > Math.abs(dy) + 10) return
 
-    // Move the wrapper live, clamped to ±80px from the centered base position
     if (wrapRef.current) {
       const raw     = touchStartRef.current.baseY + dy
       const clamped = Math.max(
@@ -159,7 +131,6 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
       wrapRef.current.style.transform = `translateY(${clamped}px)`
     }
 
-    // Update instantaneous velocity (px/ms)
     const now = Date.now()
     const dt  = now - touchStartRef.current.lastTime
     if (dt > 0) {
@@ -176,24 +147,22 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
     const velocity = touchStartRef.current.velocity
     touchStartRef.current = null
 
-    const VELOCITY_THRESHOLD = 0.4  // px/ms — only a quick flick navigates verses
+    const VELOCITY_THRESHOLD = 0.4
     const isFlick = Math.abs(velocity) > VELOCITY_THRESHOLD
 
-    // Re-enable CSS transition
     if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
 
     if (isFlick && dispatch) {
-      // Swipe up (dy < 0) → next verse; swipe down (dy > 0) → prev verse
       dispatch({ type: 'MOVE_VERSE', dir: dy < 0 ? 1 : -1 })
     }
-    // Slow drag: content stays at dragged position.
-    // Centering snaps back automatically when activeWordIdx changes (Next Word / word click).
   }
 
   const handleTouchCancel = () => {
     touchStartRef.current = null
     if (wrapRef.current) wrapRef.current.classList.remove('verse-inner-wrap--instant')
   }
+
+  if (!verse) return null
 
   return (
     <div
@@ -207,16 +176,16 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
       <div className={`active-verse-container ${animState}`}>
         <ActiveVerseWords
           verse={verse}
-          vi={displayedVerse}
-          activeWordIdx={activeWordIdx}
-          typedCounts={typedCounts}
-          currentVerseFlags={currentVerseFlags}
+          currentWordOrder={currentWordOrder}
+          highestWordOrder={highestWordOrder}
+          typedChars={typedChars}
           dispatch={dispatch}
           wrapRef={wrapRef}
           wordRefs={wordRefs}
           showSBLWord={showSBLWord}
           showSBLLetter={showSBLLetter}
           showGloss={showGloss}
+          showNikud={showNikud}
           expertMode={expertMode}
         />
       </div>
@@ -224,69 +193,48 @@ export default function VerseScroll({ verses, currentVerse, activeWordIdx, typed
   )
 }
 
-function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseFlags, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter, showGloss, expertMode }) {
-  const handleFlagComplete = (flagIndex) => {
-    if (dispatch) dispatch({ type: 'FLAG_COMPLETED', flagIndex })
-  }
-
-  // Find first incomplete word in this verse
-  const firstIncomplete = verse.words.findIndex((word, wi) => {
-    const typed = typedCounts[`${vi}-${wi}`] ?? 0
-    return typed < word.id.length
-  })
-
-  const handleWordClick = (wi) => {
-    if (!dispatch) return
-    
-    const typed = typedCounts[`${vi}-${wi}`] ?? 0
-    const done = typed >= verse.words[wi].id.length
-    
-    // Word is clickable if it's done OR it's the first incomplete word
-    const isClickable = done || wi === firstIncomplete
-    
-    if (isClickable) {
-      dispatch({ type: 'SELECT_WORD', wordIndex: wi })
-    }
-  }
-
+function ActiveVerseWords({ verse, currentWordOrder, highestWordOrder, typedChars, dispatch, wrapRef, wordRefs, showSBLWord, showSBLLetter, showGloss, showNikud, expertMode }) {
   return (
     <div className="verse-inner-wrap" ref={wrapRef}>
       {verse.words.map((word, wi) => {
-        const letters  = word.id.split('')
-        const typed    = typedCounts[`${vi}-${wi}`] ?? 0
-        const done     = typed >= letters.length
-        const isActive = wi === activeWordIdx
-        const types    = getLetterTypes(word.id)
-        
-        // Determine if word is clickable
-        const isClickable = done || wi === firstIncomplete
-
-        const wordFlags = currentVerseFlags.filter(f => f.wordIndex === wi)
+        const consonants = word.heb_consonant.split('')
+        const nikudGroups = showNikud && word.heb_nikud
+          ? splitNikudGroups(word.heb_nikud)
+          : null
+        const displayLetters = (nikudGroups && nikudGroups.length === consonants.length)
+          ? nikudGroups
+          : consonants
+        const isComplete = word.word_order <= highestWordOrder
+        const isCurrentWord = word.word_order === currentWordOrder
+        const typed = isComplete ? consonants.length
+                    : isCurrentWord ? typedChars
+                    : 0
+        const done = isComplete
+        const isActive = isCurrentWord
+        const types = getLetterTypes(word.heb_consonant)
 
         return (
           <div
             key={wi}
-            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''} ${isClickable ? 'clickable-word' : ''}`}
+            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''}`}
             ref={el => { wordRefs.current[wi] = el }}
-            onClick={() => handleWordClick(wi)}
           >
             {/* Per-letter columns */}
             <div className="word-letter-cols">
-              {letters.map((ch, i) => {
+              {displayLetters.map((displayCh, i) => {
                 const isTyped = i < typed
                 const type    = types[i] || 'root'
                 const charCls = done ? 'done' : isTyped ? `typed type-${type}` : 'ghost'
 
-                // Expert mode: ghost chars invisible, SBL Letter forced off
                 const effectiveSBLLetter = expertMode ? false : showSBLLetter
                 const ghostStyle = expertMode && !isTyped && !done ? { opacity: 0 } : undefined
 
                 return (
-                  <div key={i} className="word-letter-col">
-                    <span className={`word-char ${charCls}`} style={ghostStyle}>{ch}</span>
+                  <div key={i} className={`word-letter-col${nikudGroups ? ' word-letter-col--nikud' : ''}`}>
+                    <span className={`word-char ${charCls}`} style={ghostStyle}>{displayCh}</span>
                     {effectiveSBLLetter && (
                       <span className={`word-sbl-ch ${(isTyped || done) ? 'visible' : ''}`}>
-                        {(isTyped || done) ? (LETTER_SBL[ch] || '') : ''}
+                        {(isTyped || done) ? (LETTER_SBL[consonants[i]] || '') : ''}
                       </span>
                     )}
                   </div>
@@ -307,24 +255,6 @@ function ActiveVerseWords({ verse, vi, activeWordIdx, typedCounts, currentVerseF
             {done && showGloss && word.gloss && (
               <div className="word-gloss">{word.gloss}</div>
             )}
-
-            {/* Root flags */}
-            {wordFlags.map((flag, flagIndex) => {
-              const LETTER_W = 23
-              const PADDING  = 6
-              const rootCenterFromRight = PADDING + (flag.rootStartIdx + (flag.rootEndIdx - flag.rootStartIdx) / 2) * LETTER_W
-              const wordWidth = PADDING * 2 + letters.length * LETTER_W
-              const style = { left: `${wordWidth - rootCenterFromRight}px` }
-
-              return (
-                <RootFlag
-                  key={`${flag.rootId}-${flag.timestamp}`}
-                  flagData={flag}
-                  onHide={() => handleFlagComplete(flagIndex)}
-                  style={style}
-                />
-              )
-            })}
           </div>
         )
       })}

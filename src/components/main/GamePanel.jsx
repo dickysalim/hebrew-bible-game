@@ -1,20 +1,18 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getWord, getRoot } from '../../lib/lexiconCache'
+import { getWord } from '../../lib/lexiconCache'
 import { LETTER_SBL, KEYS, KEYBOARD_ROWS, LATIN_TO_HEB } from '../../utils/hebrewData'
 import { useGameKeyboard } from '../../hooks/useGameKeyboard'
 import { useMobileKeyboard } from '../../hooks/useMobileKeyboard'
 import { useAudioEffects } from '../../hooks/useAudioEffects'
 import { useSyncProgress } from '../../hooks/useSyncProgress'
-import { useProgressPersistence, loadProgressFromStorage, getChapterProgress } from '../../utils/useProgressPersistence'
-import { useChapterLoader, stageIndexFromId } from '../../utils/useChapterLoader'
-import { reducer, initialState, setVersesRef, isVerseDone, getTyped, wordLen, buildInitialStateFromCache } from './gameReducer'
+import { useProgressPersistence, loadProgressFromStorage } from '../../utils/useProgressPersistence'
+import { useChapterLoader, CHAPTER_REGISTRY } from '../../utils/useChapterLoader'
+import { reducer, initialState, findWord, findVerseIndex, isVerseDone } from './gameReducer'
 import { useRootDiscovery } from '../../contexts/RootDiscoveryContext'
 import { useProgressCache } from '../../contexts/ProgressCacheContext'
-import { formatProgressFromSupabase } from '../../lib/progress'
 import { useLemmaCache } from '../../hooks/useLemmaCache'
 import VerseScroll from './sub-components/VerseScroll'
-import InsightCarousel from './sub-components/InsightCarousel'
 import TAHOTStrip, { getGlossText } from './sub-components/TAHOTStrip'
 import KeyboardGuide from './sub-components/KeyboardGuide'
 import WordDefTabs from './sub-components/WordDefTabs'
@@ -22,9 +20,6 @@ import HaberPanel from './sub-components/HaberPanel'
 import MobileHebrewKeyboard from './sub-components/MobileHebrewKeyboard'
 import WordDefSheet from './sub-components/WordDefSheet'
 
-const LEXICON_STORAGE_KEY = 'hebrew-bible-game-lexicon'
-
-// Shows a "Back to Menu" button after 3s of loading — escape hatch for stuck state
 function LoadingEscapeButton() {
   const [visible, setVisible] = useState(false)
   const navigate = useNavigate()
@@ -54,37 +49,15 @@ function LoadingEscapeButton() {
   )
 }
 
-// Load previously discovered root IDs from the lexicon localStorage key
-// so the reducer knows not to re-discover them on page refresh.
-function loadDiscoveredRootIdsFromStorage() {
-  try {
-    const saved = localStorage.getItem(LEXICON_STORAGE_KEY)
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed.discoveredRoots)) {
-        // Build the { [rootId]: true } map the reducer expects
-        return Object.fromEntries(parsed.discoveredRoots.map(r => [r.id, true]))
-      }
-    }
-  } catch (e) {
-    // ignore
-  }
-  return {}
-}
-
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function GamePanel({ userId, jumpToStageIndex }) {
-  // Use progress persistence hook to save/reset progress
   const { isLoaded, saveProgress, resetProgress } = useProgressPersistence()
 
-  // Progress cache — fetched once after login, survives tab switches
   const { cachedProgress, cacheStatus, updateCache, clearCache } = useProgressCache()
 
-  // Root discovery context — used to update the Lexicon tab badge and persist roots
   const {
-    addDiscoveredRoot,
     addDiscoveredWordsForRoot,
     updateDiscoveredRoots,
     updateDiscoveredWordsByRoot,
@@ -93,126 +66,88 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     discoveredWordsByRoot
   } = useRootDiscovery()
 
-  // Determine which stageIndex to start on.
-  // jumpToStageIndex takes priority (from chapter-select); otherwise resume saved progress.
   const isJumping = jumpToStageIndex != null
   const resolvedInitialStage = (() => {
     if (isJumping) return jumpToStageIndex
     if (userId && cacheStatus === 'ready' && cachedProgress) {
-      return cachedProgress.stageIndex || 1
+      return cachedProgress.currentStageIndex || 1
     }
     if (!userId) {
       const saved = loadProgressFromStorage()
-      return saved.stageIndex || 1
+      return saved.currentStageIndex || saved.stageIndex || 1
     }
     return 1
   })()
 
-  // Dynamic chapter loader — only loads the chapter we need
   const {
     chapterData, chapterMeta, stageIndex: loaderStageIndex,
     isLoading: chapterLoading, loadId, hasNext, hasPrev, jumpToStage, advanceToNext, goToPrev
   } = useChapterLoader(resolvedInitialStage)
 
-  // Derive verses from loaded chapter data (empty while loading)
   const verses = chapterData?.verses ?? []
-  // Keep module-level ref in sync for the reducer
-  setVersesRef(verses)
 
-  // Chapter-level lemma + root cache — imperative refresh on each chapter load
   const [lemmaMap, refreshLemmaCache] = useLemmaCache()
 
   const [state, dispatch] = useReducer(reducer, null, () => {
-    // Chapter-select jump: restore target chapter from cache if it exists
+    let cached = { highestWordOrder: 0, currentStageIndex: 1, currentWordOrder: 1, typedChars: 0 }
+    if (userId && cacheStatus === 'ready' && cachedProgress) {
+      cached = {
+        highestWordOrder: cachedProgress.highestWordOrder ?? 0,
+        currentStageIndex: cachedProgress.currentStageIndex ?? 1,
+        currentWordOrder: cachedProgress.currentWordOrder ?? 1,
+        typedChars: cachedProgress.typedChars ?? 0,
+      }
+    } else if (!userId) {
+      const saved = loadProgressFromStorage()
+      cached = {
+        highestWordOrder: saved.highestWordOrder ?? 0,
+        currentStageIndex: saved.currentStageIndex ?? 1,
+        currentWordOrder: saved.currentWordOrder ?? 1,
+        typedChars: saved.typedChars ?? 0,
+      }
+    }
     if (isJumping) {
-      const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-      // Try to restore per-chapter state for the target chapter
-      let chaptersMap = {}
-      if (userId && cacheStatus === 'ready' && cachedProgress?.chapters) {
-        chaptersMap = cachedProgress.chapters
-      } else if (!userId) {
-        const savedLocal = loadProgressFromStorage()
-        chaptersMap = savedLocal.chapters || {}
-      }
-      const targetChProgress = chaptersMap[jumpToStageIndex] || {}
-      // Restore persisted display settings so chapter-select doesn't reset them
-      const jumpSettings = (userId && cacheStatus === 'ready' && cachedProgress?.settings)
-        ? cachedProgress.settings
-        : {}
-      return {
-        ...initialState,
-        stageIndex: jumpToStageIndex,
-        currentVerse: targetChProgress.currentVerse ?? 0,
-        activeWordIdx: targetChProgress.activeWordIdx ?? 0,
-        highestVerse: targetChProgress.highestVerse ?? 0,
-        typedCounts: targetChProgress.typedCounts ?? {},
-        wordEncounters: targetChProgress.wordEncounters ?? {},
-        carouselIdxMap: targetChProgress.carouselIdxMap ?? {},
-        celebratedVerses: targetChProgress.celebratedVerses ?? [],
-        discoveredRoots: persistedDiscoveredRoots,
-        chapters: chaptersMap,
-        showSBLWord:   jumpSettings.showSBLWord   ?? true,
-        showSBLLetter: jumpSettings.showSBLLetter ?? true,
-        expertMode:    jumpSettings.expertMode    ?? false,
+      const entry = CHAPTER_REGISTRY.find(e => e.stageIndex === jumpToStageIndex)
+      cached.currentStageIndex = jumpToStageIndex
+      cached.currentWordOrder = entry?.firstWordOrder ?? 1
+      if (cached.highestWordOrder >= (entry?.firstWordOrder ?? 1)) {
+        cached.currentWordOrder = cached.highestWordOrder + 1
       }
     }
-    if (userId) {
-      if (cacheStatus === 'ready' && cachedProgress) {
-        return buildInitialStateFromCache(cachedProgress)
-      }
-      return { ...initialState, stageIndex: resolvedInitialStage }
-    }
-    const saved = loadProgressFromStorage()
-    const persistedDiscoveredRoots = loadDiscoveredRootIdsFromStorage()
-    const chMap = saved.chapters || {}
-    const si = saved.stageIndex || 1
-    const chProgress = chMap[si] || {}
+    const settings = (userId && cacheStatus === 'ready' && cachedProgress?.settings) ? cachedProgress.settings : {}
     return {
       ...initialState,
-      stageIndex: si,
-      typedCounts: chProgress.typedCounts || {},
-      wordEncounters: chProgress.wordEncounters || {},
-      highestVerse: chProgress.highestVerse ?? 0,
-      currentVerse: chProgress.currentVerse ?? 0,
-      activeWordIdx: chProgress.activeWordIdx ?? 0,
-      carouselIdxMap: chProgress.carouselIdxMap || {},
-      celebratedVerses: chProgress.celebratedVerses || [],
-      discoveredRoots: persistedDiscoveredRoots,
-      chapters: chMap,
+      ...cached,
+      showSBLWord: settings.showSBLWord ?? true,
+      showSBLLetter: settings.showSBLLetter ?? true,
+      expertMode: settings.expertMode ?? false,
     }
   })
 
-  // Handle jumpToStageIndex prop changes AFTER mount (e.g. if GamePanel stays mounted
-  // and user navigates back to menu and picks a different chapter).
-  // prevJumpRef starts at null so the mount-time jump is handled by the reducer init above.
+  const versesDispatch = useCallback((action) => {
+    if (['TYPE', 'SPACE', 'MOVE_VERSE'].includes(action.type)) {
+      dispatch({ ...action, verses })
+    } else {
+      dispatch(action)
+    }
+  }, [verses])
+
   const prevJumpRef = useRef(null)
   useEffect(() => {
     if (jumpToStageIndex != null && jumpToStageIndex !== prevJumpRef.current) {
-      // Skip the very first render — that's already handled by reducer init
       if (prevJumpRef.current !== null) {
         jumpToStage(jumpToStageIndex)
-        dispatch({ type: 'JUMP_TO_STAGE', stageIndex: jumpToStageIndex })
+        const entry = CHAPTER_REGISTRY.find(e => e.stageIndex === jumpToStageIndex)
+        dispatch({ type: 'JUMP_TO_STAGE', targetStageIndex: jumpToStageIndex, targetFirstWordOrder: entry?.firstWordOrder ?? 1 })
       }
       prevJumpRef.current = jumpToStageIndex
     }
   }, [jumpToStageIndex, jumpToStage])
 
   // ─── Chapter navigation (robust, loadId-based + smooth transition) ──────
-  // All chapter transitions work the same way:
-  //   1. Signal effect triggers a fade-out
-  //   2. After fade-out, loader navigation fires (advanceToNext / goToPrev)
-  //   3. Loader fetches the JSON and bumps loadId
-  //   4. Sync-effect (watching loadId) dispatches LOAD_CHAPTER + triggers fade-in
-  // This produces a smooth visual crossfade between chapters.
-
-  // Transition state: 'idle' | 'fading-out' | 'fading-in'
   const [chapterTransition, setChapterTransition] = useState('idle')
-  // Ref to carry startAtVerse intent from the backward signal to the sync-effect
-  const pendingStartAtVerseRef = useRef(null)
-  // Ref to hold the navigation callback to execute after fade-out completes
   const pendingNavRef = useRef(null)
 
-  // Execute the pending navigation after fade-out animation finishes
   useEffect(() => {
     if (chapterTransition !== 'fading-out') return
     const timer = setTimeout(() => {
@@ -220,28 +155,24 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         pendingNavRef.current()
         pendingNavRef.current = null
       }
-    }, 250) // matches CSS fade-out duration
+    }, 250)
     return () => clearTimeout(timer)
   }, [chapterTransition])
 
-  // Single sync-effect: fires reliably on every new load via loadId
   useEffect(() => {
     if (!chapterData || chapterLoading) return
+    const meta = CHAPTER_REGISTRY.find(e => e.stageIndex === loaderStageIndex)
     dispatch({
       type: 'LOAD_CHAPTER',
-      stageIndex: loaderStageIndex,
-      startAtVerse: pendingStartAtVerseRef.current ?? undefined,
+      targetStageIndex: loaderStageIndex,
+      targetFirstWordOrder: meta?.firstWordOrder ?? 1,
     })
-    pendingStartAtVerseRef.current = null
-    // Refresh lemma cache for the new chapter
     refreshLemmaCache(chapterData)
-    // Trigger fade-in
     setChapterTransition('fading-in')
     const timer = setTimeout(() => setChapterTransition('idle'), 350)
     return () => clearTimeout(timer)
   }, [loadId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-advance to next chapter (down arrow / space on last verse)
   useEffect(() => {
     if (state.chapterEndSignal > 0 && hasNext && chapterTransition === 'idle') {
       setChapterTransition('fading-out')
@@ -249,14 +180,11 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     }
   }, [state.chapterEndSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Go back to previous chapter (up arrow on first verse)
   useEffect(() => {
     if (state.prevChapterSignal === 0 || !hasPrev || chapterTransition !== 'idle') return
     const prevSi = loaderStageIndex - 1
-    const prevChProgress = state.chapters[prevSi]
-    if (!prevChProgress || prevChProgress.highestVerse === 0) return
-    // Store landing verse so the sync-effect can pass it to LOAD_CHAPTER
-    pendingStartAtVerseRef.current = prevChProgress.highestVerse - 1
+    const prevEntry = CHAPTER_REGISTRY.find(e => e.stageIndex === prevSi)
+    if (!prevEntry || state.highestWordOrder < prevEntry.firstWordOrder) return
     setChapterTransition('fading-out')
     pendingNavRef.current = () => goToPrev()
   }, [state.prevChapterSignal]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -266,7 +194,6 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const [haberOpen, setHaberOpen] = useState(false)
   const [wordDefSheetOpen, setWordDefSheetOpen] = useState(false)
 
-  // Mobile Hebrew font size — persisted across sessions
   const MOB_FONT_KEY = 'hbg-mob-font-size'
   const [mobFontSize, setMobFontSize] = useState(() => {
     const saved = parseInt(localStorage.getItem(MOB_FONT_KEY), 10)
@@ -276,7 +203,6 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const decMobFont = () => setMobFontSize(s => { const v = Math.max(18, s - 2); localStorage.setItem(MOB_FONT_KEY, v); return v })
   const [customizeOpen, setCustomizeOpen] = useState(false)
 
-  // Detect mobile viewport — updates on resize
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 640px)')
@@ -285,15 +211,9 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Measure the fixed keyboard panel so game-panel padding-bottom matches exactly,
-  // giving scroll-track the correct height for vertical centering.
-  // Uses a callback ref so the ResizeObserver attaches as soon as the DOM node mounts
-  // (the previous useRef + useEffect pattern had a timing issue where the ref was still
-  // null when the effect ran after isMobile flipped to true).
   const [mobileBottomH, setMobileBottomH] = useState(0)
   const mobileObsRef = useRef(null)
   const mobileBottomRef = useCallback((node) => {
-    // Disconnect previous observer
     if (mobileObsRef.current) {
       mobileObsRef.current.disconnect()
       mobileObsRef.current = null
@@ -306,30 +226,13 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
       setMobileBottomH(0)
     }
   }, [])
-  // Track which words have already had their "New" badge shown and then navigated away from.
-  // This is a ref (not state) so it doesn't trigger re-renders on mutation.
   const shownNewWordIdsRef = useRef(new Set())
   const prevWordIdRef      = useRef(null)
 
-
-  // Sync newly discovered roots to RootDiscoveryContext for the Lexicon tab badge
-  // We watch activeRootFlags — each new flag entry means a root was just discovered
-  useEffect(() => {
-    if (state.activeRootFlags.length === 0) return
-    const latestFlag = state.activeRootFlags[state.activeRootFlags.length - 1]
-    const rootId = latestFlag.rootId
-    const rootData = getRoot(rootId)
-    if (rootData) {
-      addDiscoveredRoot({ id: rootId, ...rootData })
-    }
-  }, [state.rootDiscoverySignal]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Track words discovered per root — fires when a new word is completed for the first time
   useEffect(() => {
     const wordId = state.lastCompletedWordId
     if (!wordId) return
     const encounterCount = state.wordEncounters[wordId] || 0
-    // Only track the first encounter
     if (encounterCount !== 1) return
     const wordData = getWord(wordId)
     if (!wordData?.root) return
@@ -342,73 +245,61 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     saveProgress, updateCache, updateDiscoveredRoots, updateDiscoveredWordsByRoot,
   })
 
-  // Restore Supabase progress into the reducer once the async load completes.
-  // The useReducer initializer runs synchronously at mount, before Supabase responds,
-  // so cacheStatus is never 'ready' at that point — we must dispatch here instead.
   const hasRestoredFromSupabase = useRef(false)
   useEffect(() => {
     if (!userId || cacheStatus !== 'ready' || hasRestoredFromSupabase.current) return
     hasRestoredFromSupabase.current = true
     if (!cachedProgress) return
-    dispatch({ type: 'INIT_FROM_SUPABASE', payload: cachedProgress })
-    const targetStage = cachedProgress.stageIndex || 1
+    dispatch({
+      type: 'INIT_FROM_CACHE',
+      cached: {
+        highestWordOrder: cachedProgress.highestWordOrder ?? 0,
+        currentStageIndex: cachedProgress.currentStageIndex ?? 1,
+        currentWordOrder: cachedProgress.currentWordOrder ?? 1,
+        typedChars: cachedProgress.typedChars ?? 0,
+      },
+    })
+    const targetStage = cachedProgress.currentStageIndex || 1
     if (targetStage !== loaderStageIndex) {
       jumpToStage(targetStage)
     }
   }, [cacheStatus]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Keyboard handler (desktop physical keyboard)
-  useGameKeyboard(dispatch, resetProgress, resetDiscoveredRoots, clearCache, setIsTyping)
+  useGameKeyboard(versesDispatch, resetProgress, resetDiscoveredRoots, clearCache, setIsTyping)
 
-  // Mobile virtual keyboard handlers
-  const { handleKey: handleMobileKey, handleSpace: handleMobileSpace } = useMobileKeyboard(dispatch)
+  const { handleKey: handleMobileKey, handleSpace: handleMobileSpace } = useMobileKeyboard(versesDispatch)
 
-  // Reset cursor visibility on mouse move
   useEffect(() => {
     const handleMouseMove = () => setIsTyping(false)
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  const { currentVerse, activeWordIdx, typedCounts, wordEncounters, errorCount, wrongHebKeys, carouselIdxMap, celebratedVerses } = state
+  const { errorCount, wrongHebKeys } = state
 
-  // Dynamic book/chapter label from loaded chapter metadata
   const bookLabel = chapterMeta?.book ?? 'Genesis'
   const chapterNum = chapterMeta?.chapter ?? 1
 
-  // Guard: while chapter is loading, verses may be empty
-  const verse      = verses[currentVerse] ?? null
-  const activeWord = (verse && activeWordIdx !== null) ? verse.words[activeWordIdx] : null
-  const wordId     = activeWord?.id ?? ''
-  const typedCount = activeWordIdx !== null ? getTyped(typedCounts, currentVerse, activeWordIdx) : 0
-  const wordDone   = activeWordIdx !== null && verse
-    ? getTyped(typedCounts, currentVerse, activeWordIdx) >= wordLen(verses, currentVerse, activeWordIdx)
-    : false
-  const verseDone  = verse ? isVerseDone(verses, typedCounts, currentVerse) : false
-  const carouselIdx = carouselIdxMap[currentVerse] ?? 0
+  const currentVerseIdx = findVerseIndex(verses, state.currentWordOrder)
+  const verse = verses[currentVerseIdx] ?? null
+  const activeWord = findWord(verses, state.currentWordOrder)
+  const wordId = activeWord?.heb_consonant ?? ''
+  const wordDone = state.currentWordOrder <= state.highestWordOrder
+  const verseDone = verse ? isVerseDone(verse, state.highestWordOrder) : false
+  const activeWordIdx = verse ? verse.words.findIndex(w => w.word_order === state.currentWordOrder) : -1
 
-  // Whether this verse's completion has already been celebrated (sound + animation)
-  // Stored in reducer state so it survives tab switches without replaying.
-  const alreadyCelebrated = celebratedVerses.includes(currentVerse)
-
-  // Get word definition data from D1 cache
   const wordData = wordId ? getWord(wordId) : null
-  const encounterCount = wordId ? wordEncounters[wordId] || 0 : 0
+  const encounterCount = wordId ? (state.wordEncounters[wordId] || 0) : 0
   const sbl = activeWord?.sbl || ''
 
-
-  // "New" badge — true only on first discovery AND while still on that word.
-  // When the user navigates away (wordId changes), the previous word is dismissed
-  // so returning to it no longer shows the badge.
   if (wordId !== prevWordIdRef.current) {
     if (prevWordIdRef.current) shownNewWordIdsRef.current.add(prevWordIdRef.current)
     prevWordIdRef.current = wordId
   }
   const isWordNew = wordDone && !!wordId && encounterCount === 1 && !shownNewWordIdsRef.current.has(wordId)
 
-  // Context object passed to Haber for the current word
   const currentWordContext = wordDone && wordData && verse ? {
-    id: wordId,
+    heb_consonant: wordId,
     sbl,
     gloss: wordData.gloss,
     root: wordData.root || '',
@@ -418,24 +309,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     verseGloss: getGlossText(verse.words),
   } : null
 
-  useAudioEffects(state, verseDone, alreadyCelebrated, currentVerse, dispatch)
+  useAudioEffects(state, verseDone, currentVerseIdx)
 
-  // Always track target letter for idle pulse hint (5s timer in KeyboardGuide)
-  const targetLetter = (activeWord && !wordDone) ? wordId[typedCount] : null
+  const targetLetter = (activeWord && !wordDone) ? wordId[state.typedChars] : null
 
-  // TAHOT gloss highlight: pass the word index to TAHOTStrip for positional highlighting
-
-  // Stable callbacks so InsightCarousel's setInterval doesn't reset on every render
-  const handleCarouselPrev = useCallback(
-    () => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: -1 }),
-    [currentVerse]
-  )
-  const handleCarouselNext = useCallback(
-    () => dispatch({ type: 'CAROUSEL_NAV', vi: currentVerse, dir: 1 }),
-    [currentVerse]
-  )
-
-  // Show loading screen while chapter data is being fetched
   if (chapterLoading || !verse) {
     return (
       <div className="game-panel">
@@ -461,7 +338,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
 
       <div className="verse-header">
         <span className="verse-ref">{bookLabel} {chapterNum}:{verse.verse}</span>
-        <span className="progress-pill">verse {currentVerse + 1} of {verses.length}</span>
+        <span className="progress-pill">verse {currentVerseIdx + 1} of {verses.length}</span>
       </div>
 
       <div className="main-content-grid">
@@ -521,32 +398,19 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
           <div className="verse-scroll-area">
             <VerseScroll
               verses={verses}
-              currentVerse={currentVerse}
-              activeWordIdx={activeWordIdx}
-              typedCounts={typedCounts}
-              activeRootFlags={state.activeRootFlags}
-              dispatch={dispatch}
+              currentWordOrder={state.currentWordOrder}
+              highestWordOrder={state.highestWordOrder}
+              typedChars={state.typedChars}
+              dispatch={versesDispatch}
               showSBLWord={state.showSBLWord}
               showSBLLetter={state.showSBLLetter}
               showGloss={state.showGloss}
+              showNikud={state.showNikud}
               expertMode={state.expertMode}
             />
           </div>
 
           <div className="bottom-strip">
-            {/* DEPRECATED: InsightCarousel disabled — kept as backup
-            {verseDone && !isMobile && (
-              <InsightCarousel
-                key={currentVerse}
-                insights={verse.insights}
-                idx={carouselIdx}
-                onPrev={handleCarouselPrev}
-                onNext={handleCarouselNext}
-                isNewCompletion={!alreadyCelebrated}
-              />
-            )}
-            */}
-
             {!isMobile && state.showTAHOT && (
               <TAHOTStrip
                 words={verse.words}
@@ -565,13 +429,14 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               showSBLLetter={state.showSBLLetter}
               showGloss={state.showGloss}
               showTAHOT={state.showTAHOT}
+              showNikud={state.showNikud}
               expertMode={state.expertMode}
               onToggleSBLWord={() => dispatch({ type: 'TOGGLE_SBL_WORD' })}
               onToggleSBLLetter={() => dispatch({ type: 'TOGGLE_SBL_LETTER' })}
               onToggleGloss={() => dispatch({ type: 'TOGGLE_GLOSS' })}
               onToggleTAHOT={() => dispatch({ type: 'TOGGLE_TAHOT' })}
+              onToggleNikud={() => dispatch({ type: 'TOGGLE_NIKUD' })}
               onToggleExpertMode={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
-              onResetVerse={() => dispatch({ type: 'RESET_VERSE' })}
             />
 
             <div className="footer-note">
@@ -585,18 +450,6 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
       {isMobile && (
         <div className="mobile-bottom-fixed" ref={mobileBottomRef}>
           <div className="mobile-floating-strip">
-            {/* DEPRECATED: InsightCarousel disabled — kept as backup
-            {verseDone && (
-              <InsightCarousel
-                key={currentVerse}
-                insights={verse.insights}
-                idx={carouselIdx}
-                onPrev={handleCarouselPrev}
-                onNext={handleCarouselNext}
-                isNewCompletion={!alreadyCelebrated}
-              />
-            )}
-            */}
             {state.showTAHOT && (
               <TAHOTStrip
                 words={verse.words}
@@ -619,12 +472,6 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               >
                 Customize
               </button>
-              <button
-                className="mobile-pill mobile-pill--reset"
-                onClick={() => { if (window.confirm('Reset this verse? Your progress on the current verse will be cleared.')) dispatch({ type: 'RESET_VERSE' }) }}
-              >
-                Reset Verse
-              </button>
               <div className="mobile-pill-sep" aria-hidden="true" />
               <button
                 className="mobile-pill mobile-pill--font"
@@ -645,8 +492,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               showActiveKey={!state.expertMode && activeWord && !wordDone && errorCount >= 3}
               onKey={handleMobileKey}
               onSpace={handleMobileSpace}
-              onPrevVerse={() => dispatch({ type: 'MOVE_VERSE', dir: -1 })}
-              onNextVerse={() => dispatch({ type: 'MOVE_VERSE', dir: 1 })}
+              onPrevVerse={() => versesDispatch({ type: 'MOVE_VERSE', dir: -1 })}
+              onNextVerse={() => versesDispatch({ type: 'MOVE_VERSE', dir: 1 })}
               showSBLLetter={state.showSBLLetter}
               showSBLWord={state.showSBLWord}
               expertMode={state.expertMode}
@@ -720,6 +567,18 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
                   <span className="customize-row-desc">Show word-by-word English glosses</span>
                 </div>
                 <div className={`customize-toggle${state.showTAHOT ? ' customize-toggle--on' : ''}`} />
+              </button>
+
+              {/* Nikud */}
+              <button
+                className="customize-row"
+                onClick={() => dispatch({ type: 'TOGGLE_NIKUD' })}
+              >
+                <div className="customize-row-label">
+                  <span className="customize-row-title">Nikud</span>
+                  <span className="customize-row-desc">Show vowel points on Hebrew text</span>
+                </div>
+                <div className={`customize-toggle${state.showNikud ? ' customize-toggle--on' : ''}`} />
               </button>
 
               {/* Word Gloss */}

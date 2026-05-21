@@ -17,7 +17,7 @@ export default function TAHOTStrip({ words, activeWordIndex }) {
       <div className="tahot-label">TAHOT Gloss</div>
       <div className="tahot-text">
         {words.map((w, i) => {
-          const gloss = w.gloss || w.id
+          const gloss = w.gloss || w.heb_consonant
           const isActive = i === activeWordIndex
           return isActive
             ? <span key={i} className="tahot-highlight">{gloss}</span>
@@ -38,5 +38,5 @@ export default function TAHOTStrip({ words, activeWordIndex }) {
  */
 export function getGlossText(words) {
   if (!Array.isArray(words)) return ''
-  return words.map(w => w.gloss || w.id).join(' ')
+  return words.map(w => w.gloss || w.heb_consonant).join(' ')
 }

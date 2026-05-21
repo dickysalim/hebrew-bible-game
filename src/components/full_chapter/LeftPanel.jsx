@@ -16,7 +16,7 @@ function NoWordPlaceholder() {
 
 export default function LeftPanel({ userId, chapterMeta, selectedWord, lemmaMap }) {
   // Derive all data for WordDefTabs from the clicked word
-  const wordId  = selectedWord?.word?.id ?? ''
+  const wordId  = selectedWord?.word?.heb_consonant ?? ''
   const sbl     = selectedWord?.word?.sbl ?? ''
   const wordData = wordId ? getWord(wordId) : null
 
