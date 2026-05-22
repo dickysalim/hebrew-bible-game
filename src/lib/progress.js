@@ -25,26 +25,26 @@ export async function saveProgress(userId, progress) {
 
   const progressData = {
     user_id: userId,
-    stage_index: progress.currentStageIndex ?? 1,
     typed_counts: {
+      v: 3,
+      currentStageIndex: progress.currentStageIndex ?? 1,
       highestWordOrder: progress.highestWordOrder ?? 0,
       currentWordOrder: progress.currentWordOrder ?? 1,
       typedChars: progress.typedChars ?? 0,
-      showNikud: progress.settings?.showNikud ?? false,
+      settings: {
+        showSBLWord: progress.settings?.showSBLWord ?? true,
+        showSBLLetter: progress.settings?.showSBLLetter ?? true,
+        showGloss: progress.settings?.showGloss ?? true,
+        showTAHOT: progress.settings?.showTAHOT ?? true,
+        showNikud: progress.settings?.showNikud ?? false,
+        expertMode: progress.settings?.expertMode ?? false,
+      },
+      discoveredRoots: progress.discoveredRoots || [],
+      discoveredWordsByRoot: progress.discoveredWordsByRoot || {},
+      alphabetProgress: progress.alphabetProgress || {},
+      fcSettings: progress.fcSettings || {},
     },
-    discovered_roots: progress.discoveredRoots || [],
-    show_sbl_word: progress.settings?.showSBLWord ?? true,
-    show_sbl_letter: progress.settings?.showSBLLetter ?? true,
-    show_gloss: progress.settings?.showGloss ?? true,
-    show_tahot: progress.settings?.showTAHOT ?? true,
-    expert_mode: progress.settings?.expertMode ?? false,
-    fc_settings: progress.fcSettings || {},
-    alphabet_progress: progress.alphabetProgress || {},
     updated_at: new Date().toISOString(),
-  }
-
-  if (progress.discoveredWordsByRoot !== undefined) {
-    progressData.discovered_words_by_root = progress.discoveredWordsByRoot || {}
   }
 
   try {
@@ -66,10 +66,16 @@ export async function saveProgress(userId, progress) {
 export async function savePartialProgress(userId, fields) {
   if (!userId) return false
   try {
+    // For partial saves (fc_settings, alphabet_progress), we need to
+    // read-modify-write the typed_counts JSONB
+    const existing = await loadProgress(userId)
+    const tc = existing?.typed_counts || {}
+    const merged = { ...tc, ...fields }
+
     const { error } = await supabase
       .from('user_progress')
       .upsert(
-        { user_id: userId, ...fields, updated_at: new Date().toISOString() },
+        { user_id: userId, typed_counts: merged, updated_at: new Date().toISOString() },
         { onConflict: 'user_id' }
       )
     if (error) {
@@ -115,28 +121,49 @@ export function formatProgressFromSupabase(supabaseProgress) {
   if (!supabaseProgress) return null
 
   const tc = supabaseProgress.typed_counts || {}
-  const hasNewFormat = tc.highestWordOrder !== undefined
 
-  const result = {
+  // v3 format: everything is inside typed_counts JSONB
+  if (tc.v === 3) {
+    return {
+      discoveredRoots: tc.discoveredRoots || [],
+      discoveredWordsByRoot: tc.discoveredWordsByRoot || {},
+      currentStageIndex: tc.currentStageIndex ?? 1,
+      highestWordOrder: tc.highestWordOrder ?? 0,
+      currentWordOrder: tc.currentWordOrder ?? 1,
+      typedChars: tc.typedChars ?? 0,
+      settings: {
+        showSBLWord: tc.settings?.showSBLWord ?? true,
+        showSBLLetter: tc.settings?.showSBLLetter ?? true,
+        showGloss: tc.settings?.showGloss ?? true,
+        showTAHOT: tc.settings?.showTAHOT ?? true,
+        showNikud: tc.settings?.showNikud ?? false,
+        expertMode: tc.settings?.expertMode ?? false,
+      },
+      fcSettings: tc.fcSettings || {},
+      alphabetProgress: tc.alphabetProgress || {},
+    }
+  }
+
+  // Legacy fallback: read from scattered columns
+  const hasNewFields = tc.highestWordOrder !== undefined
+  return {
     discoveredRoots: supabaseProgress.discovered_roots || [],
     discoveredWordsByRoot: supabaseProgress.discovered_words_by_root || {},
     currentStageIndex: supabaseProgress.stage_index || 1,
-    highestWordOrder: hasNewFormat ? (tc.highestWordOrder ?? 0) : 0,
-    currentWordOrder: hasNewFormat ? (tc.currentWordOrder ?? 1) : 1,
-    typedChars: hasNewFormat ? (tc.typedChars ?? 0) : 0,
+    highestWordOrder: hasNewFields ? (tc.highestWordOrder ?? 0) : 0,
+    currentWordOrder: hasNewFields ? (tc.currentWordOrder ?? 1) : 1,
+    typedChars: hasNewFields ? (tc.typedChars ?? 0) : 0,
     settings: {
       showSBLWord: supabaseProgress.show_sbl_word ?? true,
       showSBLLetter: supabaseProgress.show_sbl_letter ?? true,
       showGloss: supabaseProgress.show_gloss ?? true,
       showTAHOT: supabaseProgress.show_tahot ?? true,
-      showNikud: tc.showNikud ?? supabaseProgress.show_nikud ?? false,
+      showNikud: tc.showNikud ?? false,
       expertMode: supabaseProgress.expert_mode ?? false,
     },
     fcSettings: supabaseProgress.fc_settings || {},
     alphabetProgress: supabaseProgress.alphabet_progress || {},
   }
-
-  return result
 }
 
 export async function deleteProgress(userId) {

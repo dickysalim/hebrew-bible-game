@@ -160,7 +160,7 @@ export function ProgressCacheProvider({ children, userId }) {
         if (latestRaw) {
           try { fcSettings = JSON.parse(latestRaw)?.data?.fcSettings || {} } catch {}
         }
-        await savePartialProgress(userId, { fc_settings: fcSettings })
+        await savePartialProgress(userId, { fcSettings })
       } catch (err) {
         console.error('[ProgressCache] Failed to save fc_settings:', err)
       }
@@ -179,7 +179,7 @@ export function ProgressCacheProvider({ children, userId }) {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(async () => {
       try {
-        await savePartialProgress(userId, { alphabet_progress: alphabetProgress })
+        await savePartialProgress(userId, { alphabetProgress })
       } catch (err) {
         console.error('[ProgressCache] Failed to save alphabet progress:', err)
       }
