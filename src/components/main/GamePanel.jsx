@@ -125,7 +125,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   })
 
   const versesDispatch = useCallback((action) => {
-    if (['TYPE', 'SPACE', 'MOVE_VERSE'].includes(action.type)) {
+    if (['TYPE', 'SPACE', 'MOVE_VERSE', 'MOVE_WORD', 'SELECT_WORD'].includes(action.type)) {
       dispatch({ ...action, verses })
     } else {
       dispatch(action)

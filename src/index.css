@@ -418,8 +418,13 @@ html, body {
   border-color: var(--purple-mid);
 }
 
-.word-block.clickable-word {
+.word-block.clickable-word,
+.word-block--selectable {
   cursor: pointer;
+}
+.word-block--selectable:hover {
+  border-color: var(--purple-mid);
+  background: rgba(139, 92, 246, 0.08);
 }
 /* no green underline — white letters communicate done */
 

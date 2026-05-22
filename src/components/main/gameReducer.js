@@ -160,6 +160,51 @@ export function reducer(state, action) {
       return { ...state, currentWordOrder: landWord, typedChars: 0, errorCount: 0, wrongHebKeys: [] }
     }
 
+    case 'MOVE_WORD': {
+      const { dir, verses } = action
+      const vi = findVerseIndex(verses, state.currentWordOrder)
+      if (vi === -1) return state
+
+      const verse = verses[vi]
+      const wi = verse.words.findIndex(w => w.word_order === state.currentWordOrder)
+      if (wi === -1) return state
+
+      const targetWi = wi + dir
+      if (targetWi < 0 || targetWi >= verse.words.length) return state
+
+      const targetWord = verse.words[targetWi]
+      // Can only move to completed words or the frontier word (highestWordOrder + 1)
+      if (targetWord.word_order > state.highestWordOrder + 1) return state
+
+      const alreadyDone = targetWord.word_order <= state.highestWordOrder
+      return {
+        ...state,
+        currentWordOrder: targetWord.word_order,
+        typedChars: alreadyDone ? targetWord.heb_consonant.length : 0,
+        errorCount: 0,
+        wrongHebKeys: [],
+      }
+    }
+
+    case 'SELECT_WORD': {
+      const { wordOrder, verses } = action
+      if (wordOrder == null) return state
+      // Can only select completed words or the frontier word
+      if (wordOrder > state.highestWordOrder + 1) return state
+
+      const word = findWord(verses, wordOrder)
+      if (!word) return state
+
+      const alreadyDone = wordOrder <= state.highestWordOrder
+      return {
+        ...state,
+        currentWordOrder: wordOrder,
+        typedChars: alreadyDone ? word.heb_consonant.length : 0,
+        errorCount: 0,
+        wrongHebKeys: [],
+      }
+    }
+
     case 'LOAD_CHAPTER':
     case 'JUMP_TO_STAGE': {
       const { targetStageIndex, targetFirstWordOrder } = action

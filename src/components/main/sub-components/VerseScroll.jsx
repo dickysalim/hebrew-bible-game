@@ -213,11 +213,14 @@ function ActiveVerseWords({ verse, currentWordOrder, highestWordOrder, typedChar
         const isActive = isCurrentWord
         const types = getLetterTypes(word.heb_consonant)
 
+        const canSelect = word.word_order <= highestWordOrder + 1
+
         return (
           <div
             key={wi}
-            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''}`}
+            className={`word-block ${isActive ? 'active-word' : ''} ${done ? 'done-word' : ''}${canSelect && !isActive ? ' word-block--selectable' : ''}`}
             ref={el => { wordRefs.current[wi] = el }}
+            onClick={canSelect && !isActive ? () => dispatch({ type: 'SELECT_WORD', wordOrder: word.word_order }) : undefined}
           >
             {/* Per-letter columns */}
             <div className="word-letter-cols">
