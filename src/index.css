@@ -5115,7 +5115,7 @@ html, body {
 /* Mobile-only back button — hidden on desktop */
 .tab-back-btn--mobile { display: none; }
 
-@media (max-width: 640px) {
+@media (max-width: 640px), (max-width: 1024px) and (orientation: portrait) {
 
   /* ── App shell ── */
   .app-container {
@@ -6069,11 +6069,151 @@ html, body {
     display: none; /* hide to save space */
   }
 
-} /* end @media (max-width: 640px) */
+} /* end mobile/tablet-portrait */
 
 /* Viewport meta-tag safety: prevent 300ms tap delay on all browsers */
-@media (max-width: 640px) {
+@media (max-width: 640px), (max-width: 1024px) and (orientation: portrait) {
   html {
     touch-action: manipulation;
+  }
+}
+
+/* ── iPad portrait refinements ── */
+@media (min-width: 641px) and (max-width: 1024px) and (orientation: portrait) {
+  .game-panel {
+    max-width: 100%;
+  }
+
+  .scroll-track {
+    min-height: 340px;
+  }
+
+  .word-block {
+    padding: 8px 10px;
+    margin: 4px 3px;
+  }
+
+  .word-char {
+    font-size: 2.2rem;
+  }
+
+  .word-gloss {
+    font-size: 0.85rem;
+  }
+
+  .word-full-sbl {
+    font-size: 0.85rem;
+  }
+
+  .mobile-bottom-fixed {
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-floating-strip {
+    gap: 10px;
+  }
+
+  .mobile-pill {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    min-height: 44px;
+  }
+
+  .mobile-heb-keyboard {
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .mobile-heb-key {
+    min-width: 44px;
+    min-height: 48px;
+    font-size: 1.5rem;
+    border-radius: 10px;
+  }
+
+  .mobile-space-btn {
+    min-height: 48px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  .mobile-verse-nav-btn {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 1.3rem;
+  }
+
+  .verse-header {
+    padding: 10px 20px;
+  }
+
+  .verse-ref {
+    font-size: 1.1rem;
+  }
+
+  .progress-pill {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+  }
+
+  /* Tab bar adjustments */
+  .tab-bar {
+    height: 52px;
+  }
+
+  .tab-btn {
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  /* Main menu adjustments */
+  .menu-content {
+    max-width: 600px;
+    padding: 0 24px;
+  }
+
+  .menu-option {
+    padding: 18px 20px;
+    min-height: 64px;
+  }
+
+  .chapter-card {
+    padding: 16px 18px;
+    min-height: 60px;
+  }
+
+  /* TAHOT strip */
+  .tahot-strip {
+    padding: 8px 12px;
+  }
+
+  .tahot-word {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+}
+
+/* ── iPad landscape refinements (desktop layout) ── */
+@media (min-width: 1025px) and (max-width: 1366px) {
+  .word-block {
+    padding: 6px 8px;
+  }
+
+  .word-char {
+    font-size: 1.9rem;
+  }
+
+  .kb-key {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .menu-option {
+    min-height: 56px;
+  }
+
+  .chapter-card {
+    min-height: 56px;
   }
 }

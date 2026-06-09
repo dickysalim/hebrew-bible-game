@@ -225,12 +225,19 @@ export function reducer(state, action) {
 
     case 'INIT_FROM_CACHE': {
       const c = action.cached || {}
+      const s = action.settings || {}
       return {
         ...state,
         highestWordOrder: c.highestWordOrder ?? 0,
         currentStageIndex: c.currentStageIndex ?? 1,
         currentWordOrder: c.currentWordOrder ?? 1,
         typedChars: c.typedChars ?? 0,
+        showSBLWord: s.showSBLWord ?? state.showSBLWord,
+        showSBLLetter: s.showSBLLetter ?? state.showSBLLetter,
+        showGloss: s.showGloss ?? state.showGloss,
+        showTAHOT: s.showTAHOT ?? state.showTAHOT,
+        showNikud: s.showNikud ?? state.showNikud,
+        expertMode: s.expertMode ?? state.expertMode,
       }
     }
 

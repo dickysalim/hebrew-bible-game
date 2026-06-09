@@ -120,6 +120,9 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
       ...cached,
       showSBLWord: settings.showSBLWord ?? true,
       showSBLLetter: settings.showSBLLetter ?? true,
+      showGloss: settings.showGloss ?? true,
+      showTAHOT: settings.showTAHOT ?? true,
+      showNikud: settings.showNikud ?? false,
       expertMode: settings.expertMode ?? false,
     }
   })
@@ -203,9 +206,10 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const decMobFont = () => setMobFontSize(s => { const v = Math.max(18, s - 2); localStorage.setItem(MOB_FONT_KEY, v); return v })
   const [customizeOpen, setCustomizeOpen] = useState(false)
 
-  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
+  const MOBILE_MQ = '(max-width: 640px), (max-width: 1024px) and (orientation: portrait)'
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_MQ).matches)
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 640px)')
+    const mq = window.matchMedia(MOBILE_MQ)
     const handler = (e) => setIsMobile(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
@@ -258,6 +262,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
         currentWordOrder: cachedProgress.currentWordOrder ?? 1,
         typedChars: cachedProgress.typedChars ?? 0,
       },
+      settings: cachedProgress.settings || {},
     })
     const targetStage = cachedProgress.currentStageIndex || 1
     if (targetStage !== loaderStageIndex) {

@@ -9,9 +9,10 @@ import WordDefSheet from '../main/sub-components/WordDefSheet'
 export default function RightPanel({ verses, chapterMeta, selectedStageIndex, onSelect, completedStageIndexes, userId, selectedWord, onWordClick, onCloseWord, lemmaMap }) {
   const { cachedProgress, updateFcSettings } = useProgressCache()
 
-  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 640px)').matches)
+  const MOBILE_MQ = '(max-width: 640px), (max-width: 1024px) and (orientation: portrait)'
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_MQ).matches)
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 640px)')
+    const mq = window.matchMedia(MOBILE_MQ)
     const handler = (e) => setIsMobile(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)

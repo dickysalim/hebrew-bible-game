@@ -75,7 +75,7 @@ export default function VerseScroll({ verses, currentWordOrder, highestWordOrder
       if (wordEl) {
         const wordTop    = wordEl.offsetTop
         const wordHeight = wordEl.offsetHeight
-        const mobileOffset = window.matchMedia('(max-width: 640px)').matches ? 45 : 0
+        const mobileOffset = window.matchMedia('(max-width: 640px), (max-width: 1024px) and (orientation: portrait)').matches ? 45 : 0
         const ty = Math.round(trackH / 2 - (wordTop + wordHeight / 2) - mobileOffset)
         wrapRef.current.style.transform = `translateY(${ty}px)`
       }
