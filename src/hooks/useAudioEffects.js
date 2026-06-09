@@ -12,6 +12,7 @@ export function useAudioEffects(state, verseDone, currentVerseIdx) {
   const verseCompleteRef = useRef(null)
   const typingSoundsRef  = useRef(null)
   const celebratedVerseRef = useRef(-1)
+  const prevHighestRef = useRef(state.highestWordOrder)
 
   useEffect(() => {
     wordCompleteRef.current = new Audio(wordCompleteAudio)
@@ -49,8 +50,6 @@ export function useAudioEffects(state, verseDone, currentVerseIdx) {
       pick.play().catch(() => {})
     }
   }, [state.typingSignal])
-
-  const prevHighestRef = useRef(state.highestWordOrder)
 
   useEffect(() => {
     const hwAdvanced = state.highestWordOrder > prevHighestRef.current

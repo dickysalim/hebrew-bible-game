@@ -724,6 +724,35 @@ html, body {
   z-index: 10;
 }
 
+/* ─── TOUCH-ENABLED KEYBOARD (iPad landscape) ─────────── */
+.keyboard-guide--touch .kb-key--btn {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  border: none;
+  font: inherit;
+  padding: 0;
+  padding-top: 4px;
+}
+.keyboard-guide--touch .kb-key--btn:active {
+  transform: scale(0.92);
+  background: var(--purple-light);
+  border-color: var(--purple-mid);
+}
+.keyboard-guide--touch .kb-row--space {
+  justify-content: center;
+  margin-top: 4px;
+}
+.keyboard-guide--touch .kb-key--space {
+  width: 200px;
+  height: 42px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+}
+
 /* ─── SBL CONTROLS ───────────────────────────────────── */
 .sbl-controls {
   display: flex;

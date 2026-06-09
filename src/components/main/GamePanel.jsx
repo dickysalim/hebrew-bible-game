@@ -210,6 +210,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const decMobFont = () => setMobFontSize(s => { const v = Math.max(18, s - 2); localStorage.setItem(MOB_FONT_KEY, v); return v })
   const [customizeOpen, setCustomizeOpen] = useState(false)
 
+  const isTouchDevice = 'ontouchstart' in window || window.matchMedia('(pointer: coarse)').matches
+
   const MOBILE_MQ = '(max-width: 640px), (max-width: 1024px) and (orientation: portrait)'
   const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_MQ).matches)
   useEffect(() => {
@@ -446,6 +448,8 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
               onToggleTAHOT={() => dispatch({ type: 'TOGGLE_TAHOT' })}
               onToggleNikud={() => dispatch({ type: 'TOGGLE_NIKUD' })}
               onToggleExpertMode={() => dispatch({ type: 'TOGGLE_EXPERT_MODE' })}
+              onKey={isTouchDevice && !isMobile ? handleMobileKey : undefined}
+              onSpace={isTouchDevice && !isMobile ? handleMobileSpace : undefined}
             />
 
             <div className="footer-note">

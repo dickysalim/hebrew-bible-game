@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, showTAHOT, showNikud, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleTAHOT, onToggleNikud, onToggleExpertMode }) {
+export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wrongHebKeys, showSBLWord, showSBLLetter, showGloss, showTAHOT, showNikud, expertMode, onToggleSBLWord, onToggleSBLLetter, onToggleGloss, onToggleTAHOT, onToggleNikud, onToggleExpertMode, onKey, onSpace }) {
   const keyMap = Object.fromEntries(keys.map(k => [k.latin, k]))
   const keyRefs = useRef({})
   const timerRef = useRef(null)
+  const isTouchable = !!onKey
 
   // Pulse the target key every 5 s of idle, repeating until targetHeb changes
   useEffect(() => {
@@ -43,57 +44,36 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
     }
   }, [targetHeb])
 
+  const handleKeyClick = (k) => {
+    if (!onKey || !k?.heb) return
+    onKey(k.heb)
+  }
+
   return (
-    <div className="keyboard-guide">
+    <div className={`keyboard-guide${isTouchable ? ' keyboard-guide--touch' : ''}`}>
       <div className="sbl-controls">
         <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={showSBLLetter}
-            onChange={onToggleSBLLetter}
-            disabled={expertMode}
-          />
+          <input type="checkbox" checked={showSBLLetter} onChange={onToggleSBLLetter} disabled={expertMode} />
           <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Letter</span>
         </label>
         <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={showSBLWord}
-            onChange={onToggleSBLWord}
-            disabled={expertMode}
-          />
+          <input type="checkbox" checked={showSBLWord} onChange={onToggleSBLWord} disabled={expertMode} />
           <span style={expertMode ? { opacity: 0.4 } : undefined}>SBL Word</span>
         </label>
         <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={showGloss}
-            onChange={onToggleGloss}
-          />
+          <input type="checkbox" checked={showGloss} onChange={onToggleGloss} />
           <span>Word Gloss</span>
         </label>
         <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={showTAHOT}
-            onChange={onToggleTAHOT}
-          />
+          <input type="checkbox" checked={showTAHOT} onChange={onToggleTAHOT} />
           <span>TAHOT Strip</span>
         </label>
         <label className="sbl-checkbox" onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={showNikud}
-            onChange={onToggleNikud}
-          />
+          <input type="checkbox" checked={showNikud} onChange={onToggleNikud} />
           <span>Nikud</span>
         </label>
         <label className={`sbl-checkbox sbl-checkbox--expert${expertMode ? ' sbl-checkbox--expert-active' : ''}`} onMouseDown={e => e.preventDefault()}>
-          <input
-            type="checkbox"
-            checked={expertMode}
-            onChange={onToggleExpertMode}
-          />
+          <input type="checkbox" checked={expertMode} onChange={onToggleExpertMode} />
           <span>Expert</span>
         </label>
       </div>
@@ -104,7 +84,6 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
             {row.map(latin => {
               const k = keyMap[latin]
               if (!k || !k.heb) {
-                // Dim placeholder key (q, w)
                 return (
                   <div key={latin} className="kb-key dim">
                     <div className="kb-heb" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
@@ -113,12 +92,23 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
                   </div>
                 )
               }
-              const isTarget  = k.heb === targetHeb
-              const isWrong   = wrongHebKeys.includes(k.heb)
-              const isAnchor  = latin === 'f' || latin === 'j'
+              const isTarget = k.heb === targetHeb
+              const isWrong = wrongHebKeys.includes(k.heb)
+              const isAnchor = latin === 'f' || latin === 'j'
               const cls = (isTarget && showActiveKey) ? 'active-key' : isWrong ? 'wrong-key' : ''
 
-              return (
+              return isTouchable ? (
+                <button
+                  key={latin}
+                  className={`kb-key kb-key--btn ${cls}`}
+                  ref={el => { if (el) keyRefs.current[k.heb] = el }}
+                  onPointerDown={(e) => { e.preventDefault(); handleKeyClick(k) }}
+                  type="button"
+                >
+                  {isAnchor && <div className="kb-anchor">{latin}</div>}
+                  <div className="kb-heb">{k.heb}</div>
+                </button>
+              ) : (
                 <div
                   key={latin}
                   className={`kb-key ${cls}`}
@@ -126,15 +116,23 @@ export default function KeyboardGuide({ rows, keys, targetHeb, showActiveKey, wr
                 >
                   {isAnchor && <div className="kb-anchor">{latin}</div>}
                   <div className="kb-heb">{k.heb}</div>
-                  {/* Sound display removed as requested */}
                 </div>
               )
             })}
           </div>
         ))}
+        {isTouchable && (
+          <div className="kb-row kb-row--space">
+            <button
+              className="kb-key kb-key--space kb-key--btn"
+              onPointerDown={(e) => { e.preventDefault(); onSpace?.() }}
+              type="button"
+            >
+              Next Word ▸
+            </button>
+          </div>
+        )}
       </div>
-
-
     </div>
   )
 }
