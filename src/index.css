@@ -307,6 +307,7 @@ html, body {
   flex: 1;            /* fills verse-scroll-area height */
   overflow: hidden;   /* clips the verse as it scrolls */
   width: 100%;
+  touch-action: none; /* prevent browser scroll — custom swipe handles verse nav */
   /* fade edges to hint at overflow above/below */
   mask-image: linear-gradient(
     to bottom,

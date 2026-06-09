@@ -50,11 +50,16 @@ export function useAudioEffects(state, verseDone, currentVerseIdx) {
     }
   }, [state.typingSignal])
 
+  const prevHighestRef = useRef(state.highestWordOrder)
+
   useEffect(() => {
-    if (verseDone && currentVerseIdx !== celebratedVerseRef.current && verseCompleteRef.current) {
+    const hwAdvanced = state.highestWordOrder > prevHighestRef.current
+    prevHighestRef.current = state.highestWordOrder
+
+    if (verseDone && hwAdvanced && currentVerseIdx !== celebratedVerseRef.current && verseCompleteRef.current) {
       celebratedVerseRef.current = currentVerseIdx
       verseCompleteRef.current.currentTime = 0
       verseCompleteRef.current.play().catch(() => {})
     }
-  }, [verseDone, currentVerseIdx])
+  }, [verseDone, currentVerseIdx, state.highestWordOrder])
 }

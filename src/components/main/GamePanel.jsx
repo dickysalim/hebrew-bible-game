@@ -138,16 +138,15 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   const prevJumpRef = useRef(null)
   useEffect(() => {
     if (jumpToStageIndex != null && jumpToStageIndex !== prevJumpRef.current) {
-      if (prevJumpRef.current !== null) {
-        jumpToStage(jumpToStageIndex)
-        const entry = CHAPTER_REGISTRY.find(e => e.stageIndex === jumpToStageIndex)
-        dispatch({ type: 'JUMP_TO_STAGE', targetStageIndex: jumpToStageIndex, targetFirstWordOrder: entry?.firstWordOrder ?? 1 })
-      }
+      jumpToStage(jumpToStageIndex)
+      const entry = CHAPTER_REGISTRY.find(e => e.stageIndex === jumpToStageIndex)
+      dispatch({ type: 'JUMP_TO_STAGE', targetStageIndex: jumpToStageIndex, targetFirstWordOrder: entry?.firstWordOrder ?? 1, targetLastWordOrder: entry?.lastWordOrder })
       prevJumpRef.current = jumpToStageIndex
     }
   }, [jumpToStageIndex, jumpToStage])
 
   // ─── Chapter navigation (robust, loadId-based + smooth transition) ──────
+  const landAtEndRef = useRef(false)
   const [chapterTransition, setChapterTransition] = useState('idle')
   const pendingNavRef = useRef(null)
 
@@ -165,10 +164,14 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
   useEffect(() => {
     if (!chapterData || chapterLoading) return
     const meta = CHAPTER_REGISTRY.find(e => e.stageIndex === loaderStageIndex)
+    const landAtEnd = landAtEndRef.current
+    landAtEndRef.current = false
     dispatch({
       type: 'LOAD_CHAPTER',
       targetStageIndex: loaderStageIndex,
       targetFirstWordOrder: meta?.firstWordOrder ?? 1,
+      targetLastWordOrder: meta?.lastWordOrder,
+      landAtEnd,
     })
     refreshLemmaCache(chapterData)
     setChapterTransition('fading-in')
@@ -189,6 +192,7 @@ export default function GamePanel({ userId, jumpToStageIndex }) {
     const prevEntry = CHAPTER_REGISTRY.find(e => e.stageIndex === prevSi)
     if (!prevEntry || state.highestWordOrder < prevEntry.firstWordOrder) return
     setChapterTransition('fading-out')
+    landAtEndRef.current = true
     pendingNavRef.current = () => goToPrev()
   }, [state.prevChapterSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 

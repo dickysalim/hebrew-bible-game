@@ -1923,14 +1923,12 @@ export function useChapterLoader(initialStageIndex = 1) {
       return
     }
 
+    console.log(`[useChapterLoader] ▶ Loading stage ${stageIndex} (${meta.id})`)
     setIsLoading(true)
 
-    // Safety timeout — if the import never resolves (e.g. due to a rapid-flick
-    // race that leaves a cancelled request mid-flight), escape the loading screen
-    // after 10 seconds rather than hanging forever.
     const timeout = setTimeout(() => {
       if (!cancelled) {
-        console.warn('[useChapterLoader] Load timeout — resetting isLoading')
+        console.warn(`[useChapterLoader] ⏰ Load timeout for stage ${stageIndex} — forcing isLoading=false`)
         setIsLoading(false)
       }
     }, 10_000)
@@ -1939,18 +1937,25 @@ export function useChapterLoader(initialStageIndex = 1) {
       .then((data) => {
         clearTimeout(timeout)
         if (!cancelled) {
+          console.log(`[useChapterLoader] ✅ Loaded stage ${stageIndex} (${data?.verses?.length ?? 0} verses)`)
           setChapterData(data)
           setIsLoading(false)
           setLoadId((prev) => prev + 1)
+        } else {
+          console.log(`[useChapterLoader] 🚫 Stage ${stageIndex} loaded but was cancelled`)
         }
       })
       .catch((err) => {
         clearTimeout(timeout)
-        console.error('[useChapterLoader] Failed to load chapter:', err)
+        console.error(`[useChapterLoader] ❌ Failed to load stage ${stageIndex}:`, err)
         if (!cancelled) setIsLoading(false)
       })
 
-    return () => { cancelled = true; clearTimeout(timeout) }
+    return () => {
+      console.log(`[useChapterLoader] 🧹 Cleanup for stage ${stageIndex}`)
+      cancelled = true
+      clearTimeout(timeout)
+    }
   }, [stageIndex])
 
   const jumpToStage = useCallback((si) => {

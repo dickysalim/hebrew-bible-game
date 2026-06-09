@@ -13,10 +13,9 @@ export default function FullChapter({ userId }) {
 
   const completedStageIndexes = useMemo(() => {
     const set = new Set()
-    const chapters = cachedProgress?.chapters ?? {}
+    const hw = cachedProgress?.highestWordOrder ?? 0
     CHAPTER_REGISTRY.forEach(entry => {
-      const chProgress = chapters[entry.stageIndex]
-      if ((chProgress?.highestVerse ?? 0) >= entry.totalVerses) {
+      if (hw >= entry.lastWordOrder) {
         set.add(entry.stageIndex)
       }
     })
@@ -24,11 +23,16 @@ export default function FullChapter({ userId }) {
   }, [cachedProgress])
 
   const [selectedStageIndex, setSelectedStageIndex] = useState(() => {
-    const chapters = cachedProgress?.chapters ?? {}
-    const first = CHAPTER_REGISTRY.find(e =>
-      (chapters[e.stageIndex]?.highestVerse ?? 0) >= e.totalVerses
-    )
-    return first?.stageIndex ?? 1
+    const hw = cachedProgress?.highestWordOrder ?? 0
+    const currentSi = cachedProgress?.currentStageIndex ?? 1
+
+    // If current chapter is completed, show it
+    const currentEntry = CHAPTER_REGISTRY.find(e => e.stageIndex === currentSi)
+    if (currentEntry && hw >= currentEntry.lastWordOrder) return currentSi
+
+    // Otherwise show the last completed chapter
+    const lastCompleted = [...CHAPTER_REGISTRY].reverse().find(e => hw >= e.lastWordOrder)
+    return lastCompleted?.stageIndex ?? 1
   })
 
   const { chapterData, chapterMeta, isLoading } = useChapterLoader(selectedStageIndex)

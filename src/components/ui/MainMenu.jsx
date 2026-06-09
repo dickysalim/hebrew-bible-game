@@ -52,9 +52,7 @@ export default function MainMenu({ onEnterMidrash, onSelectChapter, onLearnAlpha
   const isCompleted = (entry) => highestWordOrder >= entry.lastWordOrder
 
   const isAccessible = (entry) =>
-    entry.stageIndex === 1 ||
-    isCompleted(entry) ||
-    entry.stageIndex === currentStageIndex
+    entry.firstWordOrder <= highestWordOrder + 1
 
   const accessibleBooks = useMemo(() => {
     const seen = new Set()

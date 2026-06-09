@@ -152,6 +152,9 @@ export function reducer(state, action) {
       }
 
       const targetVerse = verses[targetVi]
+      // Block if first word of target verse is beyond the frontier
+      if (targetVerse.words[0].word_order > state.highestWordOrder + 1) return state
+
       const incomplete = firstIncompleteInVerse(targetVerse, state.highestWordOrder)
       const landWord = incomplete !== -1
         ? incomplete
@@ -207,17 +210,33 @@ export function reducer(state, action) {
 
     case 'LOAD_CHAPTER':
     case 'JUMP_TO_STAGE': {
-      const { targetStageIndex, targetFirstWordOrder } = action
-      let landWord = targetFirstWordOrder
-      if (state.highestWordOrder >= targetFirstWordOrder) {
-        landWord = state.highestWordOrder + 1
+      const { targetStageIndex, targetFirstWordOrder, targetLastWordOrder } = action
+
+      // Same chapter — keep current cursor position
+      if (targetStageIndex === state.currentStageIndex && action.type === 'LOAD_CHAPTER') {
+        return state
       }
+
+      let landWord = targetFirstWordOrder
+      if (action.landAtEnd && targetLastWordOrder) {
+        // Navigating backward — land on last word of the chapter (or frontier if in-progress)
+        landWord = Math.min(targetLastWordOrder, state.highestWordOrder + 1)
+      } else if (state.highestWordOrder >= targetFirstWordOrder) {
+        const frontier = state.highestWordOrder + 1
+        if (targetLastWordOrder && frontier > targetLastWordOrder) {
+          landWord = targetFirstWordOrder
+        } else {
+          landWord = frontier
+        }
+      }
+
+      const alreadyDone = landWord <= state.highestWordOrder
 
       return {
         ...state,
         currentStageIndex: targetStageIndex,
         currentWordOrder: landWord,
-        typedChars: 0,
+        typedChars: alreadyDone ? 0 : 0,
         errorCount: 0,
         wrongHebKeys: [],
       }

@@ -12,7 +12,7 @@ import { RootDiscoveryProvider, useRootDiscovery } from './contexts/RootDiscover
 import { ProgressCacheProvider, useProgressCache } from './contexts/ProgressCacheContext'
 import { NotesProvider } from './contexts/NotesContext'
 import { supabase } from './lib/supabase'
-import { stageIndexFromId } from './utils/useChapterLoader'
+
 import { primeLexiconCache } from './lib/lexiconCache'
 
 // Warm up the lexicon cache immediately — data will be ready before the game loads
@@ -205,7 +205,7 @@ export default function App() {
   }
 
   const handleSelectChapter = (chapter) => {
-    setJumpToStageIndex(stageIndexFromId(chapter.id))
+    setJumpToStageIndex(chapter.stageIndex)
     navigate('/game')
   }
 
